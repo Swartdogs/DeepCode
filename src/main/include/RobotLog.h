@@ -29,7 +29,7 @@ class RobotLog {
 private:
   std::string DataString(double value);
 
-  FILE*     m_logoFile;
+  FILE*     m_logFile;
   FILE*     m_dataFile;
   FILE*     m_pidFile;
 
@@ -39,7 +39,7 @@ private:
   double      m_periodicLastStart;
   double      m_periodicTotalTime;
   RobotMode   m_robotMode;
-  std::string m_RobotName;
+  std::string m_robotName;
 
   char        m_log[100];
 };
