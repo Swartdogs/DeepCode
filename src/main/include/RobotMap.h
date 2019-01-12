@@ -7,6 +7,13 @@
 
 #pragma once
 
+typedef enum {rmInit,					// Robot Mode 		(Dashboard, RobotLog)
+			  rmDisabled,
+			  rmAutonomous,
+			  rmTeleop,
+			  rmTest
+} RobotMode;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
