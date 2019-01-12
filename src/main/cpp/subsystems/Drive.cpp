@@ -19,5 +19,9 @@ void Drive::ArcadeDrive(double drive, double rotate) {
 }
 
 void Drive::SetShifter(ShifterPosition position) {
-  
+  if (position != m_shifterPosition) {
+    m_solShifter.Set(position == spHigh);
+    m_shifterPosition = position;
+  }
+
 }

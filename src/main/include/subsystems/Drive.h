@@ -12,7 +12,20 @@
 #include <frc/commands/Subsystem.h>
 
 class Drive : public frc::Subsystem {
- private:
+ 
+ public:
+  typedef enum {
+    spLow,
+    spHigh
+  }ShifterPosition;
+
+  Drive();
+  void ArcadeDrive(double drive, double rotate);
+  void SetShifter(ShifterPosition position);
+  void InitDefaultCommand() override;
+private:
+  ShifterPosition m_shifterPosition;
+
   frc::VictorSP m_driveLeft1{pwmDriveLeft1};
   frc::VictorSP m_driveLeft2{pwmDriveLeft2};
   frc::VictorSP m_driveRight1{pwmDriveRight1};
@@ -24,14 +37,4 @@ class Drive : public frc::Subsystem {
   frc::ADXRS450_Gyro m_gyro{};
 
   frc::Solenoid m_solShifter{solShifter};
- public:
-  typedef enum {
-    spLow,
-    spHigh
-  }ShifterPosition;
-
-  Drive();
-  void ArcadeDrive(double drive, double rotate);
-  void SetShifter(ShifterPosition position);
-  void InitDefaultCommand() override;
 };
