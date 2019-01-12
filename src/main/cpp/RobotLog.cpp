@@ -54,7 +54,7 @@ std::string RobotLog::DataString(double value) {
 
 void RobotLog::EndPeriodic(){
     m_periodicCount++;
-    m_periodicLastEnd = (double)frc::GetFPGATime() / 1000;
+    m_periodicLastEnd = (double)frc::RobotController::GetFPGATime() / 1000;
 
     double runTime = m_periodicLastEnd - m_periodicLastStart;
 
@@ -92,7 +92,7 @@ void RobotLog::SetMode(RobotMode mode) {
 
     if(m_robotMode == rmAutonomous || m_robotMode == rmTeleop) {
         sprintf(m_log, "%s: Periodic Usage=%5.1f %%", m_robotName.c_str(),
-               (m_periodicTotalTime / ((double)frc::GetFPGATime() / 1000 - m_periodicBeginTime)) * 100);
+               (m_periodicTotalTime / ((double)frc::RobotController::GetFPGATime() / 1000 - m_periodicBeginTime)) * 100);
         Write(m_log);
     }
 
