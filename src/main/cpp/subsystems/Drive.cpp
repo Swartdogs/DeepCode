@@ -5,22 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#pragma once
+#include "subsystems/Drive.h"
 
-typedef enum {
-    pwmDriveLeft1,
-    pwmDriveLeft2,
-    pwmDriveRight1,
-    pwmDriveRight2
-} RoboRioPwm;
+Drive::Drive() : Subsystem("ExampleSubsystem") {}
 
-typedef enum {
-    dioEncoderLeftChannelA,
-    dioEncoderLeftChannelB,
-    dioEncoderRightChannelA,
-    dioEncoderRightChannelB
-} RoboRioDio;
+void Drive::InitDefaultCommand() {
+  // Set the default command for a subsystem here.
+  // SetDefaultCommand(new MySpecialCommand());
+}
 
-typedef enum {
-    solShifter
-} RoboRioSol;
+void Drive::ArcadeDrive(double drive, double rotate) {
+
+}
+
+void Drive::SetShifter(ShifterPosition position) {
+  
+}
