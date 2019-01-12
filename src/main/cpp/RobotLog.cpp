@@ -117,12 +117,12 @@ void RobotLog::StartPeriodic() {
     }
     m_periodicLastStart = timeNow;
 
-    bool brownOut = RobotController::IsBrownedOut();
+    bool brownOut = frc::RobotController::IsBrownedOut();
 
     if (inBrownOut != brownOut) {
         inBrownOut = brownOut;
         if (inBrownOut) {
-            sprintf(m_log, "%s: System Brown Out", m_robotName);
+            sprintf(m_log, "%s: System Brown Out", m_robotName.c_str());
 
             Write(m_log);
         }
@@ -166,5 +166,5 @@ void RobotLog::WritePid(std::string output) {
         //fprintf(m_pidFile, "%s %s \r\n", ModeName(m_robotMode).c_str(), Robot::dash.GetTimeStamp().c_str());
     }
 
-    if (m_pidFile != nullptr) fprintf(m_pidFile, "7.2f: %s \r\n", eventTime, pid);
+    if (m_pidFile != nullptr) fprintf(m_pidFile, "%7.2f: %s \r\n", eventTime, pid);
 }
