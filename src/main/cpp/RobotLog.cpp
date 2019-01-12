@@ -24,8 +24,11 @@ RobotLog::~RobotLog(){
 }
 
 void RobotLog::Close() {
-    fclose(m_logFile);
-    m_logFile = nullptr;
+    if (m_logFile != nullptr)
+    {
+        fclose(m_logFile);
+        m_logFile = nullptr;
+    }
 
     if (m_dataFile != nullptr) {
         fclose(m_dataFile);
@@ -93,22 +96,23 @@ void RobotLog::SetMode(RobotMode mode) {
     if(m_robotMode == rmAutonomous || m_robotMode == rmTeleop) {
         sprintf(m_log, "%s: Periodic Usage=%5.1f %%", m_robotName.c_str(),
                (m_periodicTotalTime / ((double)frc::RobotController::GetFPGATime() / 1000 - m_periodicBeginTime)) * 100);
-        Write(m_log);
+        Write(m_log, false);
     }
     m_robotMode = mode;
-    m_periodicLastStart = frc::RobotController::GetFPGATime()*1000;
+    m_periodicLastStart = (double) frc::RobotController::GetFPGATime() / 1000;
     m_periodicLastEnd = m_periodicLastStart;
     m_periodicBeginTime = m_periodicLastStart;
     m_periodicTotalTime = 0;
     
     Write("", false);
-    //sprintf(m_log, %s: Start %s %s", m_robotName.c_str(), ModeName(mode).c_str(), Robot::dash.GetTimeStamp().c_str());
-    Write(m_log);
+    //sprintf(m_log, "%s: Start %s %s", m_robotName.c_str(), ModeName(mode).c_str(), Robot::dash.GetTimeStamp().c_str());
+    sprintf(m_log, "%s: Start %s", m_robotName.c_str(), ModeName(mode).c_str());
+    Write(m_log, false);
 }
 
 void RobotLog::StartPeriodic() {
     static bool inBrownOut = false;
-    double timeNow = frc::RobotController::GetFPGATime() *1000;
+    double timeNow = frc::RobotController::GetFPGATime() / 1000;
 
     if((timeNow - m_periodicLastStart) > 100) {
         sprintf(m_log, "%s: Long Periodic Interval=%5.1f (Start-to-Start)", m_robotName.c_str(), timeNow - m_periodicLastStart);
@@ -132,7 +136,7 @@ void RobotLog::StartPeriodic() {
 void RobotLog::Write(std::string entry, bool includeTime) {
     const char* cEntry=entry.c_str();
     float eventTime = (float)(m_periodicCount * 20) / 1000;
-    int timeDiff = m_periodicCount - (int)(((frc::RobotController::GetFPGATime() * 1000)- m_periodicBeginTime) / 20);
+    int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
 
     includeTime ? printf("%7.2f %+3d: %s \n", eventTime, timeDiff, cEntry) : printf("%s \n", cEntry);
 
