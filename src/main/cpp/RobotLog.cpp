@@ -96,7 +96,7 @@ void RobotLog::SetMode(RobotMode mode) {
         Write(m_log);
     }
     m_robotMode = mode;
-    m_periodicLastStart = frc::GetFPGATime()*1000;
+    m_periodicLastStart = frc::RobotController::GetFPGATime()*1000;
     m_periodicLastEnd = m_periodicLastStart;
     m_periodicBeginTime = m_periodicLastStart;
     m_periodicTotalTime = 0;
