@@ -1,21 +1,13 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include <frc/WPILib.h>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-#include <frc/Timer.h>
 
 #include "RobotLog.h"
 #include "Robot.h"
 
 RobotLog::RobotLog(std::string name) {
-    m_logFile          = nullptr;
+    m_logFile           = nullptr;
     m_dataFile          = nullptr;
     m_pidFile           = nullptr;
 
@@ -29,7 +21,6 @@ RobotLog::RobotLog(std::string name) {
 }
 
 RobotLog::~RobotLog(){
-
 }
 
 void RobotLog::Close() {
@@ -63,7 +54,7 @@ std::string RobotLog::DataString(double value) {
 
 void RobotLog::EndPeriodic(){
     m_periodicCount++;
- //   m_periodicLastEnd = Timer::GetFPGATimestamp() *1000;
+    m_periodicLastEnd = (double)frc::GetFPGATime() / 1000;
 
     double runTime = m_periodicLastEnd - m_periodicLastStart;
 
@@ -81,9 +72,8 @@ RobotMode RobotLog::GetMode() {
 
 void RobotLog::LogData() {
     std::string data;
-/*
-    data = DataString(Robot::pdp.GetAmps(pdpDriveLeft1));
-    */
+
+//  data = DataString(Robot::pdp.GetAmps(pdpDriveLeft1));
 }
 
 std::string RobotLog::ModeName(RobotMode mode) {
@@ -101,10 +91,13 @@ void RobotLog::SetMode(RobotMode mode) {
     m_periodicCount = 0;
 
     if(m_robotMode == rmAutonomous || m_robotMode == rmTeleop) {
-        //sprintf(m_log, "%s: Periodic Usage=%5.1f %%", m_robotName.c_str(),
-        //(m_periodicTotalTime / (Timer::GetFPGATimestamp() *1000 - m_periodicBeginTime)) *100);
+        sprintf(m_log, "%s: Periodic Usage=%5.1f %%", m_robotName.c_str(),
+               (m_periodicTotalTime / ((double)frc::GetFPGATime() / 1000 - m_periodicBeginTime)) * 100);
         Write(m_log);
     }
+
+
+    
 }
 
 void RobotLog::StartPeriodic() {
