@@ -31,8 +31,8 @@ private:
   frc::VictorSP m_driveRight1{pwmDriveRight1};
   frc::VictorSP m_driveRight2{pwmDriveRight2};
 
-  frc::Encoder m_encoderLeft{dioEncoderLeftChannelA, dioEncoderLeftChannelB};
-  frc::Encoder m_encoderRight{dioEncoderRightChannelA, dioEncoderRightChannelB};
+  frc::Encoder m_encoderLeft{dioEncoderLeftChannelA, dioEncoderLeftChannelB, false};
+  frc::Encoder m_encoderRight{dioEncoderRightChannelA, dioEncoderRightChannelB, true};
 
   frc::ADXRS450_Gyro m_gyro{};
 

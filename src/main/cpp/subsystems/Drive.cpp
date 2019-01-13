@@ -7,7 +7,17 @@
 
 #include "subsystems/Drive.h"
 
-Drive::Drive() : Subsystem("ExampleSubsystem") {}
+Drive::Drive() : Subsystem("Drive") {
+  m_driveLeft1.SetInverted(true);
+  m_driveLeft2.SetInverted(true);
+
+  m_solShifter.Set(false);
+  m_shifterPosition = spHigh;
+
+  m_encoderLeft.SetDistancePerPulse(1.0);
+  m_encoderRight.SetDistancePerPulse(1.0);
+
+}
 
 void Drive::InitDefaultCommand() {
   // Set the default command for a subsystem here.
@@ -33,7 +43,7 @@ void Drive::ArcadeDrive(double drive, double rotate) {
 
 void Drive::SetShifter(ShifterPosition position) {
   if (position != m_shifterPosition) {
-    m_solShifter.Set(position == spHigh);
+    m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
   }
 
