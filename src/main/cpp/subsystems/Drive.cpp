@@ -15,7 +15,20 @@ void Drive::InitDefaultCommand() {
 }
 
 void Drive::ArcadeDrive(double drive, double rotate) {
+  double left = drive + rotate;
+  double right = drive - rotate;
 
+  if (fabs(left) > 1.0 || fabs(right) > 1.0) {
+    double max = std::max(fabs(left), fabs(right));
+
+    left /= max;
+    right /= max;
+  }
+
+  m_driveLeft1.Set(left);
+  m_driveLeft2.Set(left);
+  m_driveRight1.Set(right);
+  m_driveRight2.Set(right);
 }
 
 void Drive::SetShifter(ShifterPosition position) {

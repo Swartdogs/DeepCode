@@ -10,4 +10,7 @@
 class OI {
  public:
   OI();
+
+ private:
+  double ApplyDeadband(double joystickValue, double deadband);
 };
