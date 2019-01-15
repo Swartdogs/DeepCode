@@ -10,6 +10,7 @@
 #include "RobotMap.h"
 #include "frc/WPILib.h"
 #include <frc/commands/Subsystem.h>
+#include "PIDControl.h"
 
 class Drive : public frc::Subsystem {
  
@@ -22,8 +23,14 @@ class Drive : public frc::Subsystem {
   Drive();
   void ArcadeDrive(double drive, double rotate);
   void SetShifter(ShifterPosition position);
+  double RotateExec();
+  void RotateInit(double heading, double maxSpeed, bool resetGyro);
+  bool RotateIsFinished();
   void InitDefaultCommand() override;
+  
 private:
+  PIDControl m_rotatePID{"Rotate"};
+
   ShifterPosition m_shifterPosition;
 
   frc::VictorSP m_driveLeft1{pwmDriveLeft1};
