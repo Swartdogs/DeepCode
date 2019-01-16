@@ -35,13 +35,17 @@ private:
   typedef enum {
     ueLeftEncoder,
     ueRightEncoder,
-    ueBothEncoders
+    ueBothEncoders,
+    ueCurrentEncoder
   }UseEncoder;
 
   PIDControl m_rotatePID{"Rotate"};
   PIDControl m_drivePID{"Drive"};
 
   ShifterPosition m_shifterPosition;
+
+  UseEncoder m_useEncoder;
+
 
   frc::VictorSP m_driveLeft1{pwmDriveLeft1};
   frc::VictorSP m_driveLeft2{pwmDriveLeft2};

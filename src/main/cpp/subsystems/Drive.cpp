@@ -14,6 +14,8 @@ Drive::Drive() : Subsystem("Drive") {
   m_solShifter.Set(false);
   m_shifterPosition = spHigh;
 
+  m_useEncoder = ueLeftEncoder;
+
   m_encoderLeft.SetDistancePerPulse(1.0);
   m_encoderRight.SetDistancePerPulse(1.0);
 
@@ -91,11 +93,36 @@ void Drive::DriveInit(double distance, double heading, double maxSpeed, bool res
 }
 
 bool Drive::DriveIsFinished(){
-
+  
 }
 
 double Drive::GetDistance(UseEncoder encoder){
-  double distance = 0
+  double distance = 0;
   double left = m_encoderLeft.GetDistance();
   double right = m_encoderRight.GetDistance();
+  UseEncoder source = encoder;
+
+  if (source == ueCurrentEncoder) source = m_useEncoder;
+
+  switch (source) {
+    case ueCurrentEncoder:
+    case ueLeftEncoder: 
+      distance = left;
+    break;
+      
+    case ueRightEncoder:
+      distance = right;
+    break;
+
+    case ueBothEncoders:
+      if (left < (right * 0.9)) distance = right;
+      else if (right < (left * 0.9)) distance = left;
+      else distance = (left + right) / 2;
+    break;
+
+    default:;
+
+
+  }
+  return distance;
 }
