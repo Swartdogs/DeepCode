@@ -24,6 +24,13 @@ Drive::Drive() : Subsystem("Drive") {
   m_rotatePID.SetOutputRamp(0.25, 0.05);
   m_rotatePID.SetSetpointDeadband(1.0); 
 
+  m_drivePID.SetCoefficient('P', 0, 0.04, 0);
+  m_drivePID.SetCoefficient('I', 10, 0, 0.0025);
+  m_drivePID.SetCoefficient('D', 0, 0.25, 0);
+  m_drivePID.SetInputRange(-500, 500);
+  m_drivePID.SetOutputRamp(0.25, 0.05);
+  m_drivePID.SetSetpointDeadband(1.0); 
+
 }
 
 void Drive::InitDefaultCommand() {
@@ -73,4 +80,22 @@ void Drive::RotateInit(double heading, double maxSpeed, bool resetGyro) {
 bool Drive::RotateIsFinished() {
   return m_rotatePID.AtSetpoint();
   
+}
+
+double Drive::DriveExec() {
+  return m_drivePID.Calculate();
+}
+
+void Drive::DriveInit(double distance, double heading, double maxSpeed, bool resetEncoder, bool resetGyro){
+
+}
+
+bool Drive::DriveIsFinished(){
+
+}
+
+double Drive::GetDistance(UseEncoder encoder){
+  double distance = 0
+  double left = m_encoderLeft.GetDistance();
+  double right = m_encoderRight.GetDistance();
 }

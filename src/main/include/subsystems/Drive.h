@@ -26,10 +26,20 @@ class Drive : public frc::Subsystem {
   double RotateExec();
   void RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool RotateIsFinished();
+  double DriveExec();
+  void DriveInit(double distance, double heading, double maxSpeed, bool resetEncoder, bool resetGyro);
+  bool DriveIsFinished();
   void InitDefaultCommand() override;
   
 private:
+  typedef enum {
+    ueLeftEncoder,
+    ueRightEncoder,
+    ueBothEncoders
+  }UseEncoder;
+
   PIDControl m_rotatePID{"Rotate"};
+  PIDControl m_drivePID{"Drive"};
 
   ShifterPosition m_shifterPosition;
 
@@ -44,4 +54,6 @@ private:
   frc::ADXRS450_Gyro m_gyro{};
 
   frc::Solenoid m_solShifter{solShifter};
+
+  double GetDistance(UseEncoder encoder);
 };
