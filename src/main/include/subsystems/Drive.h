@@ -20,6 +20,13 @@ class Drive : public frc::Subsystem {
     spHigh
   }ShifterPosition;
 
+  typedef enum {
+    ueLeftEncoder,
+    ueRightEncoder,
+    ueBothEncoders,
+    ueCurrentEncoder
+  }UseEncoder;
+  
   Drive();
   void ArcadeDrive(double drive, double rotate);
   void SetShifter(ShifterPosition position);
@@ -27,17 +34,12 @@ class Drive : public frc::Subsystem {
   void RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool RotateIsFinished();
   double DriveExec();
-  void DriveInit(double distance, double heading, double maxSpeed, bool resetEncoder, bool resetGyro);
+  void DriveInit(double distance, double maxSpeed, UseEncoder encoder, bool resetEncoder);
   bool DriveIsFinished();
   void InitDefaultCommand() override;
   
 private:
-  typedef enum {
-    ueLeftEncoder,
-    ueRightEncoder,
-    ueBothEncoders,
-    ueCurrentEncoder
-  }UseEncoder;
+
 
   PIDControl m_rotatePID{"Rotate"};
   PIDControl m_drivePID{"Drive"};

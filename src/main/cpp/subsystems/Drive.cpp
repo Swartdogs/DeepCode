@@ -85,15 +85,24 @@ bool Drive::RotateIsFinished() {
 }
 
 double Drive::DriveExec() {
-  return m_drivePID.Calculate();
+  return m_drivePID.Calculate(GetDistance(m_useEncoder));
 }
 
-void Drive::DriveInit(double distance, double heading, double maxSpeed, bool resetEncoder, bool resetGyro){
+void Drive::DriveInit(double distance, double maxSpeed, UseEncoder encoder, bool resetEncoder){
+  maxSpeed = fabs(maxSpeed);
+  m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
+  m_drivePID.SetOutputRange(-maxSpeed, maxSpeed); 
 
+  if (ueCurrentEncoder != encoder) m_useEncoder = encoder;
+
+  if (resetEncoder) {
+    m_encoderLeft.Reset();
+    m_encoderRight.Reset();
+  }
 }
 
 bool Drive::DriveIsFinished(){
-  
+  return m_drivePID.AtSetpoint();
 }
 
 double Drive::GetDistance(UseEncoder encoder){
