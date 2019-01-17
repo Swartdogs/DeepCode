@@ -36,6 +36,9 @@ class Drive : public frc::Subsystem {
   double DriveExec();
   void DriveInit(double distance, double maxSpeed, UseEncoder encoder, bool resetEncoder);
   bool DriveIsFinished();
+  double GetHeading(); 
+  ShifterPosition GetShifterPosition(); 
+  void SetDriveEnable(bool enable); 
   void InitDefaultCommand() override;
   
 private:
@@ -48,6 +51,7 @@ private:
 
   UseEncoder m_useEncoder;
 
+  bool m_driveEnable; 
 
   frc::VictorSP m_driveLeft1{pwmDriveLeft1};
   frc::VictorSP m_driveLeft2{pwmDriveLeft2};

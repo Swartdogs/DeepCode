@@ -41,14 +41,20 @@ void Drive::InitDefaultCommand() {
 }
 
 void Drive::ArcadeDrive(double drive, double rotate) {
-  double left = drive + rotate;
-  double right = drive - rotate;
+  double left = 0;
+  double right = 0;
 
-  if (fabs(left) > 1.0 || fabs(right) > 1.0) {
-    double max = std::max(fabs(left), fabs(right));
+  if (m_driveEnable) {
 
-    left /= max;
-    right /= max;
+    left = drive + rotate;
+    right = drive - rotate;
+
+    if (fabs(left) > 1.0 || fabs(right) > 1.0) {
+      double max = std::max(fabs(left), fabs(right));
+
+      left /= max;
+      right /= max;
+    }
   }
 
   m_driveLeft1.Set(left);
@@ -66,7 +72,7 @@ void Drive::SetShifter(ShifterPosition position) {
 }
 
 double Drive::RotateExec() {
-  return m_rotatePID.Calculate(m_gyro.GetAngle());
+  return m_rotatePID.Calculate(GetHeading());
 
 }
 
@@ -74,7 +80,7 @@ void Drive::RotateInit(double heading, double maxSpeed, bool resetGyro) {
   maxSpeed = fabs(maxSpeed); 
 
   if ( resetGyro ) m_gyro.Reset();
-  m_rotatePID.SetSetpoint(heading, m_gyro.GetAngle());
+  m_rotatePID.SetSetpoint(heading, GetHeading());
   m_rotatePID.SetOutputRange(-maxSpeed, maxSpeed);
   
 }
@@ -134,4 +140,17 @@ double Drive::GetDistance(UseEncoder encoder){
 
   }
   return distance;
+}
+
+double Drive::GetHeading() {
+  return m_gyro.GetAngle ();
+}
+
+ShifterPosition Drive::GetShifterPosition () { 
+  return m_shifterPosition; 
+
+}
+
+void Drive::SetDriveEnable(bool enable){
+  m_driveEnable = enable; 
 }
