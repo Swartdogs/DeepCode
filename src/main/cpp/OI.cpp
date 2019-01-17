@@ -8,9 +8,8 @@
 #include "OI.h"
 
 #include <frc/WPILib.h>
-
 #include "commands/ExampleCommand.h"
 
 OI::OI() {
-  m_joystickButton.WhenPressed (new ExampleCommand());
+  m_buttonBestTarget.WhenPressed (new ExampleCommand(Vision::tsBest));
 }

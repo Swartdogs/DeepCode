@@ -6,16 +6,15 @@
 /*----------------------------------------------------------------------------*/
 
 #include "commands/ExampleCommand.h"
-
 #include "Robot.h"
 
-ExampleCommand::ExampleCommand() {
-  // Use Requires() here to declare subsystem dependencies
+ExampleCommand::ExampleCommand(Vision::TargetSelect targetSelect) {
+  m_targetSelect = targetSelect;
 }
 
 // Called just before this Command runs the first time
 void ExampleCommand::Initialize() {
-  Robot::m_vision.FindTarget(Vision::tsLeft);
+  Robot::m_vision.FindTarget(m_targetSelect);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -27,7 +26,9 @@ bool ExampleCommand::IsFinished() {
   }
 
 // Called once after isFinished returns true
-void ExampleCommand::End() {}
+void ExampleCommand::End() {
+  printf("Target Search Completed\n");
+}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run

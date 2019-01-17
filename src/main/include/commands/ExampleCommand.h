@@ -8,13 +8,17 @@
 #pragma once
 
 #include <frc/commands/Command.h>
+#include "subsystems/Vision.h"
 
 class ExampleCommand : public frc::Command {
  public:
-  ExampleCommand();
+  ExampleCommand(Vision::TargetSelect targetSelect);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
+
+  private:
+  Vision::TargetSelect  m_targetSelect;
 };
