@@ -28,42 +28,43 @@ class Drive : public frc::Subsystem {
   }UseEncoder;
   
   Drive();
-  void ArcadeDrive(double drive, double rotate);
-  void SetShifter(ShifterPosition position);
-  double RotateExec();
-  void RotateInit(double heading, double maxSpeed, bool resetGyro);
-  bool RotateIsFinished();
-  double DriveExec();
-  void DriveInit(double distance, double maxSpeed, UseEncoder encoder, bool resetEncoder);
-  bool DriveIsFinished();
-  double GetHeading(); 
-  ShifterPosition GetShifterPosition(); 
-  void SetDriveEnable(bool enable); 
-  void InitDefaultCommand() override;
+  void              ArcadeDrive(double drive, double rotate);
+  void              SetShifter(ShifterPosition position);
+  double            RotateExec();
+  void              RotateInit(double heading, double maxSpeed, bool resetGyro);
+  bool              RotateIsFinished();
+  double            DriveExec();
+  void              DriveInit(double distance, double heading, double maxSpeed, double minSpeed,
+                               bool resetEncoder, bool resetGyro, bool driveArc = false);
+  bool              DriveIsFinished();
+  double            GetHeading(); 
+  ShifterPosition   GetShifterPosition(); 
+  void              SetDriveEnable(bool enable); 
+  void              InitDefaultCommand() override;
   
 private:
 
 
-  PIDControl m_rotatePID{"Rotate"};
-  PIDControl m_drivePID{"Drive"};
+  PIDControl          m_rotatePID{"Rotate"};
+  PIDControl          m_drivePID{"Drive"};
 
-  ShifterPosition m_shifterPosition;
+  ShifterPosition     m_shifterPosition;
 
-  UseEncoder m_useEncoder;
+  UseEncoder          m_useEncoder;
 
-  bool m_driveEnable; 
+  bool                m_driveEnable; 
 
-  frc::VictorSP m_driveLeft1{pwmDriveLeft1};
-  frc::VictorSP m_driveLeft2{pwmDriveLeft2};
-  frc::VictorSP m_driveRight1{pwmDriveRight1};
-  frc::VictorSP m_driveRight2{pwmDriveRight2};
+  frc::VictorSP       m_driveLeft1{pwmDriveLeft1};
+  frc::VictorSP       m_driveLeft2{pwmDriveLeft2};
+  frc::VictorSP       m_driveRight1{pwmDriveRight1};
+  frc::VictorSP       m_driveRight2{pwmDriveRight2};
 
-  frc::Encoder m_encoderLeft{dioEncoderLeftChannelA, dioEncoderLeftChannelB, false};
-  frc::Encoder m_encoderRight{dioEncoderRightChannelA, dioEncoderRightChannelB, true};
+  frc::Encoder        m_encoderLeft{dioEncoderLeftChannelA, dioEncoderLeftChannelB, false};
+  frc::Encoder        m_encoderRight{dioEncoderRightChannelA, dioEncoderRightChannelB, true};
 
-  frc::ADXRS450_Gyro m_gyro{};
+  frc::ADXRS450_Gyro  m_gyro{};
 
-  frc::Solenoid m_solShifter{solShifter};
+  frc::Solenoid       m_solShifter{solShifter};
 
   double GetDistance(UseEncoder encoder);
 };

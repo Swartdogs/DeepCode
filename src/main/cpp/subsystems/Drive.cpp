@@ -94,17 +94,33 @@ double Drive::DriveExec() {
   return m_drivePID.Calculate(GetDistance(m_useEncoder));
 }
 
-void Drive::DriveInit(double distance, double maxSpeed, UseEncoder encoder, bool resetEncoder){
+void Drive::DriveInit(double distance, double heading, double maxSpeed, double minSpeed,
+                         bool resetEncoder, bool resetGyro, bool driveArc){
   maxSpeed = fabs(maxSpeed);
-  m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
-  m_drivePID.SetOutputRange(-maxSpeed, maxSpeed); 
+  minSpeed = fabs(minSpeed); 
 
-  if (ueCurrentEncoder != encoder) m_useEncoder = encoder;
+  double headingNow = 0; 
+  if (!resetGyro) headingNow = GetHeading();
+
+  if (fabs(heading - headingNow) < 5){
+    m_useEncoder = ueBothEncoders;
+  } else if (heading > headingNow) {
+    m_useEncoder = ueLeftEncoder; 
+  } else {
+    m_useEncoder = ueRightEncoder;
+  }
 
   if (resetEncoder) {
     m_encoderLeft.Reset();
     m_encoderRight.Reset();
   }
+
+  m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
+  m_drivePID.SetOutputRange(-maxSpeed, maxSpeed, minSpeed); 
+
+  driveArc ? RotateInit(headingNow, 0.7, resetGyro) :
+              RotateInit(heading, 0.7, resetGyro);
+
 }
 
 bool Drive::DriveIsFinished(){
@@ -146,7 +162,7 @@ double Drive::GetHeading() {
   return m_gyro.GetAngle ();
 }
 
-ShifterPosition Drive::GetShifterPosition () { 
+Drive::ShifterPosition Drive::GetShifterPosition () { 
   return m_shifterPosition; 
 
 }
