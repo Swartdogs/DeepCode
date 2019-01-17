@@ -9,6 +9,8 @@
 
 #include <frc/WPILib.h>
 
+#include "commands/ExampleCommand.h"
+
 OI::OI() {
-  // Process operator interface input here.
+  m_joystickButton.WhenPressed (new ExampleCommand());
 }

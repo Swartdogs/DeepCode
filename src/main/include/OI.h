@@ -4,10 +4,14 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#include <frc/WPILib.h>
 #pragma once
 
 class OI {
  public:
   OI();
+  private:
+  frc::Joystick m_Joystick{0};
+  frc::JoystickButton m_joystickButton{&m_Joystick, 1};
+
 };
