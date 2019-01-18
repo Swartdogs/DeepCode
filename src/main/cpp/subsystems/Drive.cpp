@@ -8,6 +8,8 @@
 #include "subsystems/Drive.h"
 
 Drive::Drive() : Subsystem("Drive") {
+  m_driveEnable = true;
+
   m_driveLeft1.SetInverted(true);
   m_driveLeft2.SetInverted(true);
 

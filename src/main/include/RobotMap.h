@@ -8,6 +8,15 @@
 #pragma once
 
 typedef enum {
+    csRun,
+    csSkip,
+    csDone,
+    csCancel,
+    csTimedOut, 
+    csContinue
+} CommandStatus;
+
+typedef enum {
     pwmDriveLeft1,
     pwmDriveLeft2,
     pwmDriveRight1,

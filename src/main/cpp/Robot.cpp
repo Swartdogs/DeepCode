@@ -10,7 +10,10 @@
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+char      Robot::message[100];
+
 ExampleSubsystem Robot::m_subsystem;
+Drive Robot::m_drive;
 OI Robot::m_oi;
 
 void Robot::RobotInit() {
