@@ -11,6 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 char      Robot::message[100];
+bool      Robot::driveInUse;
 
 ExampleSubsystem Robot::m_subsystem;
 Drive Robot::m_drive;

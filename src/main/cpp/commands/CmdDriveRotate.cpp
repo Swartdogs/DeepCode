@@ -56,8 +56,27 @@ bool CmdDriveRotate::IsFinished() {
 }
 
 
-void CmdDriveRotate::End() {}
+void CmdDriveRotate::End() {
+  Robot::driveInUse = false;
 
+  switch (m_status) {
+    case csSkip:
+      sprintf(Robot::message, "Drive:   Rotate SKIP");
+      break;
+    case csDone:
+      sprintf(Robot::message, "Drive:   Rotate DONE   Heading=%5.1f", Robot::m_drive.GetHeading());
+      break;
+    case csCancel:
+      sprintf(Robot::message, "Drive:   Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
+      break;
+    case csTimedOut:
+      sprintf(Robot::message, "Drive:   Rotate TIMED OUT   Heading=%5.1f", Robot::m_drive.GetHeading());
+      break;
+    default:;
+  }
+
+  //Robot::m_log.Write(Robot::message);
+}
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void CmdDriveRotate::Interrupted() {}

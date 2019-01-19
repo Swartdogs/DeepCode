@@ -20,6 +20,7 @@
 class Robot : public frc::TimedRobot {
  public:
   static char   message[100];
+  static bool   driveInUse;
 
   static ExampleSubsystem m_subsystem;
   static Drive m_drive; 
