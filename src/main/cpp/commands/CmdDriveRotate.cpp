@@ -2,8 +2,6 @@
 #include <commands/CmdDriveRotate.h>
 #include <Robot.h>
 
-
-
 CmdDriveRotate::CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout) {
   Requires(&Robot::m_drive); 
 
@@ -11,11 +9,9 @@ CmdDriveRotate::CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, 
   m_maxSpeed     = maxSpeed;
   m_resetGyro    = resetGyro;
   m_timeout      = fabs(timeout); 
-  m_status       = csRun;
-  
+  m_status       = csRun; 
 }
 
-// Called just before this Command runs the first time
 void CmdDriveRotate::Initialize() {
    if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
       m_status = csSkip;
@@ -28,7 +24,7 @@ void CmdDriveRotate::Initialize() {
      sprintf(Robot::message, "Drive:  Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
              Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
 
-      //Robot::m_log.Write(Robot::message);
+      Robot::m_robotLog.Write(Robot::message);
    }
 }
 
@@ -48,13 +44,13 @@ void CmdDriveRotate::Execute() {
       rotate = Robot::m_drive.RotateExec();
     }
   }
+
   Robot::m_drive.ArcadeDrive(0, rotate);
 }
 
 bool CmdDriveRotate::IsFinished() { 
   return (m_status != csRun); 
 }
-
 
 void CmdDriveRotate::End() {
   Robot::driveInUse = false;
@@ -63,20 +59,23 @@ void CmdDriveRotate::End() {
     case csSkip:
       sprintf(Robot::message, "Drive:   Rotate SKIP");
       break;
+
     case csDone:
       sprintf(Robot::message, "Drive:   Rotate DONE   Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
+
     case csCancel:
       sprintf(Robot::message, "Drive:   Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
+
     case csTimedOut:
       sprintf(Robot::message, "Drive:   Rotate TIMED OUT   Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
+      
     default:;
   }
 
-  //Robot::m_log.Write(Robot::message);
+  Robot::m_robotLog.Write(Robot::message);
 }
-// Called when another command which requires one or more of the same
-// subsystems is scheduled to run
+
 void CmdDriveRotate::Interrupted() {}

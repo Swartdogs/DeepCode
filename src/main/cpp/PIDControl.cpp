@@ -102,7 +102,7 @@ double PIDControl::Calculate(double input) {					// Calculate output based on in
 
 		sprintf(m_log, "%s PID: Error=%7.1f  P=%6.2f  I=%6.2f  D=%6.2f  Output=%6.2f (%s)", m_name.c_str(), error,
 				m_P.kNow * error, m_I.kNow * m_errorTotal, m_D.kNow * errorDiff, output, limit.c_str());
-		//Robot::log.WritePid(m_log);
+		Robot::m_robotLog.WritePid(m_log);
 	}
 
 	m_errorPrev = error;										// Set Previous error for next calculation
@@ -121,24 +121,24 @@ void PIDControl::Reset() {
 
 void PIDControl::SetCoefficient(char kWhich, double threshold, double kAbove, double kBelow) {
 	switch(kWhich) {
-		case 68:												// D Coefficient ('D' or 'd')
-		case 100:
+		case 'D':												// D Coefficient ('D' or 'd')
+		case 'd':
 			m_D.threshold = fabs(threshold);
 			m_D.kAbove = fabs(kAbove);
 			m_D.kBelow = fabs(kBelow);
 			m_D.kNow = m_D.kAbove;
 			break;
 
-		case 73:												// I Coefficient ('I' or 'i')
-		case 105:
+		case 'I':												// I Coefficient ('I' or 'i')
+		case 'i':
 			m_I.threshold = fabs(threshold);
 			m_I.kAbove = fabs(kAbove);
 			m_I.kBelow = fabs(kBelow);
 			m_I.kNow = m_I.kAbove;
 			break;
 
-		case 80:												// P Coefficient ('P' or 'p')
-		case 112:
+		case 'P':												// P Coefficient ('P' or 'p')
+		case 'p':
 			m_P.threshold = fabs(threshold);
 			m_P.kAbove = fabs(kAbove);
 			m_P.kBelow = fabs(kBelow);

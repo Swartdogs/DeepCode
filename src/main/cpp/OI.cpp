@@ -21,5 +21,6 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
   } else if (joystickValue < -deadband) {
     return ((joystickValue + 1) / (1 - deadband)) - 1;
   }
+  
   return 0;
 }
