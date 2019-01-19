@@ -41,3 +41,7 @@ typedef enum {
 typedef enum {
     solShifter
 } RoboRioSol;
+
+typedef enum {
+    joyDrive
+} DSJoystick;

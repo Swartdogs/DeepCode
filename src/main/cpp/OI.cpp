@@ -24,3 +24,11 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
   
   return 0;
 }
+
+double OI::GetDriveJoystickX(){
+  return m_driveJoystick.GetX();
+}
+
+double OI::GetDriveJoystickY(){
+  return -m_driveJoystick.GetY();
+}

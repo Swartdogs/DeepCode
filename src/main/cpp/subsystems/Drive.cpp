@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/Drive.h"
+#include "commands/CmdDriveJoystick.h"
 
 Drive::Drive() : Subsystem("Drive") {
   m_driveEnable = true;
@@ -40,7 +41,7 @@ Drive::~Drive() {}
 
 void Drive::InitDefaultCommand() {
   // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
+  SetDefaultCommand(new CmdDriveJoystick());
 }
 
 void Drive::ArcadeDrive(double drive, double rotate) {

@@ -7,16 +7,14 @@
 
 #pragma once
 
-#include <frc/WPILib.h>
-#include "RobotMap.h"
+#include <frc/commands/Command.h>
 
-class OI {
+class CmdDriveJoystick : public frc::Command {
  public:
-  OI();
-  double ApplyDeadband(double joystickValue, double deadband);
-  double GetDriveJoystickX();
-  double GetDriveJoystickY();
-  
- private:
-  frc::Joystick  m_driveJoystick{joyDrive};
+  CmdDriveJoystick();
+  void Initialize() override;
+  void Execute() override;
+  bool IsFinished() override;
+  void End() override;
+  void Interrupted() override;
 };
