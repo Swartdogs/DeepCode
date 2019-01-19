@@ -1,6 +1,6 @@
 
 #include <commands/CmdDriveRotate.h>
-#include <Robot.h>
+#include "Robot.h"
 
 CmdDriveRotate::CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout) {
   Requires(&Robot::m_drive); 
@@ -17,6 +17,7 @@ void CmdDriveRotate::Initialize() {
       m_status = csSkip;
    } else {
      m_status = csRun;
+     Robot::driveInUse = true;
 
      Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);
      if (m_timeout > 0) SetTimeout(m_timeout);
@@ -27,7 +28,6 @@ void CmdDriveRotate::Initialize() {
       Robot::m_robotLog.Write(Robot::message);
    }
 }
-
 
 void CmdDriveRotate::Execute() {
   double rotate = 0;
