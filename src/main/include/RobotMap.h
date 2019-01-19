@@ -16,6 +16,13 @@ typedef enum {
     csContinue
 } CommandStatus;
 
+typedef enum {rmInit,					// Robot Mode 		(Dashboard, RobotLog)
+			  rmDisabled,
+			  rmAutonomous,
+			  rmTeleop,
+			  rmTest
+} RobotMode;
+
 typedef enum {
     pwmDriveLeft1,
     pwmDriveLeft2,

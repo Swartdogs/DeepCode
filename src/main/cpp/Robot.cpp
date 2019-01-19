@@ -15,6 +15,7 @@ bool      Robot::driveInUse;
 
 ExampleSubsystem Robot::m_subsystem;
 Drive Robot::m_drive;
+RobotLog Robot::m_robotLog("Yeti");
 OI Robot::m_oi;
 
 void Robot::RobotInit() {
@@ -38,7 +39,10 @@ void Robot::RobotPeriodic() {}
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  Robot::m_robotLog.SetMode(rmDisabled);
+  Robot::m_robotLog.Close(); 
+}
 
 void Robot::DisabledPeriodic() { frc::Scheduler::GetInstance()->Run(); }
 
@@ -54,6 +58,7 @@ void Robot::DisabledPeriodic() { frc::Scheduler::GetInstance()->Run(); }
  * the if-else structure below with additional strings & commands.
  */
 void Robot::AutonomousInit() {
+    Robot::m_robotLog.SetMode(rmAutonomous);
   // std::string autoSelected = frc::SmartDashboard::GetString(
   //     "Auto Selector", "Default");
   // if (autoSelected == "My Auto") {
@@ -72,6 +77,7 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() { frc::Scheduler::GetInstance()->Run(); }
 
 void Robot::TeleopInit() {
+  Robot::m_robotLog.SetMode(rmTeleop);
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -82,7 +88,11 @@ void Robot::TeleopInit() {
   }
 }
 
-void Robot::TeleopPeriodic() { frc::Scheduler::GetInstance()->Run(); }
+void Robot::TeleopPeriodic() { 
+  Robot::m_robotLog.StartPeriodic();
+  frc::Scheduler::GetInstance()->Run(); 
+  Robot::m_robotLog.EndPeriodic();
+}
 
 void Robot::TestPeriodic() {}
 

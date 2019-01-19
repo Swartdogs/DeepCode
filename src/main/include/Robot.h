@@ -16,6 +16,7 @@
 #include "commands/MyAutoCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drive.h"
+#include "RobotLog.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -24,6 +25,7 @@ class Robot : public frc::TimedRobot {
 
   static ExampleSubsystem m_subsystem;
   static Drive m_drive; 
+  static RobotLog m_robotLog;
   static OI m_oi;
 
   void RobotInit() override;
