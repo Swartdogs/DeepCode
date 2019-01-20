@@ -11,8 +11,8 @@
 Drive::Drive() : Subsystem("Drive") {
   m_driveEnable = true;
 
-  m_driveLeft1.SetInverted(true);
-  m_driveLeft2.SetInverted(true);
+  m_driveRight1.SetInverted(true);
+  m_driveRight2.SetInverted(true);
 
   m_solShifter.Set(false);
   m_shifterPosition = spHigh;

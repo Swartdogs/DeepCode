@@ -17,6 +17,7 @@
   "files.associations": {
     "cmath": "cpp",
     "typeinfo": "cpp",
-    "condition_variable": "cpp"
+    "condition_variable": "cpp",
+    "*.inc": "cpp"
   }
 }
