@@ -28,18 +28,27 @@ typedef enum {
     pwmDriveLeft1,
     pwmDriveLeft2,
     pwmDriveRight1,
-    pwmDriveRight2
+    pwmDriveRight2,
+    pwmElevatorMotor,
+    pwmFootMotor
 } RoboRioPwm;
 
 typedef enum {
     dioEncoderLeftChannelA,
     dioEncoderLeftChannelB,
     dioEncoderRightChannelA,
-    dioEncoderRightChannelB
+    dioEncoderRightChannelB,
+    dioFrontSensor,
+    dioRearSensor
 } RoboRioDio;
 
 typedef enum {
-    solShifter
+    aioElevatorPot
+} RoboRioAio;
+
+typedef enum {
+    solShifter,
+    solFoot
 } RoboRioSol;
 
 typedef enum {
