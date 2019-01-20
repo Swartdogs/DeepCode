@@ -12,3 +12,23 @@
 OI::OI() {
   // Process operator interface input here.
 }
+
+double OI::ApplyDeadband(double joystickValue, double deadband) {
+  deadband = fabs(deadband);
+
+  if (joystickValue > deadband) {
+    return ((joystickValue - 1) / (1 - deadband)) + 1;
+  } else if (joystickValue < -deadband) {
+    return ((joystickValue + 1) / (1 - deadband)) - 1;
+  }
+  
+  return 0;
+}
+
+double OI::GetDriveJoystickX(){
+  return m_driveJoystick.GetX();
+}
+
+double OI::GetDriveJoystickY(){
+  return -m_driveJoystick.GetY();
+}

@@ -5,27 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/MyAutoCommand.h"
-
+#include "commands/CmdDriveJoystick.h"
 #include "Robot.h"
+#include "subsystems/Drive.h"
+#include "OI.h"
 
-MyAutoCommand::MyAutoCommand() {
-  // Use Requires() here to declare subsystem dependencies
-  Requires(&Robot::m_subsystem);
+CmdDriveJoystick::CmdDriveJoystick() {
+  Requires(&Robot::m_drive);
 }
 
 // Called just before this Command runs the first time
-void MyAutoCommand::Initialize() {}
+void CmdDriveJoystick::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
-void MyAutoCommand::Execute() {}
+void CmdDriveJoystick::Execute() {
+  Robot::m_drive.ArcadeDrive( Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickY(), 0.1), 
+                              Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickX(), 0.1));
+}
 
 // Make this return true when this Command no longer needs to run execute()
-bool MyAutoCommand::IsFinished() { return false; }
+bool CmdDriveJoystick::IsFinished() { return false; }
 
 // Called once after isFinished returns true
-void MyAutoCommand::End() {}
+void CmdDriveJoystick::End() {}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MyAutoCommand::Interrupted() {}
+void CmdDriveJoystick::Interrupted() {}
