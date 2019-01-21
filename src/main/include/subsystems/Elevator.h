@@ -30,11 +30,17 @@ class Elevator : public frc::Subsystem {
 
   void            InitDefaultCommand() override;
   void            DriveFoot(double speed);
+  bool            ElevatorAtSetpoint();
+  void            Execute();
+  double          GetElevatorPosition();
   FootPosition    GetFootPosition();
   PlatformStatus  GetPlatformStatus();
+  void            SetElevatorSetpoint(double setpoint);
   void            SetFootPosition(FootPosition position);
 
  private:
+  const double        COUNTS_PER_INCH = 36.64;
+
   FootPosition        m_footPosition;
   PlatformStatus      m_platformStatus;
 

@@ -21,6 +21,19 @@ void Elevator::DriveFoot(double speed) {
   m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
 }
 
+bool Elevator::ElevatorAtSetpoint() {
+  return m_elevatorPID.AtSetpoint();
+}
+
+void Elevator::Execute() {
+  GetPlatformStatus();
+  m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
+}
+
+double Elevator::GetElevatorPosition() {
+  return m_elevatorPot.GetAverageValue() / COUNTS_PER_INCH;
+}
+
 Elevator::FootPosition Elevator::GetFootPosition() {
   return m_footPosition;
 }
@@ -61,6 +74,10 @@ Elevator::PlatformStatus Elevator::GetPlatformStatus() {
   }
 
   return m_platformStatus;
+}
+
+void Elevator::SetElevatorSetpoint(double setpoint) {
+  m_elevatorPID.SetSetpoint(setpoint, GetElevatorPosition());
 }
 
 void Elevator::SetFootPosition(FootPosition position) {
