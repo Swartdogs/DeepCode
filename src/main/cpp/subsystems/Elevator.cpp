@@ -14,11 +14,11 @@ void Elevator::InitDefaultCommand() {
   // SetDefaultCommand(new MySpecialCommand());
 }
 
-FootPosition Elevator::GetFootPosition() {
+Elevator::FootPosition Elevator::GetFootPosition() {
 
 }
 
-PlatformStatus Elevator::GetPlatformStatus() {
+Elevator::PlatformStatus Elevator::GetPlatformStatus() {
 
 }
 
