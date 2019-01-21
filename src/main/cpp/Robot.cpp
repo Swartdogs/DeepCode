@@ -14,6 +14,7 @@ char      Robot::message[100];
 bool      Robot::driveInUse;
 
 Drive Robot::m_drive;
+Elevator Robot::m_elevator;
 RobotLog Robot::m_robotLog("Yeti");
 OI Robot::m_oi;
 

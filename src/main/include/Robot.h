@@ -12,6 +12,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "OI.h"
+#include "subsystems/Elevator.h"
 #include "subsystems/Drive.h"
 #include "RobotLog.h"
 
@@ -21,6 +22,7 @@ class Robot : public frc::TimedRobot {
   static bool   driveInUse;
 
   static Drive m_drive; 
+  static Elevator m_elevator;
   static RobotLog m_robotLog;
   static OI m_oi;
 
