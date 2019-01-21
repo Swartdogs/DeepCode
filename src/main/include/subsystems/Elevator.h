@@ -41,7 +41,7 @@ class Elevator : public frc::Subsystem {
   void            InitDefaultCommand() override;
   void            DriveFoot(double speed);
   bool            ElevatorAtSetpoint();
-  void            Execute();
+  void            Execute(double joystick);
   double          GetElevatorPosition();
   FootPosition    GetFootPosition();
   PlatformStatus  GetPlatformStatus();

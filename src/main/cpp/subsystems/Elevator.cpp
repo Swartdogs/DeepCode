@@ -27,9 +27,10 @@ bool Elevator::ElevatorAtSetpoint() {
   return m_elevatorPID.AtSetpoint();
 }
 
-void Elevator::Execute() {
+void Elevator::Execute(double joystick) {
   GetPlatformStatus();
   m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
+  DriveFoot(joystick);
 }
 
 double Elevator::GetElevatorPosition() {
