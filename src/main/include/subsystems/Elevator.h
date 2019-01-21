@@ -31,7 +31,9 @@ class Elevator : public frc::Subsystem {
   typedef enum {
     epRetracted,
     epLevel2Extended,
-    epLevel3Extended
+    epLevel3Extended,
+    epMinHeight,
+    epMaxHeight
   } ElevatorPosition;
 
   Elevator();

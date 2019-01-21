@@ -58,3 +58,5 @@ typedef enum {
 const double elevatorRetractedSetpoint = 0;
 const double elevatorLevel2Setpoint = elevatorRetractedSetpoint - 10;
 const double elevatorLevel3Setpoint = elevatorRetractedSetpoint - 20;
+const double elevatorMinHeight = elevatorRetractedSetpoint - 10;
+const double elevatorMaxHeight = elevatorRetractedSetpoint + 90;

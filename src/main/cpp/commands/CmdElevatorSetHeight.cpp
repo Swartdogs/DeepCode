@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "commands/CmdElevatorSetHeight.h"
+#include "Robot.h"
 
 CmdElevatorSetHeight::CmdElevatorSetHeight(double inches) {
   m_inches = inches;

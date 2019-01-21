@@ -92,6 +92,14 @@ void Elevator::SetElevatorPosition(ElevatorPosition position) {
       setpoint = elevatorLevel3Setpoint;
       break;
 
+    case epMinHeight:
+      setpoint = elevatorMinHeight;
+      break;
+    
+    case epMaxHeight:
+      setpoint = elevatorMaxHeight;
+      break;
+
     default:;
   }
   
@@ -99,6 +107,8 @@ void Elevator::SetElevatorPosition(ElevatorPosition position) {
 }
 
 void Elevator::SetElevatorSetpoint(double setpoint) {
+  if (setpoint < elevatorMinHeight) setpoint = elevatorMinHeight;
+  if (setpoint > elevatorMaxHeight) setpoint = elevatorMaxHeight;
   m_elevatorPID.SetSetpoint(setpoint, GetElevatorPosition());
 }
 
