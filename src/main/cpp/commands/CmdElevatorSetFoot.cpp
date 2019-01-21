@@ -14,7 +14,11 @@ CmdElevatorSetFoot::CmdElevatorSetFoot(Elevator::FootPosition position) {
 
 // Called just before this Command runs the first time
 void CmdElevatorSetFoot::Initialize() {
-  Robot::m_elevator.SetFootPosition(m_footPosition);
+  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
+    //Do Nothing
+  } else {
+    Robot::m_elevator.SetFootPosition(m_footPosition);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
