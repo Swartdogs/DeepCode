@@ -17,7 +17,7 @@ void CmdElevatorSetHeight::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
     //Do Nothing
   } else {
-    Robot::m_elevator.SetElevatorSetpoint( m_inches * Elevator::COUNTS_PER_INCH);
+    Robot::m_elevator.SetElevatorSetpoint( m_inches );
   }
 }
 

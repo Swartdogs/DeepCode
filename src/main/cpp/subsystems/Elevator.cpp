@@ -18,7 +18,9 @@ void Elevator::InitDefaultCommand() {
 }
 
 void Elevator::DriveFoot(double speed) {
-  m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
+  if(GetFootPosition() == fpExtended || (GetPlatformStatus() != psOff && GetElevatorPosition() < elevatorRetractedSetpoint)) {
+    m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
+  }
 }
 
 bool Elevator::ElevatorAtSetpoint() {
@@ -107,6 +109,8 @@ void Elevator::SetElevatorPosition(ElevatorPosition position) {
 }
 
 void Elevator::SetElevatorSetpoint(double setpoint) {
+  setpoint *= COUNTS_PER_INCH;
+
   if (setpoint < elevatorMinHeight) setpoint = elevatorMinHeight;
   if (setpoint > elevatorMaxHeight) setpoint = elevatorMaxHeight;
   m_elevatorPID.SetSetpoint(setpoint, GetElevatorPosition());
