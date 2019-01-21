@@ -14,6 +14,8 @@
 
 class Elevator : public frc::Subsystem {
  public:
+  static constexpr double   COUNTS_PER_INCH = 36.64;
+
   typedef enum {
     fpExtended,
     fpRetracted
@@ -46,8 +48,6 @@ class Elevator : public frc::Subsystem {
   void            SetFootPosition(FootPosition position);
 
  private:
-  const double        COUNTS_PER_INCH = 36.64;
-
   FootPosition        m_footPosition;
   PlatformStatus      m_platformStatus;
 
