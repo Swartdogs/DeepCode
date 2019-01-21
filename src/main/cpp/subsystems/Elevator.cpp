@@ -76,6 +76,28 @@ Elevator::PlatformStatus Elevator::GetPlatformStatus() {
   return m_platformStatus;
 }
 
+void Elevator::SetElevatorPosition(ElevatorPosition position) {
+  double setpoint = 0;
+
+  switch (position) {
+    case epRetracted:
+      setpoint = elevatorRetractedSetpoint;
+      break;
+
+    case epLevel2Extended:
+      setpoint = elevatorLevel2Setpoint;
+      break;
+
+    case epLevel3Extended:
+      setpoint = elevatorLevel3Setpoint;
+      break;
+
+    default:;
+  }
+  
+  SetElevatorSetpoint(setpoint);
+}
+
 void Elevator::SetElevatorSetpoint(double setpoint) {
   m_elevatorPID.SetSetpoint(setpoint, GetElevatorPosition());
 }

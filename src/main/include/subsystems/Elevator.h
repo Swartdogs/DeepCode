@@ -26,6 +26,12 @@ class Elevator : public frc::Subsystem {
     psUnknown
   } PlatformStatus;
 
+  typedef enum {
+    epRetracted,
+    epLevel2Extended,
+    epLevel3Extended
+  } ElevatorPosition;
+
   Elevator();
 
   void            InitDefaultCommand() override;
@@ -35,6 +41,7 @@ class Elevator : public frc::Subsystem {
   double          GetElevatorPosition();
   FootPosition    GetFootPosition();
   PlatformStatus  GetPlatformStatus();
+  void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);
   void            SetFootPosition(FootPosition position);
 
