@@ -22,12 +22,14 @@ class Elevator : public frc::Subsystem {
   typedef enum {
     psOff,
     psPartial,
-    psOn
+    psOn,
+    psUnknown
   } PlatformStatus;
 
   Elevator();
 
   void            InitDefaultCommand() override;
+  void            DriveFoot(double speed);
   FootPosition    GetFootPosition();
   PlatformStatus  GetPlatformStatus();
   void            SetFootPosition(FootPosition position);

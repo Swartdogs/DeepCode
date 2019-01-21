@@ -7,21 +7,65 @@
 
 #include "subsystems/Elevator.h"
 
-Elevator::Elevator() : Subsystem("Elevator") {}
+Elevator::Elevator() : Subsystem("Elevator") {
+  m_footPosition = fpRetracted;
+  m_footSol.Set(false);
+}
 
 void Elevator::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   // SetDefaultCommand(new MySpecialCommand());
 }
 
-Elevator::FootPosition Elevator::GetFootPosition() {
+void Elevator::DriveFoot(double speed) {
+  m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
+}
 
+Elevator::FootPosition Elevator::GetFootPosition() {
+  return m_footPosition;
 }
 
 Elevator::PlatformStatus Elevator::GetPlatformStatus() {
+  int lightSensorFlags;
+  
+  // Create a bitmap:
+  //                    m_frontSensor m_rearSensor
+  //                          v            v
+  // lightSensorFlags = 0b    X            X 
+  //
+  // values for lightSensorFlags:
+  //    0b00 = 0 = neither sensor sees the platform       (psOff)
+  //    0b01 = 1 = m_rearSensor only sees the platform    (psUnknown)
+  //    0b10 = 2 = m_frontSensor only sees the platform   (psPartial)
+  //    0b11 = 3 = both sensors see the platform          (psOn)
 
+  lightSensorFlags = (m_frontSensor.Get() ? 1 : 0) << 1 | (m_rearSensor.Get() ? 1 : 0);
+
+  switch (lightSensorFlags) {
+    case 0:
+      m_platformStatus = psOff;
+      break;
+
+    case 2:
+      m_platformStatus = psPartial;
+      break;
+
+    case 3:
+      m_platformStatus = psOn;
+      break;
+
+    case 1:
+    default:
+      m_platformStatus = psUnknown;
+      break;
+  }
+
+  return m_platformStatus;
 }
 
 void Elevator::SetFootPosition(FootPosition position) {
-
+  if (position != m_footPosition) {
+    m_footSol.Set(position == fpExtended);
+    m_footPosition = position;
+  }
 }
