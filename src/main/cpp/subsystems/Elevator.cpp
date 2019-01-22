@@ -37,8 +37,35 @@ double Elevator::GetElevatorPosition() {
   return m_elevatorPot.GetAverageValue() / COUNTS_PER_INCH;
 }
 
+char* Elevator::GetElevatorPositionName(ElevatorPosition position) {
+  char* name = "";
+
+  switch (position) {
+    case epRetracted:       name = "Retracted";       break;
+    case epLevel2Extended:  name = "Level2Extended";  break;
+    case epLevel3Extended:  name = "Level3Extended";  break;
+    case epMinHeight:       name = "MinHeight";       break;
+    case epMaxHeight:       name = "MaxHeight";       break;
+    default:;
+  }
+
+  return name;
+}
+
 Elevator::FootPosition Elevator::GetFootPosition() {
   return m_footPosition;
+}
+
+char* Elevator::GetFootPositionName(FootPosition position) {
+  char* name = "";
+
+  switch (position) {
+    case fpRetracted:       name = "Retracted";       break;
+    case fpExtended:        name = "Extended";        break;
+    default:;
+  }
+
+  return name;
 }
 
 Elevator::PlatformStatus Elevator::GetPlatformStatus() {

@@ -43,7 +43,9 @@ class Elevator : public frc::Subsystem {
   bool            ElevatorAtSetpoint();
   void            Execute(double joystick);
   double          GetElevatorPosition();
+  char*           GetElevatorPositionName(ElevatorPosition position);
   FootPosition    GetFootPosition();
+  char*           GetFootPositionName(FootPosition position);
   PlatformStatus  GetPlatformStatus();
   void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);

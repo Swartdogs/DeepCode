@@ -19,6 +19,10 @@ void CmdElevatorSetPosition::Initialize() {
   } else {
     Robot::m_elevator.SetElevatorPosition(m_elevatorPosition);
   }
+
+  sprintf(Robot::message,"Elevator:    SetElevator   Position=%s", Robot::m_elevator.GetElevatorPositionName(m_elevatorPosition));
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 // Called repeatedly when this Command is scheduled to run

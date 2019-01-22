@@ -5,8 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Robot.h"
 #include "commands/CmdElevatorRaiseInches.h"
+#include "Robot.h"
 
 CmdElevatorRaiseInches::CmdElevatorRaiseInches(double inches) {
   m_inches = inches;
@@ -15,10 +15,17 @@ CmdElevatorRaiseInches::CmdElevatorRaiseInches(double inches) {
 // Called just before this Command runs the first time
 void CmdElevatorRaiseInches::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-    //Do Nothing
+    // Do Nothing
   } else {
-    Robot::m_elevator.SetElevatorSetpoint(Robot::m_elevator.GetElevatorPosition() + m_inches);
+    Robot::m_elevator.SetElevatorSetpoint(
+        Robot::m_elevator.GetElevatorPosition() + m_inches);
   }
+
+  sprintf(Robot::message,
+          "Elevator:    RaiseInches   Height=%5.1f",
+          Robot::m_elevator.GetElevatorPosition() + m_inches);
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 // Called repeatedly when this Command is scheduled to run

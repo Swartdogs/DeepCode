@@ -19,6 +19,10 @@ void CmdElevatorSetHeight::Initialize() {
   } else {
     Robot::m_elevator.SetElevatorSetpoint( m_inches );
   }
+
+  sprintf(Robot::message,"Elevator:    SetHeight   Position=%5.1f", m_inches);
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 
