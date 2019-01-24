@@ -4,11 +4,19 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-#include <frc/WPILib.h>
+
 #pragma once
+
+#include <frc/WPILib.h>
+#include "RobotMap.h"
 
 class OI {
  public:
   OI();
-  private:
+  double ApplyDeadband(double joystickValue, double deadband);
+  double GetDriveJoystickX();
+  double GetDriveJoystickY();
+  
+ private:
+  frc::Joystick  m_driveJoystick{joyDrive};
 };

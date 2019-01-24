@@ -12,10 +12,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "OI.h"
-#include "commands/ExampleCommand.h"
-#include "commands/MyAutoCommand.h"
 #include "RobotLog.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Vision.h"
 
 class Robot : public frc::TimedRobot {
@@ -38,6 +35,5 @@ class Robot : public frc::TimedRobot {
   // Have it null by default so that if testing teleop it
   // doesn't have undefined behavior and potentially crash.
   frc::Command*   m_autonomousCommand = nullptr;
-  MyAutoCommand   m_myAuto;
   frc::SendableChooser<frc::Command*> m_chooser;
 };
