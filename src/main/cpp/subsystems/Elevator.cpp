@@ -37,8 +37,8 @@ double Elevator::GetElevatorPosition() {
   return m_elevatorPot.GetAverageValue() / COUNTS_PER_INCH;
 }
 
-char* Elevator::GetElevatorPositionName(ElevatorPosition position) {
-  char* name = "";
+const char* Elevator::GetElevatorPositionName(ElevatorPosition position) {
+  std::string name = "";
 
   switch (position) {
     case epRetracted:       name = "Retracted";       break;
@@ -49,15 +49,15 @@ char* Elevator::GetElevatorPositionName(ElevatorPosition position) {
     default:;
   }
 
-  return name;
+  return name.c_str();
 }
 
 Elevator::FootPosition Elevator::GetFootPosition() {
   return m_footPosition;
 }
 
-char* Elevator::GetFootPositionName(FootPosition position) {
-  char* name = "";
+const char* Elevator::GetFootPositionName(FootPosition position) {
+  std::string name = "";
 
   switch (position) {
     case fpRetracted:       name = "Retracted";       break;
@@ -65,7 +65,7 @@ char* Elevator::GetFootPositionName(FootPosition position) {
     default:;
   }
 
-  return name;
+  return name.c_str();
 }
 
 Elevator::PlatformStatus Elevator::GetPlatformStatus() {
