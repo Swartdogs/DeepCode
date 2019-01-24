@@ -55,7 +55,7 @@ std::string RobotLog::DataString(double value) {
     return ds + "|";
 }
 
-void RobotLog::EndPeriodic(){
+void RobotLog::EndPeriodic() {
     m_periodicCount++;
     m_periodicLastEnd = (double)frc::RobotController::GetFPGATime() / 1000;
 

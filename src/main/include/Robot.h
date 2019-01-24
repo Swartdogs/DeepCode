@@ -12,14 +12,19 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "OI.h"
-#include "RobotLog.h"
+#include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
+#include "RobotLog.h"
 
 class Robot : public frc::TimedRobot {
  public:
-  static RobotLog         m_robotLog;
-  static Vision           m_vision;
-  static OI               m_oi;
+  static char   message[100];
+  static bool   driveInUse;
+
+  static Drive      m_drive; 
+  static Vision     m_vision;
+  static RobotLog   m_robotLog;
+  static OI         m_oi;
 
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -32,8 +37,5 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
  private:
-  // Have it null by default so that if testing teleop it
-  // doesn't have undefined behavior and potentially crash.
-  frc::Command*   m_autonomousCommand = nullptr;
   frc::SendableChooser<frc::Command*> m_chooser;
 };

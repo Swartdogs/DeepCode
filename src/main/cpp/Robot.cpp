@@ -10,9 +10,13 @@
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-RobotLog          Robot::m_robotLog("Yeti");
-Vision            Robot::m_vision;
-OI                Robot::m_oi;
+char      Robot::message[100];
+bool      Robot::driveInUse;
+
+Drive     Robot::m_drive;
+Vision    Robot::m_vision;
+RobotLog  Robot::m_robotLog("Yeti");
+OI        Robot::m_oi;
 
 void Robot::RobotInit() {
   m_vision.InitVision();
@@ -61,11 +65,11 @@ void Robot::AutonomousInit() {
   //   m_autonomousCommand = &m_defaultAuto;
   // }
 
-  m_autonomousCommand = m_chooser.GetSelected();
+  // m_autonomousCommand = m_chooser.GetSelected();
 
-  if (m_autonomousCommand != nullptr) {
-    m_autonomousCommand->Start();
-  }
+  // if (m_autonomousCommand != nullptr) {
+  //   m_autonomousCommand->Start();
+  // }
 }
 
 void Robot::AutonomousPeriodic() { frc::Scheduler::GetInstance()->Run(); }
@@ -76,10 +80,10 @@ void Robot::TeleopInit() {
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-  if (m_autonomousCommand != nullptr) {
-    m_autonomousCommand->Cancel();
-    m_autonomousCommand = nullptr;
-  }
+  // if (m_autonomousCommand != nullptr) {
+  //   m_autonomousCommand->Cancel();
+  //   m_autonomousCommand = nullptr;
+  // }
 }
 
 void Robot::TeleopPeriodic() { 
