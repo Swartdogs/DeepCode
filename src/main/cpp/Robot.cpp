@@ -11,7 +11,6 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 RobotLog          Robot::m_robotLog("Yeti");
-ExampleSubsystem  Robot::m_subsystem;
 Vision            Robot::m_vision;
 OI                Robot::m_oi;
 

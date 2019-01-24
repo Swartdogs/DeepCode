@@ -21,7 +21,6 @@
 class Robot : public frc::TimedRobot {
  public:
   static RobotLog         m_robotLog;
-  static ExampleSubsystem m_subsystem;
   static Vision           m_vision;
   static OI               m_oi;
 

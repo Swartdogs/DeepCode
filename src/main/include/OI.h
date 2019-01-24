@@ -11,7 +11,4 @@ class OI {
  public:
   OI();
   private:
-  frc::Joystick       m_Joystick{0};
-
-  frc::JoystickButton m_buttonBestTarget{&m_Joystick, 1};
 };

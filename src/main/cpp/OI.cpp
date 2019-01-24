@@ -11,5 +11,4 @@
 #include "commands/ExampleCommand.h"
 
 OI::OI() {
-  m_buttonBestTarget.WhenPressed (new ExampleCommand(Vision::tsBest));
 }
