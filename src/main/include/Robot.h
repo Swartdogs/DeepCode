@@ -13,6 +13,7 @@
 
 #include "OI.h"
 #include "subsystems/Drive.h"
+#include "subsystems/Vision.h"
 #include "RobotLog.h"
 
 class Robot : public frc::TimedRobot {
@@ -20,9 +21,10 @@ class Robot : public frc::TimedRobot {
   static char   message[100];
   static bool   driveInUse;
 
-  static Drive m_drive; 
-  static RobotLog m_robotLog;
-  static OI m_oi;
+  static Drive      m_drive; 
+  static Vision     m_vision;
+  static RobotLog   m_robotLog;
+  static OI         m_oi;
 
   void RobotInit() override;
   void RobotPeriodic() override;

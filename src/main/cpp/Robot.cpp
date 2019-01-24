@@ -13,14 +13,13 @@
 char      Robot::message[100];
 bool      Robot::driveInUse;
 
-Drive Robot::m_drive;
-RobotLog Robot::m_robotLog("Yeti");
-OI Robot::m_oi;
+Drive     Robot::m_drive;
+Vision    Robot::m_vision;
+RobotLog  Robot::m_robotLog("Yeti");
+OI        Robot::m_oi;
 
 void Robot::RobotInit() {
-  // m_chooser.SetDefaultOption("Default Auto", &m_defaultAuto);
-  // m_chooser.AddOption("My Auto", &m_myAuto);
-  // frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  m_vision.InitVision();
 }
 
 /**
