@@ -141,6 +141,18 @@ Drive::ShifterPosition Drive::GetShifterPosition () {
   return m_shifterPosition; 
 }
 
+const char* Drive::GetShifterPositionName(Drive::ShifterPosition position) {
+  std::string name = "";
+
+  switch (position) {
+    case spLow:   name = "low";   break;
+    case spHigh:  name = "high";  break;
+    default:; 
+  }
+
+  return name.c_str();
+}
+
 double Drive::RotateExec() {
   return m_rotatePID.Calculate(GetHeading());
 }

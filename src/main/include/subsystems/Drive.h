@@ -15,7 +15,7 @@
 class Drive : public frc::Subsystem {
  
  public:
-  typedef enum {
+  typedef enum { 
     spLow,
     spHigh
   }ShifterPosition;
@@ -40,6 +40,7 @@ class Drive : public frc::Subsystem {
   double            GetDistance (UseEncoder encoder);
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
+  const char*       GetShifterPositionName(ShifterPosition position);
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
