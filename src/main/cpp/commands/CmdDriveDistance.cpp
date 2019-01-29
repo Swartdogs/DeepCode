@@ -30,7 +30,7 @@ void CmdDriveDistance::Initialize() {
       m_status = csSkip;
    } else {
      m_status = csRun;
-     Robot::driveInUse = true;
+     Robot::m_drive.SetDriveInUse(true);
 
      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, m_minSpeed, m_resetEncoders, m_resetGyro, false);
      if (m_timeout > 0) SetTimeout(m_timeout);
@@ -71,7 +71,7 @@ bool CmdDriveDistance::IsFinished() {
 
 // Called once after isFinished returns true
 void CmdDriveDistance::End() {
-  Robot::driveInUse = false;
+  Robot::m_drive.SetDriveInUse(false);
 
   switch (m_status) {
     case csSkip:

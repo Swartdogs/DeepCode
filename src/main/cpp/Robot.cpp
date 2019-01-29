@@ -11,7 +11,6 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 char      Robot::message[100];
-bool      Robot::driveInUse;
 
 Dashboard Robot::m_dashboard(0,0,1,18);
 Drive     Robot::m_drive;
@@ -19,85 +18,50 @@ Elevator  Robot::m_elevator;
 RobotLog  Robot::m_robotLog("Yeti");
 OI        Robot::m_oi;
 
-void Robot::RobotInit() {
-  // m_chooser.SetDefaultOption("Default Auto", &m_defaultAuto);
-  // m_chooser.AddOption("My Auto", &m_myAuto);
-  // frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+void Robot::RobotInit() { 
 }
 
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+}
 
-/**
- * This function is called once each time the robot enters Disabled mode. You
- * can use it to reset any subsystem information you want to clear when the
- * robot is disabled.
- */
 void Robot::DisabledInit() {
-  Robot::m_robotLog.SetMode(rmDisabled);
-  Robot::m_robotLog.Close(); 
+  m_robotLog.SetMode(rmDisabled);
+  m_robotLog.Close(); 
+  m_dashboard.SetRobotMode(rmDisabled);
 }
 
-void Robot::DisabledPeriodic() { frc::Scheduler::GetInstance()->Run(); }
+void Robot::DisabledPeriodic() { 
+  frc::Scheduler::GetInstance()->Run(); 
+  }
 
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString code to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional commands to the
- * chooser code above (like the commented example) or additional comparisons to
- * the if-else structure below with additional strings & commands.
- */
 void Robot::AutonomousInit() {
-    Robot::m_robotLog.SetMode(rmAutonomous);
-  // std::string autoSelected = frc::SmartDashboard::GetString(
-  //     "Auto Selector", "Default");
-  // if (autoSelected == "My Auto") {
-  //   m_autonomousCommand = &m_myAuto;
-  // } else {
-  //   m_autonomousCommand = &m_defaultAuto;
-  // }
-
-  // m_autonomousCommand = m_chooser.GetSelected();
+  m_robotLog.SetMode(rmAutonomous);
+  m_dashboard.SetRobotMode(rmAutonomous);
 
   // if (m_autonomousCommand != nullptr) {
   //   m_autonomousCommand->Start();
   // }
 }
 
-void Robot::AutonomousPeriodic() { frc::Scheduler::GetInstance()->Run(); }
+void Robot::AutonomousPeriodic() { 
+  frc::Scheduler::GetInstance()->Run(); 
+  }
 
 void Robot::TeleopInit() {
-  Robot::m_robotLog.SetMode(rmTeleop);
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
-  // if (m_autonomousCommand != nullptr) {
-  //   m_autonomousCommand->Cancel();
-  //   m_autonomousCommand = nullptr;
-  // }
+  m_robotLog.SetMode(rmTeleop);
+  m_dashboard.SetRobotMode(rmTeleop);
 }
 
 void Robot::TeleopPeriodic() { 
-  Robot::m_robotLog.StartPeriodic();
+  m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
-  Robot::m_elevator.Execute(Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickY(), 0.1));
-  Robot::m_robotLog.EndPeriodic();
+  m_elevator.Execute(Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickY(), 0.1));
+  m_robotLog.EndPeriodic();
 }
 
 void Robot::TestInit() {
-  Robot::m_robotLog.SetMode(rmTest);
+  m_robotLog.SetMode(rmTest);
+  m_dashboard.SetRobotMode(rmTest);
 }
 
 void Robot::TestPeriodic() {

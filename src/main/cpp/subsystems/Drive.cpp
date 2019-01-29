@@ -10,6 +10,7 @@
 
 Drive::Drive() : Subsystem("Drive") {
   m_driveEnable = true;
+  m_driveInUse  = false;
 
   m_driveRight1.SetInverted(true);
   m_driveRight2.SetInverted(true);
@@ -42,6 +43,12 @@ Drive::~Drive() {}
 void Drive::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   SetDefaultCommand(new CmdDriveJoystick());
+}
+
+void Drive::Periodic() {
+  if (!m_driveInUse) {
+    ArcadeDrive(0, 0);
+  }
 }
 
 void Drive::ArcadeDrive(double drive, double rotate) {
@@ -157,8 +164,12 @@ bool Drive::RotateIsFinished() {
   return m_rotatePID.AtSetpoint();
 }
 
-void Drive::SetDriveEnable(bool enable){
+void Drive::SetDriveEnable(bool enable) {
   m_driveEnable = enable; 
+}
+
+void Drive::SetDriveInUse(bool inUse) {
+  m_driveInUse = inUse;
 }
 
 void Drive::SetShifter(ShifterPosition position) {

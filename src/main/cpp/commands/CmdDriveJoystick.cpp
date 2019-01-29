@@ -15,7 +15,9 @@ CmdDriveJoystick::CmdDriveJoystick() {
 }
 
 // Called just before this Command runs the first time
-void CmdDriveJoystick::Initialize() {}
+void CmdDriveJoystick::Initialize() {
+  Robot::m_drive.SetDriveInUse(true);
+}
 
 // Called repeatedly when this Command is scheduled to run
 void CmdDriveJoystick::Execute() {
@@ -31,4 +33,6 @@ void CmdDriveJoystick::End() {}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void CmdDriveJoystick::Interrupted() {}
+void CmdDriveJoystick::Interrupted() {
+  Robot::m_drive.SetDriveInUse(false);
+}

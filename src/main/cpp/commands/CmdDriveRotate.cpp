@@ -17,7 +17,7 @@ void CmdDriveRotate::Initialize() {
       m_status = csSkip;
    } else {
      m_status = csRun;
-     Robot::driveInUse = true;
+     Robot::m_drive.SetDriveInUse(true);
 
      Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);
      if (m_timeout > 0) SetTimeout(m_timeout);
@@ -53,7 +53,7 @@ bool CmdDriveRotate::IsFinished() {
 }
 
 void CmdDriveRotate::End() {
-  Robot::driveInUse = false;
+  Robot::m_drive.SetDriveInUse(false);
 
   switch (m_status) {
     case csSkip:

@@ -31,6 +31,7 @@ class Drive : public frc::Subsystem {
   ~Drive();
 
   void              InitDefaultCommand() override;
+  void              Periodic() override;
 
   void              ArcadeDrive(double drive, double rotate);
   double            DriveExec();
@@ -44,10 +45,12 @@ class Drive : public frc::Subsystem {
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
   void              SetDriveEnable(bool enable); 
+  void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);
 
 private:
-  bool                m_driveEnable; 
+  bool                m_driveEnable;
+  bool                m_driveInUse; 
 
   frc::ADXRS450_Gyro  m_gyro{};
 
