@@ -55,7 +55,6 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() { 
   m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
-  m_elevator.Execute(Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickY(), 0.1));
   m_robotLog.EndPeriodic();
 }
 

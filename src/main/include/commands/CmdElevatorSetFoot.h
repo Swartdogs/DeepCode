@@ -12,7 +12,7 @@
 
 class CmdElevatorSetFoot : public frc::Command {
  public:
-  CmdElevatorSetFoot(Elevator::FootPosition position);
+  CmdElevatorSetFoot(Elevator::FootPosition position, double timeout);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -21,4 +21,5 @@ class CmdElevatorSetFoot : public frc::Command {
 
  private:
   Elevator::FootPosition m_footPosition;
+  double                 m_timeout;
 };

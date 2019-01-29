@@ -13,7 +13,7 @@
 
 class CmdDriveFoot : public frc::Command {
  public:
-  CmdDriveFoot(Elevator::PlatformStatus platformStatus, double footSpeed);
+  CmdDriveFoot(Elevator::PlatformStatus platformStatus, double footSpeed, double timeout);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -24,4 +24,5 @@ class CmdDriveFoot : public frc::Command {
     double                      m_footSpeed;
     Elevator::PlatformStatus    m_platformStatus;
     CommandStatus               m_status;
+    double                      m_timeout;
 };

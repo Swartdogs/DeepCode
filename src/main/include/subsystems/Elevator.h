@@ -39,9 +39,10 @@ class Elevator : public frc::Subsystem {
   Elevator();
 
   void            InitDefaultCommand() override;
+  void            Periodic() override;
+
   void            DriveFoot(double speed);
   bool            ElevatorAtSetpoint();
-  void            Execute(double speed);
   double          GetElevatorPosition();
   const char*     GetElevatorPositionName(ElevatorPosition position);
   double          GetElevatorSetpoint();
@@ -51,9 +52,11 @@ class Elevator : public frc::Subsystem {
   void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);
   void            SetFootPosition(FootPosition position);
+  void            SetFootInUse(bool inUse);
 
  private:
   FootPosition        m_footPosition;
+  bool                m_footInUse;
   PlatformStatus      m_platformStatus;
   double              m_elevatorSetpoint;
 

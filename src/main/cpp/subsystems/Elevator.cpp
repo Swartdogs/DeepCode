@@ -10,6 +10,7 @@
 
 Elevator::Elevator() : Subsystem("Elevator") {
   m_footPosition = fpRetracted;
+  m_footInUse = false;
   m_footSol.Set(false);
   m_elevatorSetpoint = 0;
 
@@ -27,20 +28,11 @@ void Elevator::InitDefaultCommand() {
 }
 
 void Elevator::DriveFoot(double speed) {
-  if(GetFootPosition() == fpExtended || (GetPlatformStatus() != psOff && 
-      GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvElevRetracted))) {
-    m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
-  }
+  m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
 }
 
 bool Elevator::ElevatorAtSetpoint() {
   return m_elevatorPID.AtSetpoint();
-}
-
-void Elevator::Execute(double speed) {
-  GetPlatformStatus();
-  m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
-  DriveFoot(speed);
 }
 
 double Elevator::GetElevatorPosition() {
@@ -120,6 +112,12 @@ Elevator::PlatformStatus Elevator::GetPlatformStatus() {
   return m_platformStatus;
 }
 
+void Elevator::Periodic() {
+  m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
+
+  if (!m_footInUse) m_footMotor.Set(0);
+}
+
 void Elevator::SetElevatorPosition(ElevatorPosition position) {
   m_elevatorSetpoint = 0;
 
@@ -164,4 +162,8 @@ void Elevator::SetFootPosition(FootPosition position) {
     m_footSol.Set(position == fpExtended);
     m_footPosition = position;
   }
+}
+
+void Elevator::SetFootInUse(bool inUse) {
+  m_footInUse = inUse;
 }

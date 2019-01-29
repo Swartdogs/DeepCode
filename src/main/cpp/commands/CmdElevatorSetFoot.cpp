@@ -8,8 +8,9 @@
 #include "Robot.h"
 #include "commands/CmdElevatorSetFoot.h"
 
-CmdElevatorSetFoot::CmdElevatorSetFoot(Elevator::FootPosition position) {
+CmdElevatorSetFoot::CmdElevatorSetFoot(Elevator::FootPosition position, double timeout) {
   m_footPosition = position;
+  m_timeout      = fabs(timeout);
 }
 
 // Called just before this Command runs the first time
@@ -18,6 +19,7 @@ void CmdElevatorSetFoot::Initialize() {
     Robot::m_robotLog.Write("Elevator:    SetFoot Canceled");
   } else {
     Robot::m_elevator.SetFootPosition(m_footPosition);
+    if (m_timeout > 0) SetTimeout(m_timeout);
 
     sprintf(Robot::message,"Elevator:    SetFoot   Position=%s", Robot::m_elevator.GetFootPositionName(m_footPosition));
 
@@ -29,7 +31,9 @@ void CmdElevatorSetFoot::Initialize() {
 void CmdElevatorSetFoot::Execute() {}
 
 // Make this return true when this Command no longer needs to run execute()
-bool CmdElevatorSetFoot::IsFinished() { return true; }
+bool CmdElevatorSetFoot::IsFinished() {
+  return (m_timeout = 0 || IsTimedOut());
+  }
 
 // Called once after isFinished returns true
 void CmdElevatorSetFoot::End() {}
