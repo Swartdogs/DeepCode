@@ -5,35 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include "commands/CmdElevatorReachSetpoint.h"
 #include "Robot.h"
-#include "commands/CmdElevatorSetFoot.h"
 
-CmdElevatorSetFoot::CmdElevatorSetFoot(Elevator::FootPosition position) {
-  m_footPosition = position;
+CmdElevatorReachSetpoint::CmdElevatorReachSetpoint() {
+  // Use Requires() here to declare subsystem dependencies
+  // eg. Requires(Robot::chassis.get());
 }
 
 // Called just before this Command runs the first time
-void CmdElevatorSetFoot::Initialize() {
-  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-    Robot::m_robotLog.Write("Elevator:    SetFoot Canceled");
-  } else {
-    Robot::m_elevator.SetFootPosition(m_footPosition);
-
-    sprintf(Robot::message,"Elevator:    SetFoot   Position=%s", Robot::m_elevator.GetFootPositionName(m_footPosition));
-
-    Robot::m_robotLog.Write(Robot::message);
-  }
-}
+void CmdElevatorReachSetpoint::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
-void CmdElevatorSetFoot::Execute() {}
+void CmdElevatorReachSetpoint::Execute() {}
 
 // Make this return true when this Command no longer needs to run execute()
-bool CmdElevatorSetFoot::IsFinished() { return true; }
+bool CmdElevatorReachSetpoint::IsFinished() { 
+  return (Robot::m_elevator.GetElevatorSetpoint() < 0 && Robot::m_elevator.ElevatorAtSetpoint()); 
+  }
 
 // Called once after isFinished returns true
-void CmdElevatorSetFoot::End() {}
+void CmdElevatorReachSetpoint::End() {}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void CmdElevatorSetFoot::Interrupted() {}
+void CmdElevatorReachSetpoint::Interrupted() {}

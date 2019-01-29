@@ -44,6 +44,7 @@ class Elevator : public frc::Subsystem {
   void            Execute(double speed);
   double          GetElevatorPosition();
   const char*     GetElevatorPositionName(ElevatorPosition position);
+  double          GetElevatorSetpoint();
   FootPosition    GetFootPosition();
   const char*     GetFootPositionName(FootPosition position);
   PlatformStatus  GetPlatformStatus();
@@ -54,6 +55,7 @@ class Elevator : public frc::Subsystem {
  private:
   FootPosition        m_footPosition;
   PlatformStatus      m_platformStatus;
+  double              m_elevatorSetpoint;
 
   PIDControl          m_elevatorPID{"Elevator"};
 

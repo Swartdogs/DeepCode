@@ -11,6 +11,7 @@
 Elevator::Elevator() : Subsystem("Elevator") {
   m_footPosition = fpRetracted;
   m_footSol.Set(false);
+  m_elevatorSetpoint = 0;
 
   m_elevatorPID.SetCoefficient('P', 0, 0.04, 0);
   m_elevatorPID.SetCoefficient('I', 10, 0, 0.0025);
@@ -59,6 +60,10 @@ const char* Elevator::GetElevatorPositionName(ElevatorPosition position) {
   }
 
   return name.c_str();
+}
+
+double Elevator::GetElevatorSetpoint(){
+  return m_elevatorSetpoint;
 }
 
 Elevator::FootPosition Elevator::GetFootPosition() {
@@ -116,33 +121,33 @@ Elevator::PlatformStatus Elevator::GetPlatformStatus() {
 }
 
 void Elevator::SetElevatorPosition(ElevatorPosition position) {
-  double setpoint = 0;
+  m_elevatorSetpoint = 0;
 
   switch (position) {
     case epRetracted:
-      setpoint = Robot::m_dashboard.GetDashValue(dvElevRetracted);
+      m_elevatorSetpoint = Robot::m_dashboard.GetDashValue(dvElevRetracted);
       break;
 
     case epLevel2Extended:
-      setpoint = Robot::m_dashboard.GetDashValue(dvElevLevel2);
+      m_elevatorSetpoint = Robot::m_dashboard.GetDashValue(dvElevLevel2);
       break;
 
     case epLevel3Extended:
-      setpoint = Robot::m_dashboard.GetDashValue(dvElevLevel3);
+      m_elevatorSetpoint = Robot::m_dashboard.GetDashValue(dvElevLevel3);
       break;
 
     case epMinHeight:
-      setpoint = Robot::m_dashboard.GetDashValue(dvElevMin);
+      m_elevatorSetpoint = Robot::m_dashboard.GetDashValue(dvElevMin);
       break;
     
     case epMaxHeight:
-      setpoint = Robot::m_dashboard.GetDashValue(dvElevMax);
+      m_elevatorSetpoint = Robot::m_dashboard.GetDashValue(dvElevMax);
       break;
 
     default:;
   }
   
-  SetElevatorSetpoint(setpoint);
+  SetElevatorSetpoint(m_elevatorSetpoint);
 }
 
 void Elevator::SetElevatorSetpoint(double setpoint) {
@@ -150,6 +155,7 @@ void Elevator::SetElevatorSetpoint(double setpoint) {
 
   if (setpoint < Robot::m_dashboard.GetDashValue(dvElevMin)) setpoint = Robot::m_dashboard.GetDashValue(dvElevMin);
   if (setpoint > Robot::m_dashboard.GetDashValue(dvElevMax)) setpoint = Robot::m_dashboard.GetDashValue(dvElevMax);
+  m_elevatorSetpoint = setpoint;
   m_elevatorPID.SetSetpoint(setpoint, GetElevatorPosition());
 }
 
