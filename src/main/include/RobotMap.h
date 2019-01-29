@@ -55,8 +55,42 @@ typedef enum {
     joyDrive
 } DSJoystick;
 
-const double elevatorRetractedSetpoint = 0;
-const double elevatorLevel2Setpoint = elevatorRetractedSetpoint - 10;
-const double elevatorLevel3Setpoint = elevatorRetractedSetpoint - 20;
-const double elevatorMinHeight = elevatorRetractedSetpoint - 10;
-const double elevatorMaxHeight = elevatorRetractedSetpoint + 90;
+typedef enum {
+    rsNone
+} RobotStatus;
+
+typedef enum {
+    rvNone
+} RobotValue;
+
+typedef enum { 
+    dbRunPid
+} DashButton;
+
+typedef enum{ 
+    dvPidSelect,
+    dvPidSetpoint,
+    dvPidMaxOut,
+    dvPthreshold,
+    dvPabove,
+    dvPbelow,
+    dvIthreshold,
+    dvIabove,
+    dvIbelow,
+    dvDthreshold,
+    dvDabove,
+    dvDbelow,
+    dvElevOffset,
+    dvElevMin,
+    dvElevMax,
+    dvElevRetracted,
+    dvElevLevel2,
+    dvElevLevel3
+} DashValue;
+
+
+// const double elevatorRetractedSetpoint = 0;
+// const double elevatorLevel2Setpoint = elevatorRetractedSetpoint - 10;
+// const double elevatorLevel3Setpoint = elevatorRetractedSetpoint - 20;
+// const double elevatorMinHeight = elevatorRetractedSetpoint - 10;
+// const double elevatorMaxHeight = elevatorRetractedSetpoint + 90;
