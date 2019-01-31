@@ -20,10 +20,6 @@ void CmdElevatorSetFoot::Initialize() {
   } else {
     Robot::m_elevator.SetFootPosition(m_footPosition);
     if (m_timeout > 0) SetTimeout(m_timeout);
-
-    sprintf(Robot::message,"Elevator:    SetFoot   Position=%s", Robot::m_elevator.GetFootPositionName(m_footPosition));
-
-    Robot::m_robotLog.Write(Robot::message);
   }
 }
 

@@ -52,10 +52,6 @@ typedef enum {
 } RoboRioSol;
 
 typedef enum {
-    joyDrive
-} DSJoystick;
-
-typedef enum {
     rsNone
 } RobotStatus;
 
@@ -83,6 +79,7 @@ typedef enum{
     dvElevOffset,
     dvElevMin,
     dvElevMax,
+    dvSensorMin,
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3

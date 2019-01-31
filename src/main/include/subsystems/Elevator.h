@@ -21,19 +21,25 @@ class Elevator : public frc::Subsystem {
     fpRetracted
   } FootPosition;
 
+  // typedef enum {
+  //   psOff,
+  //   psPartial,
+  //   psOn,
+  //   psUnknown
+  // } PlatformStatus;
+
   typedef enum {
-    psOff,
-    psPartial,
-    psOn,
-    psUnknown
-  } PlatformStatus;
+    fsFront,
+    fsRear
+  } FloorSensor;
 
   typedef enum {
     epRetracted,
     epLevel2Extended,
     epLevel3Extended,
     epMinHeight,
-    epMaxHeight
+    epMaxHeight,
+    epUnknown
   } ElevatorPosition;
 
   Elevator();
@@ -43,12 +49,15 @@ class Elevator : public frc::Subsystem {
 
   void            DriveFoot(double speed);
   bool            ElevatorAtSetpoint();
+  bool            GetCancelClimb();
   double          GetElevatorPosition();
   const char*     GetElevatorPositionName(ElevatorPosition position);
   double          GetElevatorSetpoint();
   FootPosition    GetFootPosition();
   const char*     GetFootPositionName(FootPosition position);
-  PlatformStatus  GetPlatformStatus();
+  //PlatformStatus  GetPlatformStatus();
+  bool            FloorDetected(FloorSensor sensor);
+  void            SetCancelClimb(bool cancelClimb);
   void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);
   void            SetFootPosition(FootPosition position);
@@ -56,8 +65,10 @@ class Elevator : public frc::Subsystem {
 
  private:
   FootPosition        m_footPosition;
+  ElevatorPosition    m_elevatorPosition;
   bool                m_footInUse;
-  PlatformStatus      m_platformStatus;
+  bool                m_cancelClimb;
+  //PlatformStatus      m_platformStatus;
   double              m_elevatorSetpoint;
 
   PIDControl          m_elevatorPID{"Elevator"};

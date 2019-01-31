@@ -8,11 +8,11 @@
 #include "commands/CmdDriveFoot.h"
 #include "Robot.h"
 
-CmdDriveFoot::CmdDriveFoot(Elevator::PlatformStatus platformStatus, double footSpeed, double timeout) {
+CmdDriveFoot::CmdDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout) {
   Requires(&Robot::m_drive);
 
   m_footSpeed       = footSpeed;
-  m_platformStatus  = platformStatus;
+  m_floorSensor     = floorSensor;
   m_status          = csRun;
   m_timeout         = fabs(timeout);
 }
@@ -26,6 +26,8 @@ void CmdDriveFoot::Initialize() {
     Robot::m_elevator.SetFootInUse(true);
     Robot::m_drive.SetDriveInUse(true);
     if (m_timeout > 0) SetTimeout(m_timeout);
+
+    Robot::m_robotLog.Write("Elevator:   DriveFoot INIT");
   }
 }
 
@@ -39,7 +41,7 @@ void CmdDriveFoot::Execute() {
       } else if (IsTimedOut()) {
         m_status = csTimedOut;
         if (this->IsParented()) this->GetGroup()->Cancel();
-      } else if (Robot::m_elevator.GetPlatformStatus() == m_platformStatus) {
+      } else if (Robot::m_elevator.FloorDetected(m_floorSensor)) {
         m_status = csDone;
       } else {
         speed = m_footSpeed;
@@ -59,11 +61,33 @@ bool CmdDriveFoot::IsFinished() {
 void CmdDriveFoot::End() {
   Robot::m_elevator.SetFootInUse(false);
   Robot::m_drive.SetDriveInUse(false);
+
+  switch (m_status) {
+    case csSkip:
+      sprintf(Robot::message, "Elevator:   DriveFoot SKIP");
+      break;
+
+    case csDone:
+      sprintf(Robot::message, "Elevator:   DriveFoot DONE");
+      break;
+
+    case csCancel:
+      sprintf(Robot::message, "Elevator:   DriveFoot CANCELED");
+      break;
+
+    case csTimedOut:
+      sprintf(Robot::message, "Elevator:   DriveFoot TIMED OUT");
+      break;
+      
+    default:;
+  }
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void CmdDriveFoot::Interrupted() {
-  Robot::m_elevator.SetFootInUse(false);
-  Robot::m_drive.SetDriveInUse(false);
+  m_status = csCancel;
+  End();
 }

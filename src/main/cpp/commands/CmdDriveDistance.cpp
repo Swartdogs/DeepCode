@@ -83,7 +83,7 @@ void CmdDriveDistance::End() {
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:   Distnace CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:   Distance CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
 
     case csTimedOut:
@@ -96,4 +96,7 @@ void CmdDriveDistance::End() {
   Robot::m_robotLog.Write(Robot::message);
 }
 
-void CmdDriveDistance::Interrupted() {}
+void CmdDriveDistance::Interrupted() {
+  m_status = csCancel;
+  End();
+}

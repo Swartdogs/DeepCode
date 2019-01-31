@@ -15,14 +15,10 @@ CmdElevatorSetPosition::CmdElevatorSetPosition(Elevator::ElevatorPosition positi
 // Called just before this Command runs the first time
 void CmdElevatorSetPosition::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-    //Do Nothing
+    Robot::m_robotLog.Write("Elevator:    SetPosition Canceled");
   } else {
     Robot::m_elevator.SetElevatorPosition(m_elevatorPosition);
   }
-
-  sprintf(Robot::message,"Elevator:    SetElevator   Position=%s", Robot::m_elevator.GetElevatorPositionName(m_elevatorPosition));
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 // Called repeatedly when this Command is scheduled to run

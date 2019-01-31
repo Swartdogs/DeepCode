@@ -12,16 +12,17 @@
 
 char      Robot::message[100];
 
-Dashboard Robot::m_dashboard(0,0,1,18);
+Dashboard Robot::m_dashboard(0,0,1,19); //Dashboard and Log should be created first
+RobotLog  Robot::m_robotLog("Yeti");
 Drive     Robot::m_drive;
 Elevator  Robot::m_elevator;
-RobotLog  Robot::m_robotLog("Yeti");
 OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
 }
 
 void Robot::RobotPeriodic() {
+  m_oi.Periodic();
 }
 
 void Robot::DisabledInit() {
