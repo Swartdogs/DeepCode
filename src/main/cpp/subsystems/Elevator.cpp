@@ -12,7 +12,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_footPosition = fpRetracted;
   m_elevatorPosition = epUnknown;
   m_footInUse = false;
-  m_footSol.Set(false);
+  //m_footSol.Set(false);
   m_elevatorPot.SetAverageBits(2);
   m_elevatorPot.SetOversampleBits(0);
   m_elevatorSetpoint = GetElevatorPosition();
@@ -197,7 +197,7 @@ void Elevator::SetElevatorSetpoint(double setpoint) {
 
 void Elevator::SetFootPosition(FootPosition position) {
   if (position != m_footPosition) {
-    m_footSol.Set(position == fpExtended);
+    //m_footSol.Set(position == fpExtended);
     m_footPosition = position;
 
     sprintf(Robot::message,"Elevator:    SetFoot   Position=%s", GetFootPositionName(m_footPosition));

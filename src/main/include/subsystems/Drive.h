@@ -62,7 +62,7 @@ private:
 
   ShifterPosition     m_shifterPosition;
 
-  frc::Solenoid       m_solShifter{solShifter};
+  //frc::Solenoid       m_solShifter{solShifter};
 
   UseEncoder          m_useEncoder;
 

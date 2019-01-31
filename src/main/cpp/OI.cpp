@@ -39,6 +39,7 @@ double OI::GetDriveJoystickY(){
 }
 
 void OI::Periodic() {
+  printf("OIPeriodic\n");
   m_InternalLevel2.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel2.Get());
   m_InternalLevel3.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel3.Get());
 }

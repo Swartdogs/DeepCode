@@ -82,7 +82,8 @@ typedef enum{
     dvSensorMin,
     dvElevRetracted,
     dvElevLevel2,
-    dvElevLevel3
+    dvElevLevel3,
+    dvDriveRatio
 } DashValue;
 
 

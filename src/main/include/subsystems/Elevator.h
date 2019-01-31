@@ -78,7 +78,7 @@ class Elevator : public frc::Subsystem {
   frc::DigitalInput   m_frontSensor{dioFrontSensor};
   frc::DigitalInput   m_rearSensor{dioRearSensor};
 
-  frc::Solenoid       m_footSol{solFoot};
+  //frc::Solenoid       m_footSol{solFoot};
 
   frc::VictorSP       m_elevatorMotor{pwmElevatorMotor};
   frc::VictorSP       m_footMotor{pwmFootMotor};

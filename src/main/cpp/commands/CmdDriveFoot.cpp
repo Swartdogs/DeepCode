@@ -49,7 +49,7 @@ void CmdDriveFoot::Execute() {
   }
 
   Robot::m_elevator.DriveFoot(speed);
-  Robot::m_drive.ArcadeDrive(speed, 0); 
+  Robot::m_drive.ArcadeDrive(speed * Robot::m_dashboard.GetDashValue(dvDriveRatio), 0); 
 }
 
 // Make this return true when this Command no longer needs to run execute()
