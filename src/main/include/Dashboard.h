@@ -5,12 +5,14 @@
 
 class Dashboard {
 public:
-	Dashboard(int robotStatusCount, int robotValueCount, int dashButtonCount, int dashValueCount);
+	Dashboard(std::string commandPrefix, int robotStatusCount, int robotValueCount, 
+	          int dashButtonCount, int dashValueCount);
 	~Dashboard();
 
 	std::string CountReply();											// Returns current state of Robot, DbData, DbButton values
 	std::string DataString(int32_t number, int delimiter);				// Returns string with integer followed by a delimiter
 	std::string DataString(double number, int delimiter);				// Returns string with double followed by a delimiter
+	std::string GetCommandPrefix();
 	bool		GetDashButton(DashButton buttonIndex);					// Returns state of a Dashboard Button
 	bool		GetDashButtonPress(DashButton buttonIndex);				// Returns True if Dashboard Button has been Pressed
 	double		GetDashValue(DashValue valueIndex);						// Returns Dashboard value at specified index
@@ -34,6 +36,7 @@ private:
 		int32_t pressed;
 	};
 
+	std::string m_commandPrefix;
 	int			m_dashboardButtonCount;
 	int			m_dashboardValueCount;
 	int			m_robotStatusCount;

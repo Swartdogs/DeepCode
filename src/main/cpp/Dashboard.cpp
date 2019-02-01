@@ -11,9 +11,11 @@
 
 // ************************* PUBLIC FUNCTIONS *************************
 
-Dashboard::Dashboard(int robotStatusCount, int robotValueCount, int dashButtonCount, int dashValueCount) {
+Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotValueCount, 
+                     int dashButtonCount, int dashValueCount) {
 	m_robotMode = 0;											// Initialize variables and arrays
 
+	m_commandPrefix 		= commandPrefix;
 	m_robotStatusCount		= robotStatusCount;
 	m_robotValueCount		= robotValueCount;
 	m_dashboardButtonCount	= dashButtonCount;
@@ -85,6 +87,10 @@ std::string Dashboard::DataString(double number, int delimiter) {
 		case 2: 	return ds + "|";
 		default:	return ds;
 	}
+}
+
+std::string Dashboard::GetCommandPrefix() {
+	return m_commandPrefix;
 }
 
 bool Dashboard::GetDashButton(DashButton buttonIndex) {			// Get current state of dashboard button
@@ -222,6 +228,7 @@ void Dashboard::SetTimeStamp(std::string now) {					// Set the driver station ti
 void Dashboard::TcpLoop(Dashboard *host) {
 	struct sockaddr_in	addrHost, addrClient;
 	size_t				position;
+	std::string			commandPrefix = host->GetCommandPrefix();
 	std::string			command;
 	std::string			reply;
 	std::string			clientMesg;
@@ -275,17 +282,17 @@ void Dashboard::TcpLoop(Dashboard *host) {
 					command = clientMesg.substr(0, position);								// Parse command
 					clientMesg.erase(0, position + 1);										// Erase command from message
 
-					if (command == "COUNT") {												// COUNT command requesting data counts
+					if (command == (commandPrefix + "COUNT")) {												// COUNT command requesting data counts
 						reply = host->CountReply();											// Reply from Host
 
-					} else if (command == "GET") {											// GET command requesting Robot data
+					} else if (command == (commandPrefix + "GET")) {											// GET command requesting Robot data
 						if ((position = clientMesg.find("|")) != std::string::npos) {		// Look for pipe at end of Time Stamp
 							host->SetTimeStamp(clientMesg.substr(0, position));				// Parse and Set Time Stamp
 							clientMesg.erase(0, position + 1);
 							reply = host->GetReply();
 						}
 
-					} else if (command == "PUT") {											// PUT command sending Dashboard data
+					} else if (command == (commandPrefix + "PUT")) {											// PUT command sending Dashboard data
 						reply = "PUT:";
 						bool saveFile = false;
 
