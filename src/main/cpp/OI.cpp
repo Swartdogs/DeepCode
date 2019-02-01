@@ -25,6 +25,14 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
   return 0;
 }
 
+double OI::GetArmJoystickX() {
+  return m_armJoystick.GetX();
+}
+
+double OI::GetArmJoystickY() {
+  return -m_armJoystick.GetY();
+}
+
 double OI::GetDriveJoystickX(){
   return m_driveJoystick.GetX();
 }

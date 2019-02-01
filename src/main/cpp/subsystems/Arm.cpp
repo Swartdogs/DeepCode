@@ -6,8 +6,12 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/Arm.h"
+#include "Robot.h"
 
 Arm::Arm() : Subsystem("Arm") {
+  m_armInUse = false;
+  m_manualDrive = false;
+
   m_shoulderPot.SetAverageBits(2);
   m_shoulderPot.SetOversampleBits(0);
   m_wristPot.SetAverageBits(2);
@@ -34,8 +38,34 @@ void Arm::InitDefaultCommand() {
 }
 
 void Arm::Periodic() {
-  m_shoulderMotor.Set(m_shoulderPID.Calculate(GetShoulderPosition()));
-  m_wristMotor.Set(m_wristPID.Calculate(GetWristPosition()));
+  static bool wasManuallyDriven = false;
+  double shoulderPower = 0;
+  double wristPower = 0;
+
+  if (!m_manualDrive) {
+    if (wasManuallyDriven) {
+      SetShoulderPosition(GetShoulderPosition());
+      SetWristPosition(GetWristPosition());
+    }
+
+    shoulderPower = m_shoulderPID.Calculate(GetShoulderPosition());
+    wristPower = m_wristPID.Calculate(GetWristPosition());
+  
+  } else {
+    double joyX = Robot::m_oi.ApplyDeadband(Robot::m_oi.GetArmJoystickX(), 0.05);
+    double joyY = Robot::m_oi.ApplyDeadband(Robot::m_oi.GetArmJoystickY(), 0.05);
+
+    if ((GetShoulderPosition() >= 7 && joyY > 0) || (GetShoulderPosition() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
+    if ((GetWristPosition() >= 7 && joyX > 0) || (GetWristPosition() <= 4 && joyX < 0)) joyX = 0;
+
+    shoulderPower = joyY;
+    wristPower = joyX;
+  }
+
+  wasManuallyDriven = m_manualDrive;
+
+  m_shoulderMotor.Set(shoulderPower);
+  m_wristMotor.Set(wristPower);
 }
 
 bool Arm::GetArmInUse() {
@@ -65,8 +95,16 @@ double Arm::GetWristPosition() {
   return m_wristPot.GetAverageValue() / WRIST_COUNTS_PER_DEGREE; //TODO: Add offset
 }
 
+bool Arm::IsDrivenManually() {
+  return m_manualDrive;
+}
+
 void Arm::SetArmInUse(bool inUse) {
   m_armInUse = inUse;
+}
+
+void Arm::SetDrivenManually(bool isManual) {
+  m_manualDrive = isManual;
 }
 
 void Arm::SetShoulderPosition(ArmPosition position) {

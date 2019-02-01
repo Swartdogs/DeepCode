@@ -30,7 +30,9 @@ class Arm : public frc::Subsystem {
     std::string   GetArmPositionName(ArmPosition position);
     double        GetShoulderPosition();
     double        GetWristPosition();
+    bool          IsDrivenManually();
     void          SetArmInUse(bool inUse);
+    void          SetDrivenManually(bool isManual);
     void          SetShoulderPosition(ArmPosition position);
     void          SetShoulderPosition(double position);
     void          SetWristPosition(ArmPosition position);
@@ -43,6 +45,7 @@ class Arm : public frc::Subsystem {
     const double      WRIST_COUNTS_PER_DEGREE = 7;
 
     bool              m_armInUse;
+    bool              m_manualDrive;
 
     frc::VictorSP     m_shoulderMotor{pwmShoulder};
     frc::VictorSP     m_wristMotor{pwmWrist};

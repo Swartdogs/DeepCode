@@ -14,9 +14,12 @@ class OI {
  public:
   OI();
   double ApplyDeadband(double joystickValue, double deadband);
+  double GetArmJoystickX();
+  double GetArmJoystickY();
   double GetDriveJoystickX();
   double GetDriveJoystickY();
   
  private:
-  frc::Joystick  m_driveJoystick{joyDrive};
+  frc::Joystick  m_driveJoystick{0};
+  frc::Joystick  m_armJoystick{1};
 };
