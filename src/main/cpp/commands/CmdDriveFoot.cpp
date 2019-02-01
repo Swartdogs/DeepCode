@@ -10,7 +10,6 @@ CmdDriveFoot::CmdDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, 
   m_timeout         = fabs(timeout);
 }
 
-// Called just before this Command runs the first time
 void CmdDriveFoot::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){
       m_status = csSkip;
@@ -47,7 +46,7 @@ void CmdDriveFoot::Execute() {
 
 bool CmdDriveFoot::IsFinished() { 
   return (m_status != csRun);
-  }
+}
 
 void CmdDriveFoot::End() {
   Robot::m_elevator.SetFootInUse(false);

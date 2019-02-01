@@ -2,9 +2,9 @@
 
 #include <frc/commands/Command.h>
 
-class CmdCancelClimb : public frc::Command {
+class CmdElevatorAtSetpoint : public frc::Command {
  public:
-  CmdCancelClimb();
+  CmdElevatorAtSetpoint();
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;

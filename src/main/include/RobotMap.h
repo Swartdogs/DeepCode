@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 typedef enum {
@@ -85,10 +78,3 @@ typedef enum{
     dvElevLevel3,
     dvDriveRatio
 } DashValue;
-
-
-// const double elevatorRetractedSetpoint = 0;
-// const double elevatorLevel2Setpoint = elevatorRetractedSetpoint - 10;
-// const double elevatorLevel3Setpoint = elevatorRetractedSetpoint - 20;
-// const double elevatorMinHeight = elevatorRetractedSetpoint - 10;
-// const double elevatorMaxHeight = elevatorRetractedSetpoint + 90;

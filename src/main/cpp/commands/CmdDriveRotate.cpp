@@ -78,4 +78,7 @@ void CmdDriveRotate::End() {
   Robot::m_robotLog.Write(Robot::message);
 }
 
-void CmdDriveRotate::Interrupted() {}
+void CmdDriveRotate::Interrupted() {
+  m_status = csCancel;
+  End();
+}

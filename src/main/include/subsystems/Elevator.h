@@ -35,13 +35,13 @@ class Elevator : public frc::Subsystem {
 
   void            DriveFoot(double speed);
   bool            ElevatorAtSetpoint();
+  bool            FloorDetected(FloorSensor sensor);
   bool            GetCancelClimb();
   double          GetElevatorPosition();
   std::string     GetElevatorPositionName(ElevatorPosition position) ;
   double          GetElevatorSetpoint();
   FootPosition    GetFootPosition();
   std::string     GetFootPositionName(FootPosition position);
-  bool            FloorDetected(FloorSensor sensor);
   void            SetCancelClimb(bool cancelClimb);
   void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);
