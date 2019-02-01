@@ -12,8 +12,8 @@
 
 char      Robot::message[100];
 
-Dashboard Robot::m_dashboard(0,0,1,20); //Dashboard and Log should be created first
 RobotLog  Robot::m_robotLog("Yeti");
+Dashboard Robot::m_dashboard(0,0,1,20); //Dashboard and Log should be created first
 Drive     Robot::m_drive;
 Elevator  Robot::m_elevator;
 OI        Robot::m_oi;

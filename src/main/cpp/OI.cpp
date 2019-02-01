@@ -12,8 +12,8 @@
 #include "subsystems/Elevator.h"
 
 OI::OI() {
-  m_InternalLevel2.WhenPressed    (new GrpClimb(Elevator::epLevel2Extended));
-  m_InternalLevel3.WhenPressed    (new GrpClimb(Elevator::epLevel3Extended));
+  m_InternalLevel2.WhenPressed    (new GrpClimb(Elevator::epLevel2));
+  m_InternalLevel3.WhenPressed    (new GrpClimb(Elevator::epLevel3));
   m_buttonClimbCancel.WhenPressed (new CmdCancelClimb());
   // Process operator interface input here.
 }
@@ -39,7 +39,6 @@ double OI::GetDriveJoystickY(){
 }
 
 void OI::Periodic() {
-  printf("OIPeriodic\n");
   m_InternalLevel2.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel2.Get());
   m_InternalLevel3.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel3.Get());
 }

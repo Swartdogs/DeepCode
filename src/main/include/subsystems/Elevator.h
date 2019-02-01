@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 #include "RobotMap.h"
@@ -21,13 +14,6 @@ class Elevator : public frc::Subsystem {
     fpRetracted
   } FootPosition;
 
-  // typedef enum {
-  //   psOff,
-  //   psPartial,
-  //   psOn,
-  //   psUnknown
-  // } PlatformStatus;
-
   typedef enum {
     fsFront,
     fsRear
@@ -35,8 +21,8 @@ class Elevator : public frc::Subsystem {
 
   typedef enum {
     epRetracted,
-    epLevel2Extended,
-    epLevel3Extended,
+    epLevel2,
+    epLevel3,
     epMinHeight,
     epMaxHeight,
     epUnknown
@@ -51,11 +37,10 @@ class Elevator : public frc::Subsystem {
   bool            ElevatorAtSetpoint();
   bool            GetCancelClimb();
   double          GetElevatorPosition();
-  const char*     GetElevatorPositionName(ElevatorPosition position);
+  std::string     GetElevatorPositionName(ElevatorPosition position) ;
   double          GetElevatorSetpoint();
   FootPosition    GetFootPosition();
-  const char*     GetFootPositionName(FootPosition position);
-  //PlatformStatus  GetPlatformStatus();
+  std::string     GetFootPositionName(FootPosition position);
   bool            FloorDetected(FloorSensor sensor);
   void            SetCancelClimb(bool cancelClimb);
   void            SetElevatorPosition(ElevatorPosition position);
@@ -68,7 +53,6 @@ class Elevator : public frc::Subsystem {
   ElevatorPosition    m_elevatorPosition;
   bool                m_footInUse;
   bool                m_cancelClimb;
-  //PlatformStatus      m_platformStatus;
   double              m_elevatorSetpoint;
 
   PIDControl          m_elevatorPID{"Elevator"};
@@ -78,7 +62,7 @@ class Elevator : public frc::Subsystem {
   frc::DigitalInput   m_frontSensor{dioFrontSensor};
   frc::DigitalInput   m_rearSensor{dioRearSensor};
 
-  //frc::Solenoid       m_footSol{solFoot};
+  frc::Solenoid       m_footSol{solFoot};
 
   frc::VictorSP       m_elevatorMotor{pwmElevatorMotor};
   frc::VictorSP       m_footMotor{pwmFootMotor};

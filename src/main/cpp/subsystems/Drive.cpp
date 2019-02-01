@@ -15,7 +15,7 @@ Drive::Drive() : Subsystem("Drive") {
   m_driveRight1.SetInverted(true);
   m_driveRight2.SetInverted(true);
 
- //m_solShifter.Set(false);
+  m_solShifter.Set(false);
   m_shifterPosition = spHigh;
 
   m_useEncoder = ueLeftEncoder;
@@ -174,7 +174,7 @@ void Drive::SetDriveInUse(bool inUse) {
 
 void Drive::SetShifter(ShifterPosition position) {
   if (position != m_shifterPosition) {
-    //m_solShifter.Set(position == spLow);
+    m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
   }
 }
