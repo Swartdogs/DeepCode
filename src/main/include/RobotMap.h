@@ -32,7 +32,11 @@ typedef enum {
     dioEncoderRightChannelA,
     dioEncoderRightChannelB,
     dioFrontSensor,
-    dioRearSensor
+    dioRearSensor,
+    dioSonarLeftEcho,
+    dioSonarLeftPing,
+    dioSonarRightEcho,
+    dioSonarRightPing
 } RoboRioDio;
 
 typedef enum {

@@ -5,7 +5,7 @@
 
 class CmdDriveRotate : public frc::Command {
  public:
-  CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout = 0);
+  CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout = 0, bool useSonar = false);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -17,5 +17,6 @@ class CmdDriveRotate : public frc::Command {
   double          m_maxSpeed;
   double          m_timeout;
   bool            m_resetGyro;
+  bool            m_useSonar;
   CommandStatus   m_status;
 };

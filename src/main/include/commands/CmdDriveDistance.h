@@ -7,7 +7,7 @@
 class CmdDriveDistance : public frc::Command {
  public:
   CmdDriveDistance(double distance, double heading, double maxSpeed, double minSpeed, bool resetEncoders, 
-                   bool resetGyro, double timeout = 0, bool groupContinue = false);
+                   bool resetGyro, double timeout = 0, bool useSonar = false, bool groupContinue = false);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -22,6 +22,7 @@ class CmdDriveDistance : public frc::Command {
     double          m_minSpeed;
     bool            m_resetEncoders;
     bool            m_resetGyro;
+    bool            m_useSonar;
     CommandStatus   m_status;
     double          m_timeout;
 };

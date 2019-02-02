@@ -6,8 +6,10 @@
 #include "PIDControl.h"
 
 class Drive : public frc::Subsystem {
- 
  public:
+  static constexpr double   SONAR_SEPARATION = 24;
+
+
   typedef enum {
     spLow,
     spHigh
@@ -35,6 +37,8 @@ class Drive : public frc::Subsystem {
   double            GetDistance (UseEncoder encoder);
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
+  double            GetSonarAngle();
+  double            GetSonarDistance();
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
@@ -65,4 +69,7 @@ private:
   frc::VictorSP       m_driveLeft2{pwmDriveLeft2};
   frc::VictorSP       m_driveRight1{pwmDriveRight1};
   frc::VictorSP       m_driveRight2{pwmDriveRight2};
+
+  frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
+  frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};
 };

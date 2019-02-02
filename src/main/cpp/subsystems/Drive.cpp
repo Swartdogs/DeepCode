@@ -36,6 +36,9 @@ Drive::Drive() : Subsystem("Drive") {
   m_drivePID.SetInputRange(-500, 500);
   m_drivePID.SetOutputRamp(0.25, 0.05);
   m_drivePID.SetSetpointDeadband(1.0); 
+
+  m_sonarLeft.SetAutomaticMode(true);
+  m_sonarRight.SetAutomaticMode(true);
 }
 
 Drive::~Drive() {}
@@ -153,6 +156,14 @@ double Drive::GetHeading() {
 
 Drive::ShifterPosition Drive::GetShifterPosition () { 
   return m_shifterPosition; 
+}
+
+double Drive::GetSonarAngle() {
+  return (atan2(m_sonarLeft.GetRangeInches() - m_sonarRight.GetRangeInches(), SONAR_SEPARATION) * 180 / 3.14159);
+}
+
+double Drive::GetSonarDistance() {
+  return ((m_sonarLeft.GetRangeInches() + m_sonarRight.GetRangeInches()) / 2);
 }
 
 double Drive::RotateExec() {
