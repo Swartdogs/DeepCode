@@ -12,6 +12,9 @@ Arm::Arm() : Subsystem("Arm") {
   m_armInUse = false;
   m_manualDrive = false;
 
+  m_shoulderPosition = apTravel;
+  m_wristPosition = apTravel;
+
   m_shoulderPot.SetAverageBits(2);
   m_shoulderPot.SetOversampleBits(0);
   m_wristPot.SetAverageBits(2);
@@ -44,19 +47,24 @@ void Arm::Periodic() {
 
   if (!m_manualDrive) {
     if (wasManuallyDriven) {
-      SetShoulderPosition(GetShoulderPosition());
-      SetWristPosition(GetWristPosition());
+      SetShoulderPosition(GetShoulderDegrees());
+      SetWristPosition(GetWristDegrees());
     }
 
-    shoulderPower = m_shoulderPID.Calculate(GetShoulderPosition());
-    wristPower = m_wristPID.Calculate(GetWristPosition());
+    shoulderPower = m_shoulderPID.Calculate(GetShoulderDegrees());
+    wristPower = m_wristPID.Calculate(GetWristDegrees());
   
   } else {
+    if(!wasManuallyDriven){
+      m_shoulderPosition = apUnknown;
+      m_wristPosition = apUnknown;
+    }
+
     double joyX = Robot::m_oi.ApplyDeadband(Robot::m_oi.GetArmJoystickX(), 0.05);
     double joyY = Robot::m_oi.ApplyDeadband(Robot::m_oi.GetArmJoystickY(), 0.05);
 
-    if ((GetShoulderPosition() >= 7 && joyY > 0) || (GetShoulderPosition() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
-    if ((GetWristPosition() >= 7 && joyX > 0) || (GetWristPosition() <= 4 && joyX < 0)) joyX = 0;
+    if ((GetShoulderDegrees() >= 7 && joyY > 0) || (GetShoulderDegrees() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
+    if ((GetWristDegrees() >= 7 && joyX > 0) || (GetWristDegrees() <= 4 && joyX < 0)) joyX = 0;
 
     shoulderPower = joyY;
     wristPower = joyX;
@@ -82,17 +90,26 @@ std::string Arm::GetArmPositionName(ArmPosition position) {
       case apMid:       name = "Mid";       break;
       case apHigh:      name = "High";      break;
       case apCargoShip: name = "CargoShip"; break;
+      case apUnknown:   name = "Unknown";   break;
   }
 
   return name;
 }
 
-double Arm::GetShoulderPosition() {
+double Arm::GetShoulderDegrees() {
   return m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE; //TODO: Add offset
 }
 
-double Arm::GetWristPosition() {
+Arm::ArmPosition Arm::GetShoulderPosition(){
+  return m_shoulderPosition;
+}
+
+double Arm::GetWristDegrees() {
   return m_wristPot.GetAverageValue() / WRIST_COUNTS_PER_DEGREE; //TODO: Add offset
+}
+
+Arm::ArmPosition Arm::GetWristPosition(){
+  return m_wristPosition;
 }
 
 bool Arm::IsDrivenManually() {
@@ -117,13 +134,25 @@ void Arm::SetShoulderPosition(ArmPosition position) {
       case apMid:       degrees = 4;    break;
       case apHigh:      degrees = 5;    break;
       case apCargoShip: degrees = 6;    break;
+      default:                          return;
   }
 
-  SetShoulderPosition(degrees);
+  m_shoulderPosition = position;
+
+  SetShoulderPosition(degrees, position);
 }
 
-void Arm::SetShoulderPosition(double position) {
-  m_shoulderPID.SetSetpoint(position, GetShoulderPosition());
+void Arm::SetShoulderPosition(double degrees, ArmPosition position) {
+  m_shoulderPID.SetSetpoint(degrees, GetShoulderPosition());
+ 
+  if(position == apUnknown){
+    sprintf(Robot::message,"Arm:      Set Shoulder Position=%4.1f", degrees);
+  } else {
+    sprintf(Robot::message,"Arm:      Set Shoulder Position=%s (%4.1f)", 
+          GetArmPositionName(position).c_str(), degrees);
+  }
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 void Arm::SetWristPosition(ArmPosition position) {
@@ -136,13 +165,25 @@ void Arm::SetWristPosition(ArmPosition position) {
       case apMid:       degrees = 4;    break;
       case apHigh:      degrees = 5;    break;
       case apCargoShip: degrees = 6;    break;
+      default:                          return;
   }
 
-  SetWristPosition(degrees);
+  m_wristPosition = position;
+
+  SetWristPosition(degrees, position);
 }
 
-void Arm::SetWristPosition(double position) {
-  m_wristPID.SetSetpoint(position, GetWristPosition());
+void Arm::SetWristPosition(double degrees, ArmPosition position) {
+  m_wristPID.SetSetpoint(degrees, GetWristPosition());
+
+  if(position == apUnknown){
+    sprintf(Robot::message,"Arm:      Set Wrist Position=%4.1f", degrees);
+  } else {
+    sprintf(Robot::message,"Arm:      Set Wrist Position=%s (%4.1f)", 
+          GetArmPositionName(position).c_str(), degrees);
+  }
+
+  Robot::m_robotLog.Write(Robot::message);
 }
 
 bool Arm::ShoulderAtSetpoint() {

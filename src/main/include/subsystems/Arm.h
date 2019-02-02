@@ -19,7 +19,8 @@ class Arm : public frc::Subsystem {
       apLow,
       apMid,
       apHigh,
-      apCargoShip
+      apCargoShip,
+      apUnknown
     } ArmPosition;
 
     Arm();
@@ -28,15 +29,17 @@ class Arm : public frc::Subsystem {
     
     bool          GetArmInUse(); 
     std::string   GetArmPositionName(ArmPosition position);
-    double        GetShoulderPosition();
-    double        GetWristPosition();
+    double        GetShoulderDegrees();
+    ArmPosition   GetShoulderPosition();
+    double        GetWristDegrees();
+    ArmPosition   GetWristPosition();
     bool          IsDrivenManually();
     void          SetArmInUse(bool inUse);
     void          SetDrivenManually(bool isManual);
     void          SetShoulderPosition(ArmPosition position);
-    void          SetShoulderPosition(double position);
+    void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown);
     void          SetWristPosition(ArmPosition position);
-    void          SetWristPosition(double position);
+    void          SetWristPosition(double degrees, ArmPosition position = apUnknown);
     bool          ShoulderAtSetpoint();
     bool          WristAtSetpoint();
 
@@ -46,6 +49,9 @@ class Arm : public frc::Subsystem {
 
     bool              m_armInUse;
     bool              m_manualDrive;
+
+    ArmPosition       m_shoulderPosition;
+    ArmPosition       m_wristPosition;
 
     frc::VictorSP     m_shoulderMotor{pwmShoulder};
     frc::VictorSP     m_wristMotor{pwmWrist};
