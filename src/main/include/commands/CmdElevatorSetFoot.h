@@ -1,5 +1,6 @@
 #pragma once
 
+#include "RobotMap.h"
 #include "subsystems/Elevator.h"
 #include <frc/commands/Command.h>
 
@@ -15,4 +16,6 @@ class CmdElevatorSetFoot : public frc::Command {
  private:
   Elevator::FootPosition m_footPosition;
   double                 m_timeout;
+  CommandStatus          m_status;
+
 };

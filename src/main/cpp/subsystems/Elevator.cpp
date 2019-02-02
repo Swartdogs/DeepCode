@@ -96,6 +96,12 @@ std::string Elevator::GetFootPositionName(FootPosition position) {
   return name;
 }
 
+bool Elevator::SafeToRaise() {
+    if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvSensorMin)) return true;
+
+    return (!m_frontSensor.Get() && !m_rearSensor.Get());
+}
+
 void Elevator::SetCancelClimb(bool cancelClimb) {
   m_cancelClimb = cancelClimb;
   if (m_cancelClimb) SetElevatorSetpoint(GetElevatorPosition());

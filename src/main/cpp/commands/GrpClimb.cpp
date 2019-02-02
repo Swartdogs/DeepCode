@@ -8,6 +8,7 @@
 #include "commands/CmdElevatorSetPosition.h"
 
 GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
+  AddSequential(new CmdElevatorSetFoot(Elevator::fpExtended, 1.0));
   AddSequential(new CmdElevatorSetPosition(position));
   AddSequential(new CmdElevatorAtSetpoint());
   AddSequential(new CmdDriveFoot(Elevator::fsFront, 0.3, 4.0));
@@ -25,6 +26,10 @@ void GrpClimb::Initialize() {
 void GrpClimb::Execute() {
   if (Robot::m_elevator.GetCancelClimb()) {
     this->Cancel(); 
-    Robot::m_elevator.SetElevatorSetpoint(Robot::m_elevator.GetElevatorPosition());
+    if (Robot::m_elevator.SafeToRaise()) {
+      Robot::m_elevator.SetElevatorPosition(Elevator::epRetracted);
+    } else {
+      Robot::m_elevator.SetElevatorSetpoint(Robot::m_elevator.GetElevatorPosition());
+    }
   }
 }
