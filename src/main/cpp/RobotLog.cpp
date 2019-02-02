@@ -135,15 +135,19 @@ void RobotLog::StartPeriodic() {
 
 void RobotLog::Write(std::string entry, bool includeTime) {
     const char* cEntry=entry.c_str();
-    float eventTime = (float)(m_periodicCount * 20) / 1000;
-    int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
-
-    includeTime ? printf("%7.2f %+3d: %s \n", eventTime, timeDiff, cEntry) : printf("%s \n", cEntry);
 
     if (m_logFile == nullptr) m_logFile = fopen("/home/lvuser/Log525.txt", "a");
+ 
+    if (includeTime) {
+        float eventTime = (float)(m_periodicCount * 20) / 1000;
+        int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
 
-    if (m_logFile != nullptr) {
-        (m_periodicCount > 0) ? fprintf(m_logFile, "%7.2f %+3d: %s \r\n", eventTime, timeDiff, cEntry) : fprintf(m_logFile, "%s \r\n", cEntry);
+        printf("%7.2f %+3d: %s \n", eventTime, timeDiff, cEntry);
+        if (m_logFile != nullptr) fprintf(m_logFile, "%7.2f %+3d: %s \r\n", eventTime, timeDiff, cEntry);
+
+    } else {
+        printf("%s \n", cEntry);        
+        if (m_logFile != nullptr) fprintf(m_logFile, "%s \r\n", cEntry);
     }
 }
 
