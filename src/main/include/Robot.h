@@ -14,6 +14,7 @@
 #include "OI.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
+#include "subsystems/Arm.h"
 #include "RobotLog.h"
 
 class Robot : public frc::TimedRobot {
@@ -23,6 +24,7 @@ class Robot : public frc::TimedRobot {
 
   static Drive      m_drive; 
   static Vision     m_vision;
+  static Arm        m_arm;
   static RobotLog   m_robotLog;
   static OI         m_oi;
 

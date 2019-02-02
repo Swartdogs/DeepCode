@@ -15,6 +15,7 @@ bool      Robot::driveInUse;
 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
+Arm       Robot::m_arm; 
 RobotLog  Robot::m_robotLog("Yeti");
 OI        Robot::m_oi;
 
@@ -89,6 +90,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() { 
   Robot::m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
+  Robot::m_arm.Periodic();
   Robot::m_robotLog.EndPeriodic();
 }
 
