@@ -68,12 +68,13 @@ void Robot::TestPeriodic() {
         setpoint  = m_dashboard.GetDashValue(dvPidSetpoint);
 
         switch(tunePID) {
-            case 0: 
-            break;
-            case 1:
-            break;
-            case 2:
-            break;
+            case 0:                       //Rotate PID
+              m_drive.RotatePidTune();
+              break;
+            case 1:                       //Drive PID
+              m_drive.DrivePidTune();
+              m_drive.RotateInit(0, 0.6, true);
+              break;
             default:;
         }
         m_tunePID.SetOutputRamp(0.2, 0.05);
@@ -95,14 +96,18 @@ void Robot::TestPeriodic() {
       }
 
       switch(tunePID) {
-        case 0:
-        
-        break;
-        case 1:
-        break;
-        case 2:
-        break;
+        case 0:                                                                 //Rotate PID
+          m_drive.ArcadeDrive(0, m_tunePID.Calculate(m_drive.GetHeading()));
+          break;
+        case 1:                                                                 //Drive PID
+          m_drive.ArcadeDrive(m_tunePID.Calculate(m_drive.GetDistance(Drive::ueCurrentEncoder)), m_drive.RotateExec());
+          break;
+        case 2:                                                                 //Elevator PID
+          m_elevator.SetElevatorMotor(m_tunePID.Calculate(m_elevator.GetElevatorPosition()));
+          break;
       }
+  } else {
+    tunePID = -1;
   }
 }
 

@@ -44,6 +44,7 @@ class Elevator : public frc::Subsystem {
   std::string     GetFootPositionName(FootPosition position);
   bool            SafeToRaise();
   void            SetCancelClimb(bool cancelClimb);
+  void            SetElevatorMotor(double speed);
   void            SetElevatorPosition(ElevatorPosition position);
   void            SetElevatorSetpoint(double setpoint);
   void            SetFootPosition(FootPosition position);

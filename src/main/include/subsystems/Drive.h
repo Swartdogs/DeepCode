@@ -31,12 +31,14 @@ class Drive : public frc::Subsystem {
   void              DriveInit(double distance, double heading, double maxSpeed, double minSpeed,
                               bool resetEncoder, bool resetGyro, bool driveArc = false);
   bool              DriveIsFinished();
+  void              DrivePidTune();
   double            GetDistance (UseEncoder encoder);
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
+  void              RotatePidTune();
   void              SetDriveEnable(bool enable); 
   void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);

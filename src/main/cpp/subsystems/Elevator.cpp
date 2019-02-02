@@ -107,6 +107,10 @@ void Elevator::SetCancelClimb(bool cancelClimb) {
   if (m_cancelClimb) SetElevatorSetpoint(GetElevatorPosition());
 }
 
+void Elevator::SetElevatorMotor(double speed) {
+  m_elevatorMotor.Set(speed);
+}
+
 void Elevator::SetElevatorPosition(ElevatorPosition position) {
   if (m_elevatorPosition != position) {
     m_elevatorPosition = position;

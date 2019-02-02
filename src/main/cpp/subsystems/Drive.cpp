@@ -110,6 +110,13 @@ bool Drive::DriveIsFinished(){
   return m_drivePID.AtSetpoint();
 }
 
+void Drive::DrivePidTune() {
+  m_encoderLeft.Reset();
+  m_encoderRight.Reset();
+
+  m_useEncoder = ueLeftEncoder;
+}
+
 double Drive::GetDistance(UseEncoder encoder){
   double distance = 0;
   double left = m_encoderLeft.GetDistance();
@@ -162,6 +169,10 @@ void Drive::RotateInit(double heading, double maxSpeed, bool resetGyro) {
 
 bool Drive::RotateIsFinished() {
   return m_rotatePID.AtSetpoint();
+}
+
+void Drive::RotatePidTune() {
+  m_gyro.Reset();
 }
 
 void Drive::SetDriveEnable(bool enable) {
