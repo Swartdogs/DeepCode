@@ -23,5 +23,8 @@ void GrpClimb::Initialize() {
 }
 
 void GrpClimb::Execute() {
-  if (Robot::m_elevator.GetCancelClimb()) this->Cancel();
+  if (Robot::m_elevator.GetCancelClimb()) {
+    this->Cancel(); 
+    Robot::m_elevator.SetElevatorSetpoint(Robot::m_elevator.GetElevatorPosition());
+  }
 }
