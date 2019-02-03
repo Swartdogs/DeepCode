@@ -4,9 +4,9 @@
 #include "subsystems/Elevator.h"
 #include "RobotMap.h"
 
-class CmdDriveFoot : public frc::Command {
+class CmdElevatorDriveFoot : public frc::Command {
  public:
-  CmdDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout);
+  CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;

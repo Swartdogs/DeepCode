@@ -154,8 +154,17 @@ double Drive::GetHeading() {
   return m_gyro.GetAngle ();
 }
 
-Drive::ShifterPosition Drive::GetShifterPosition () { 
+Drive::ShifterPosition Drive::GetShifterPosition() { 
   return m_shifterPosition; 
+}
+
+std::string Drive::GetShifterPositionName(ShifterPosition position) {
+  std::string name = " ";
+  switch(position){
+    case spLow:   name = "Low";  break;
+    case spHigh:  name = "High"; break;
+  }
+  return name;
 }
 
 double Drive::GetSonarAngle() {

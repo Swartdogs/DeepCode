@@ -1,7 +1,7 @@
-#include "commands/CmdDriveFoot.h"
+#include "commands/CmdElevatorDriveFoot.h"
 #include "Robot.h"
 
-CmdDriveFoot::CmdDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout) {
+CmdElevatorDriveFoot::CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout) {
   Requires(&Robot::m_drive);
 
   m_footSpeed       = footSpeed;
@@ -10,7 +10,7 @@ CmdDriveFoot::CmdDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, 
   m_timeout         = fabs(timeout);
 }
 
-void CmdDriveFoot::Initialize() {
+void CmdElevatorDriveFoot::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){
       m_status = csSkip;
   } else {
@@ -24,7 +24,7 @@ void CmdDriveFoot::Initialize() {
   }
 }
 
-void CmdDriveFoot::Execute() {
+void CmdElevatorDriveFoot::Execute() {
   double speed = 0;
 
   if(m_status == csRun){
@@ -44,11 +44,11 @@ void CmdDriveFoot::Execute() {
   Robot::m_drive.ArcadeDrive(speed * Robot::m_dashboard.GetDashValue(dvDriveRatio), 0); 
 }
 
-bool CmdDriveFoot::IsFinished() { 
+bool CmdElevatorDriveFoot::IsFinished() { 
   return (m_status != csRun);
 }
 
-void CmdDriveFoot::End() {
+void CmdElevatorDriveFoot::End() {
   Robot::m_elevator.SetFootInUse(false);
   Robot::m_drive.SetDriveInUse(false);
 
@@ -75,7 +75,7 @@ void CmdDriveFoot::End() {
   Robot::m_robotLog.Write(Robot::message);
 }
 
-void CmdDriveFoot::Interrupted() {
+void CmdElevatorDriveFoot::Interrupted() {
   m_status = csCancel;
   End();
 }

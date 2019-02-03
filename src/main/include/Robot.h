@@ -15,7 +15,6 @@
 class Robot : public frc::TimedRobot {
  public:
   static char   message[100];
-  static bool   driveInUse;
 
   static Dashboard  m_dashboard;
   static Drive      m_drive; 

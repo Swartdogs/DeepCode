@@ -9,7 +9,6 @@ class Drive : public frc::Subsystem {
  public:
   static constexpr double   SONAR_SEPARATION = 24;
 
-
   typedef enum {
     spLow,
     spHigh
@@ -37,6 +36,7 @@ class Drive : public frc::Subsystem {
   double            GetDistance (UseEncoder encoder);
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
+  std::string       GetShifterPositionName(ShifterPosition position);
   double            GetSonarAngle();
   double            GetSonarDistance();
   double            RotateExec();
