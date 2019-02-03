@@ -1,98 +1,119 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "Robot.h"
 
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 char      Robot::message[100];
-bool      Robot::driveInUse;
 
+RobotLog  Robot::m_robotLog("Yeti");
+Dashboard Robot::m_dashboard("2019", 0, 0, 1, 20);       //Dashboard and Log should be created first
+Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
-RobotLog  Robot::m_robotLog("Yeti");
+Elevator  Robot::m_elevator;
 OI        Robot::m_oi;
 
-void Robot::RobotInit() {
+void Robot::RobotInit() { 
   m_vision.InitVision();
 }
 
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want ran during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
-void Robot::RobotPeriodic() {}
-
-/**
- * This function is called once each time the robot enters Disabled mode. You
- * can use it to reset any subsystem information you want to clear when the
- * robot is disabled.
- */
-void Robot::DisabledInit() {
-  Robot::m_robotLog.SetMode(rmDisabled);
-  Robot::m_robotLog.Close(); 
+void Robot::RobotPeriodic() {
+  m_oi.Periodic();
 }
 
-void Robot::DisabledPeriodic() { frc::Scheduler::GetInstance()->Run(); }
+void Robot::DisabledInit() {
+  m_robotLog.SetMode(rmDisabled);
+  m_robotLog.Close(); 
+  m_dashboard.SetRobotMode(rmDisabled);
+}
 
-/**
- * This autonomous (along with the chooser code above) shows how to select
- * between different autonomous modes using the dashboard. The sendable chooser
- * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
- * remove all of the chooser code and uncomment the GetString code to get the
- * auto name from the text box below the Gyro.
- *
- * You can add additional auto modes by adding additional commands to the
- * chooser code above (like the commented example) or additional comparisons to
- * the if-else structure below with additional strings & commands.
- */
+void Robot::DisabledPeriodic() { 
+  frc::Scheduler::GetInstance()->Run(); 
+  }
+
 void Robot::AutonomousInit() {
-    Robot::m_robotLog.SetMode(rmAutonomous);
-  // std::string autoSelected = frc::SmartDashboard::GetString(
-  //     "Auto Selector", "Default");
-  // if (autoSelected == "My Auto") {
-  //   m_autonomousCommand = &m_myAuto;
-  // } else {
-  //   m_autonomousCommand = &m_defaultAuto;
-  // }
-
-  // m_autonomousCommand = m_chooser.GetSelected();
+  m_robotLog.SetMode(rmAutonomous);
+  m_dashboard.SetRobotMode(rmAutonomous);
 
   // if (m_autonomousCommand != nullptr) {
   //   m_autonomousCommand->Start();
   // }
 }
 
-void Robot::AutonomousPeriodic() { frc::Scheduler::GetInstance()->Run(); }
+void Robot::AutonomousPeriodic() { 
+  frc::Scheduler::GetInstance()->Run(); 
+}
 
 void Robot::TeleopInit() {
-  Robot::m_robotLog.SetMode(rmTeleop);
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
-  // if (m_autonomousCommand != nullptr) {
-  //   m_autonomousCommand->Cancel();
-  //   m_autonomousCommand = nullptr;
-  // }
+  m_robotLog.SetMode(rmTeleop);
+  m_dashboard.SetRobotMode(rmTeleop);
 }
 
 void Robot::TeleopPeriodic() { 
-  Robot::m_robotLog.StartPeriodic();
+  m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
-  Robot::m_robotLog.EndPeriodic();
+  m_arm.Periodic();
+  m_elevator.Periodic();
+  m_robotLog.EndPeriodic();
 }
 
-void Robot::TestPeriodic() {}
+void Robot::TestInit() {
+  m_robotLog.SetMode(rmTest);
+  m_dashboard.SetRobotMode(rmTest);
+}
+
+void Robot::TestPeriodic() {
+  static double       setpoint = 0;
+  static int          tunePID = -1;
+  
+  if(m_dashboard.GetDashButton(dbRunPid)) {
+      if(tunePID < 0) {
+        tunePID   = m_dashboard.GetDashValue(dvPidSelect);
+        setpoint  = m_dashboard.GetDashValue(dvPidSetpoint);
+
+        switch(tunePID) {
+            case 0:                       //Rotate PID
+              m_drive.RotatePidTune();
+              break;
+            case 1:                       //Drive PID
+              m_drive.DrivePidTune();
+              m_drive.RotateInit(0, 0.6, true);
+              break;
+            default:;
+        }
+        m_tunePID.SetOutputRamp(0.2, 0.05);
+        m_tunePID.SetSetpoint(setpoint, 0);
+        m_tunePID.SetOutputRange(-m_dashboard.GetDashValue(dvPidMaxOut),m_dashboard.GetDashValue(dvPidMaxOut));
+
+        m_tunePID.SetCoefficient  ('P', m_dashboard.GetDashValue(dvPthreshold),
+                                        m_dashboard.GetDashValue(dvPabove),
+                                        m_dashboard.GetDashValue(dvPbelow));
+                                        
+        m_tunePID.SetCoefficient  ('I', m_dashboard.GetDashValue(dvIthreshold),
+                                        m_dashboard.GetDashValue(dvIabove),
+                                        m_dashboard.GetDashValue(dvIbelow));
+                                        
+        m_tunePID.SetCoefficient  ('D', m_dashboard.GetDashValue(dvDthreshold),
+                                        m_dashboard.GetDashValue(dvDabove),
+                                        m_dashboard.GetDashValue(dvDbelow));
+        m_tunePID.Reset();
+      }
+
+      switch(tunePID) {
+        case 0:                                                                 //Rotate PID
+          m_drive.ArcadeDrive(0, m_tunePID.Calculate(m_drive.GetHeading()));
+          break;
+        case 1:                                                                 //Drive PID
+          m_drive.ArcadeDrive(m_tunePID.Calculate(m_drive.GetDistance(Drive::ueCurrentEncoder)), m_drive.RotateExec());
+          break;
+        case 2:                                                                 //Elevator PID
+          m_elevator.SetElevatorMotor(m_tunePID.Calculate(m_elevator.GetElevatorPosition()));
+          break;
+      }
+  } else {
+    tunePID = -1;
+  }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }

@@ -2,31 +2,35 @@
 #include <commands/CmdDriveRotate.h>
 #include "Robot.h"
 
-CmdDriveRotate::CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout) {
+CmdDriveRotate::CmdDriveRotate(double heading, double maxSpeed, bool resetGyro, double timeout, bool useSonar) {
   Requires(&Robot::m_drive); 
 
   m_heading      = heading;
   m_maxSpeed     = maxSpeed;
   m_resetGyro    = resetGyro;
   m_timeout      = fabs(timeout); 
+  m_useSonar     = useSonar;
   m_status       = csRun; 
 }
 
 void CmdDriveRotate::Initialize() {
-   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-      m_status = csSkip;
-   } else {
-     m_status = csRun;
-     Robot::driveInUse = true;
+  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
+    m_status = csSkip;
+  } else {
+    m_status = csRun;
+    Robot::m_drive.SetDriveInUse(true);
 
-     Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);
-     if (m_timeout > 0) SetTimeout(m_timeout);
+    if (m_useSonar) m_heading = Robot::m_drive.GetSonarAngle();
 
-     sprintf(Robot::message, "Drive:  Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
-             Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
+    Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);
+    
+    if (m_timeout > 0) SetTimeout(m_timeout);
 
-      Robot::m_robotLog.Write(Robot::message);
-   }
+    sprintf(Robot::message, "Drive:  Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
+            Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
+
+    Robot::m_robotLog.Write(Robot::message);
+  }
 }
 
 void CmdDriveRotate::Execute() {
@@ -53,7 +57,7 @@ bool CmdDriveRotate::IsFinished() {
 }
 
 void CmdDriveRotate::End() {
-  Robot::driveInUse = false;
+  Robot::m_drive.SetDriveInUse(false);
 
   switch (m_status) {
     case csSkip:
@@ -78,4 +82,7 @@ void CmdDriveRotate::End() {
   Robot::m_robotLog.Write(Robot::message);
 }
 
-void CmdDriveRotate::Interrupted() {}
+void CmdDriveRotate::Interrupted() {
+  m_status = csCancel;
+  End();
+}

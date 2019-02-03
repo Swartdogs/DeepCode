@@ -2,9 +2,9 @@
 
 #include <frc/commands/Command.h>
 
-class CmdDriveJoystick : public frc::Command {
+class CmdCancelClimb : public frc::Command {
  public:
-  CmdDriveJoystick();
+  CmdCancelClimb();
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;

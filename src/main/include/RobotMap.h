@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 typedef enum {
@@ -28,20 +21,68 @@ typedef enum {
     pwmDriveLeft1,
     pwmDriveLeft2,
     pwmDriveRight1,
-    pwmDriveRight2
+    pwmDriveRight2,
+    pwmElevatorMotor,
+    pwmFootMotor,
+    pwmShoulder,
+    pwmWrist
 } RoboRioPwm;
 
 typedef enum {
     dioEncoderLeftChannelA,
     dioEncoderLeftChannelB,
     dioEncoderRightChannelA,
-    dioEncoderRightChannelB
+    dioEncoderRightChannelB,
+    dioFrontSensor,
+    dioRearSensor,
+    dioSonarLeftEcho,
+    dioSonarLeftPing,
+    dioSonarRightEcho,
+    dioSonarRightPing
 } RoboRioDio;
 
 typedef enum {
-    solShifter
+    aioElevatorPot,
+    aioShoulderPot,
+    aioWristPot
+} RoboRioAio;
+
+typedef enum {
+    solShifter,
+    solFoot
 } RoboRioSol;
 
 typedef enum {
-    joyDrive
-} DSJoystick;
+    rsNone
+} RobotStatus;
+
+typedef enum {
+    rvNone
+} RobotValue;
+
+typedef enum { 
+    dbRunPid
+} DashButton;
+
+typedef enum{ 
+    dvPidSelect,
+    dvPidSetpoint,
+    dvPidMaxOut,
+    dvPthreshold,
+    dvPabove,
+    dvPbelow,
+    dvIthreshold,
+    dvIabove,
+    dvIbelow,
+    dvDthreshold,
+    dvDabove,
+    dvDbelow,
+    dvElevOffset,
+    dvElevMin,
+    dvElevMax,
+    dvSensorMin,
+    dvElevRetracted,
+    dvElevLevel2,
+    dvElevLevel3,
+    dvDriveRatio
+} DashValue;

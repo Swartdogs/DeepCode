@@ -10,6 +10,7 @@
 
 Drive::Drive() : Subsystem("Drive") {
   m_driveEnable = true;
+  m_driveInUse  = false;
 
   m_driveRight1.SetInverted(true);
   m_driveRight2.SetInverted(true);
@@ -35,6 +36,9 @@ Drive::Drive() : Subsystem("Drive") {
   m_drivePID.SetInputRange(-500, 500);
   m_drivePID.SetOutputRamp(0.25, 0.05);
   m_drivePID.SetSetpointDeadband(1.0); 
+
+  m_sonarLeft.SetAutomaticMode(true);
+  m_sonarRight.SetAutomaticMode(true);
 }
 
 Drive::~Drive() {}
@@ -42,6 +46,12 @@ Drive::~Drive() {}
 void Drive::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   SetDefaultCommand(new CmdDriveJoystick());
+}
+
+void Drive::Periodic() {
+  if (!m_driveInUse) {
+    ArcadeDrive(0, 0);
+  }
 }
 
 void Drive::ArcadeDrive(double drive, double rotate) {
@@ -103,6 +113,13 @@ bool Drive::DriveIsFinished(){
   return m_drivePID.AtSetpoint();
 }
 
+void Drive::DrivePidTune() {
+  m_encoderLeft.Reset();
+  m_encoderRight.Reset();
+
+  m_useEncoder = ueLeftEncoder;
+}
+
 double Drive::GetDistance(UseEncoder encoder){
   double distance = 0;
   double left = m_encoderLeft.GetDistance();
@@ -141,16 +158,12 @@ Drive::ShifterPosition Drive::GetShifterPosition () {
   return m_shifterPosition; 
 }
 
-const char* Drive::GetShifterPositionName(Drive::ShifterPosition position) {
-  std::string name = "";
+double Drive::GetSonarAngle() {
+  return (atan2(m_sonarLeft.GetRangeInches() - m_sonarRight.GetRangeInches(), SONAR_SEPARATION) * 180 / 3.14159);
+}
 
-  switch (position) {
-    case spLow:   name = "low";   break;
-    case spHigh:  name = "high";  break;
-    default:; 
-  }
-
-  return name.c_str();
+double Drive::GetSonarDistance() {
+  return ((m_sonarLeft.GetRangeInches() + m_sonarRight.GetRangeInches()) / 2);
 }
 
 double Drive::RotateExec() {
@@ -169,8 +182,16 @@ bool Drive::RotateIsFinished() {
   return m_rotatePID.AtSetpoint();
 }
 
-void Drive::SetDriveEnable(bool enable){
+void Drive::RotatePidTune() {
+  m_gyro.Reset();
+}
+
+void Drive::SetDriveEnable(bool enable) {
   m_driveEnable = enable; 
+}
+
+void Drive::SetDriveInUse(bool inUse) {
+  m_driveInUse = inUse;
 }
 
 void Drive::SetShifter(ShifterPosition position) {

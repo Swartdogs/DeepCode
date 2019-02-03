@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 #include "RobotMap.h"
@@ -13,9 +6,11 @@
 #include "PIDControl.h"
 
 class Drive : public frc::Subsystem {
- 
  public:
-  typedef enum { 
+  static constexpr double   SONAR_SEPARATION = 24;
+
+
+  typedef enum {
     spLow,
     spHigh
   }ShifterPosition;
@@ -31,24 +26,30 @@ class Drive : public frc::Subsystem {
   ~Drive();
 
   void              InitDefaultCommand() override;
+  void              Periodic() override;
 
   void              ArcadeDrive(double drive, double rotate);
   double            DriveExec();
   void              DriveInit(double distance, double heading, double maxSpeed, double minSpeed,
                               bool resetEncoder, bool resetGyro, bool driveArc = false);
   bool              DriveIsFinished();
+  void              DrivePidTune();
   double            GetDistance (UseEncoder encoder);
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
-  const char*       GetShifterPositionName(ShifterPosition position);
+  double            GetSonarAngle();
+  double            GetSonarDistance();
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
+  void              RotatePidTune();
   void              SetDriveEnable(bool enable); 
+  void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);
 
 private:
-  bool                m_driveEnable; 
+  bool                m_driveEnable;
+  bool                m_driveInUse; 
 
   frc::ADXRS450_Gyro  m_gyro{};
 
@@ -68,4 +69,7 @@ private:
   frc::VictorSP       m_driveLeft2{pwmDriveLeft2};
   frc::VictorSP       m_driveRight1{pwmDriveRight1};
   frc::VictorSP       m_driveRight2{pwmDriveRight2};
+
+  frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
+  frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};
 };

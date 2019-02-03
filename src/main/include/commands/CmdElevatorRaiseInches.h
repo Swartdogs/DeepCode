@@ -2,12 +2,15 @@
 
 #include <frc/commands/Command.h>
 
-class CmdDriveJoystick : public frc::Command {
+class CmdElevatorRaiseInches : public frc::Command {
  public:
-  CmdDriveJoystick();
+  CmdElevatorRaiseInches(double inches);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
+
+ private:
+  double m_inches;
 };

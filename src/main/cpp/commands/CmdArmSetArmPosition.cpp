@@ -5,35 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/CmdDriveSetGear.h"
+#include "commands/CmdArmSetArmPosition.h"
 #include "Robot.h"
 
-CmdDriveSetGear::CmdDriveSetGear(Drive::ShifterPosition position) {
-  m_position = position;
+CmdArmSetArmPosition::CmdArmSetArmPosition(Arm::ArmPosition position) {
+  m_position = position; 
 }
 
 // Called just before this Command runs the first time
-void CmdDriveSetGear::Initialize() {
-  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-    //Do nothing
-  } else {
-    Robot::m_drive.SetShifter(m_position);
-     
-    sprintf(Robot::message, "Drive:  Shifter Position: %s", m_position == Drive::spLow ? "Low" : "High");      
-
-    Robot::m_robotLog.Write(Robot::message);
-  }
+void CmdArmSetArmPosition::Initialize() {
+  Robot::m_arm.SetShoulderPosition(m_position);
+  Robot::m_arm.SetWristPosition(m_position);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void CmdDriveSetGear::Execute() {}
+void CmdArmSetArmPosition::Execute() {}
 
 // Make this return true when this Command no longer needs to run execute()
-bool CmdDriveSetGear::IsFinished() { return true; }
+bool CmdArmSetArmPosition::IsFinished() { return true; }
 
 // Called once after isFinished returns true
-void CmdDriveSetGear::End() {}
+void CmdArmSetArmPosition::End() {}
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void CmdDriveSetGear::Interrupted() {}
+void CmdArmSetArmPosition::Interrupted() {}

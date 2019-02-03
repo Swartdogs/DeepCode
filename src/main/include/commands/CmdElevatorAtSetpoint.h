@@ -2,9 +2,9 @@
 
 #include <frc/commands/Command.h>
 
-class CmdDriveJoystick : public frc::Command {
+class CmdElevatorAtSetpoint : public frc::Command {
  public:
-  CmdDriveJoystick();
+  CmdElevatorAtSetpoint();
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
