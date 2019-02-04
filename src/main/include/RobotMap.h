@@ -1,56 +1,12 @@
 #pragma once
 
 typedef enum {
-    csRun,
-    csSkip,
-    csDone,
-    csCancel,
-    csTimedOut, 
-    csContinue
-} CommandStatus;
-
-typedef enum {
     rmInit,					// Robot Mode 		(Dashboard, RobotLog)
 	rmDisabled,
     rmAutonomous,
     rmTeleop,
     rmTest
 } RobotMode;
-
-typedef enum {
-    pwmDriveLeft1,
-    pwmDriveLeft2,
-    pwmDriveRight1,
-    pwmDriveRight2,
-    pwmElevatorMotor,
-    pwmFootMotor,
-    pwmShoulder,
-    pwmWrist
-} RoboRioPwm;
-
-typedef enum {
-    dioEncoderLeftChannelA,
-    dioEncoderLeftChannelB,
-    dioEncoderRightChannelA,
-    dioEncoderRightChannelB,
-    dioFrontSensor,
-    dioRearSensor,
-    dioSonarLeftEcho,
-    dioSonarLeftPing,
-    dioSonarRightEcho,
-    dioSonarRightPing
-} RoboRioDio;
-
-typedef enum {
-    aioElevatorPot,
-    aioShoulderPot,
-    aioWristPot
-} RoboRioAio;
-
-typedef enum {
-    solShifter,
-    solFoot
-} RoboRioSol;
 
 typedef enum {
     rsNone
