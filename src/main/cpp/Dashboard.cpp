@@ -341,7 +341,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 }
 
 void Dashboard::WriteToLog(std::string entry) {
-	entry = "Dash:   " + entry;
-	Robot::m_robotLog.Write(entry, false);
+//	entry = "Dash:   " + entry;
+//	Robot::m_robotLog.Write(entry, false);
 }
 
