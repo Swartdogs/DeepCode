@@ -36,8 +36,7 @@ Arm::Arm() : Subsystem("Arm") {
 }
 
 void Arm::InitDefaultCommand() {
-  // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
+
 }
 
 void Arm::Periodic() {
@@ -144,15 +143,6 @@ void Arm::SetShoulderPosition(ArmPosition position) {
 
 void Arm::SetShoulderPosition(double degrees, ArmPosition position) {
   m_shoulderPID.SetSetpoint(degrees, GetShoulderPosition());
- 
-  if(position == apUnknown){
-    sprintf(Robot::message,"Arm:      Set Shoulder Position=%4.1f", degrees);
-  } else {
-    sprintf(Robot::message,"Arm:      Set Shoulder Position=%s (%4.1f)", 
-          GetArmPositionName(position).c_str(), degrees);
-  }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 void Arm::SetWristPosition(ArmPosition position) {
@@ -175,15 +165,6 @@ void Arm::SetWristPosition(ArmPosition position) {
 
 void Arm::SetWristPosition(double degrees, ArmPosition position) {
   m_wristPID.SetSetpoint(degrees, GetWristPosition());
-
-  if(position == apUnknown){
-    sprintf(Robot::message,"Arm:      Set Wrist Position=%4.1f", degrees);
-  } else {
-    sprintf(Robot::message,"Arm:      Set Wrist Position=%s (%4.1f)", 
-          GetArmPositionName(position).c_str(), degrees);
-  }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 bool Arm::ShoulderAtSetpoint() {
