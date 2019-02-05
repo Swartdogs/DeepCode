@@ -5,7 +5,7 @@
 
 char      Robot::message[100];
 
-Dashboard Robot::m_dashboard("2019", 0, 0, 1, 20);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 0, 17, 1, 40);       //Dashboard and Log should be created first
 OI        Robot::m_oi;
 
 void Robot::RobotInit() { 

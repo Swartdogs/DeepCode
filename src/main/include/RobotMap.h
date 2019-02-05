@@ -13,7 +13,23 @@ typedef enum {
 } RobotStatus;
 
 typedef enum {
-    rvNone
+    rvDriveGyro,
+    rvDriveEncoderL,
+    rvDriveEncoderR,
+    rvDriveAmpsLeft1,
+    rvDriveAmpsLeft2,
+    rvDriveAmpsRight1,
+    rvDriveAmpsRight2,
+    rvElevatorPosition,
+    rvElevatorSetpoint,
+    rvElevatorFoot,
+    rvElevatorAmps,
+    rvShoulderPosition,
+    rvShoulderSetpoint,
+    rvShoulderAmps,
+    rvWristPosition,
+    rvWristSetpoint,
+    rvWristAmps
 } RobotValue;
 
 typedef enum { 
@@ -40,5 +56,25 @@ typedef enum{
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3,
-    dvDriveRatio
+    dvDriveRatio,
+    dvShoulderMin, 
+    dvShoulderMax,
+    dvShoulderOffset,
+    dvShoulderTravel,
+    dvShoulderFloor,
+    dvShoulderCargo,
+    dvShoulderRocketLow,
+    dvShoulderRocketMid,
+    dvShoulderRocketHigh,
+    dvShoulderModify,
+    dvWristMin,
+    dvWristMax,
+    dvWristOffset,
+    dvWristTravel,
+    dvWristFloor,
+    dvWristCargo,
+    dvWristRocketLow,
+    dvWristRocketMid,
+    dvWristRocketHigh,
+    dvWristModify
 } DashValue;
