@@ -5,6 +5,11 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 #include "OI.h"
+#include "subsystems/Elevator.h"
+#include "subsystems/Drive.h"
+#include "subsystems/Vision.h"
+#include "subsystems/Arm.h"
+#include "RobotLog.h"
 #include "Dashboard.h"
 
 class Robot : public frc::TimedRobot {
@@ -12,6 +17,11 @@ class Robot : public frc::TimedRobot {
   static char   message[100];
 
   static Dashboard  m_dashboard;
+  static Drive      m_drive; 
+  static Elevator   m_elevator;
+  static Vision     m_vision;
+  static Arm        m_arm;
+  static RobotLog   m_robotLog;
   static OI         m_oi;
 
   void RobotInit() override;
@@ -27,4 +37,6 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::SendableChooser<frc::Command*> m_chooser;
+
+  PIDControl  m_tunePID{"Tune"};
 };

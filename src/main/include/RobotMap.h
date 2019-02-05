@@ -1,6 +1,15 @@
 #pragma once
 
 typedef enum {
+    csRun,
+    csSkip,
+    csDone,
+    csCancel,
+    csTimedOut, 
+    csContinue
+} CommandStatus;
+
+typedef enum {
     rmInit,					// Robot Mode 		(Dashboard, RobotLog)
 	rmDisabled,
     rmAutonomous,
@@ -9,27 +18,46 @@ typedef enum {
 } RobotMode;
 
 typedef enum {
+    pwmDriveLeft1,
+    pwmDriveLeft2,
+    pwmDriveRight1,
+    pwmDriveRight2,
+    pwmElevatorMotor,
+    pwmFootMotor,
+    pwmShoulder,
+    pwmWrist
+} RoboRioPwm;
+
+typedef enum {
+    dioEncoderLeftChannelA,
+    dioEncoderLeftChannelB,
+    dioEncoderRightChannelA,
+    dioEncoderRightChannelB,
+    dioFrontSensor,
+    dioRearSensor,
+    dioSonarLeftEcho,
+    dioSonarLeftPing,
+    dioSonarRightEcho,
+    dioSonarRightPing
+} RoboRioDio;
+
+typedef enum {
+    aioElevatorPot,
+    aioShoulderPot,
+    aioWristPot
+} RoboRioAio;
+
+typedef enum {
+    solShifter,
+    solFoot
+} RoboRioSol;
+
+typedef enum {
     rsNone
 } RobotStatus;
 
 typedef enum {
-    rvDriveGyro,
-    rvDriveEncoderL,
-    rvDriveEncoderR,
-    rvDriveAmpsLeft1,
-    rvDriveAmpsLeft2,
-    rvDriveAmpsRight1,
-    rvDriveAmpsRight2,
-    rvElevatorPosition,
-    rvElevatorSetpoint,
-    rvElevatorFoot,
-    rvElevatorAmps,
-    rvShoulderPosition,
-    rvShoulderSetpoint,
-    rvShoulderAmps,
-    rvWristPosition,
-    rvWristSetpoint,
-    rvWristAmps
+    rvNone
 } RobotValue;
 
 typedef enum { 
@@ -56,25 +84,5 @@ typedef enum{
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3,
-    dvDriveRatio,
-    dvShoulderMin, 
-    dvShoulderMax,
-    dvShoulderOffset,
-    dvShoulderTravel,
-    dvShoulderFloor,
-    dvShoulderCargo,
-    dvShoulderRocketLow,
-    dvShoulderRocketMid,
-    dvShoulderRocketHigh,
-    dvShoulderModify,
-    dvWristMin,
-    dvWristMax,
-    dvWristOffset,
-    dvWristTravel,
-    dvWristFloor,
-    dvWristCargo,
-    dvWristRocketLow,
-    dvWristRocketMid,
-    dvWristRocketHigh,
-    dvWristModify
+    dvDriveRatio
 } DashValue;
