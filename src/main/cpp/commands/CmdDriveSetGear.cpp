@@ -18,10 +18,6 @@ void CmdDriveSetGear::Initialize() {
     //Do nothing
   } else {
     Robot::m_drive.SetShifter(m_position);
-     
-    sprintf(Robot::message, "Drive:  Shifter Position: %s", m_position == Drive::spLow ? "Low" : "High");      
-
-    Robot::m_robotLog.Write(Robot::message);
   }
 }
 

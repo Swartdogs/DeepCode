@@ -25,11 +25,6 @@ void CmdDriveRotate::Initialize() {
     Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);
     
     if (m_timeout > 0) SetTimeout(m_timeout);
-
-    sprintf(Robot::message, "Drive:  Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
-            Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
-
-    Robot::m_robotLog.Write(Robot::message);
   }
 }
 
@@ -58,28 +53,6 @@ bool CmdDriveRotate::IsFinished() {
 
 void CmdDriveRotate::End() {
   Robot::m_drive.SetDriveInUse(false);
-
-  switch (m_status) {
-    case csSkip:
-      sprintf(Robot::message, "Drive:   Rotate SKIP");
-      break;
-
-    case csDone:
-      sprintf(Robot::message, "Drive:   Rotate DONE   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-
-    case csCancel:
-      sprintf(Robot::message, "Drive:   Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-
-    case csTimedOut:
-      sprintf(Robot::message, "Drive:   Rotate TIMED OUT   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-      
-    default:;
-  }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 void CmdDriveRotate::Interrupted() {

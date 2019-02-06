@@ -97,14 +97,6 @@ double PIDControl::Calculate(double input) {					// Calculate output based on in
 		}
 	}
 
-	if (m_showOutput) {											// Show Output
-		if (limit.length() > 1) limit = limit.substr(0, limit.length() - 1);
-
-		sprintf(m_log, "%s PID: Error=%7.1f  P=%6.2f  I=%6.2f  D=%6.2f  Output=%6.2f (%s)", m_name.c_str(), error,
-				m_P.kNow * error, m_I.kNow * m_errorTotal, m_D.kNow * errorDiff, output, limit.c_str());
-		Robot::m_robotLog.WritePid(m_log);
-	}
-
 	m_errorPrev = error;										// Set Previous error for next calculation
 
 	return output;

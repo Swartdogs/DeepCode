@@ -29,12 +29,7 @@ void CmdDriveDistance::Initialize() {
 
     Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, m_minSpeed, m_resetEncoders, m_resetGyro, false);
 
-    if (m_timeout > 0) SetTimeout(m_timeout);
-    
-    sprintf(Robot::message, "Drive:    Distance INIT  Distance=%5.1f to %5.1f Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
-            Robot::m_drive.GetDistance(Drive::ueCurrentEncoder), m_distance, Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
-
-    Robot::m_robotLog.Write(Robot::message);
+    if (m_timeout > 0) SetTimeout(m_timeout);    
   }
 }
 
@@ -65,28 +60,6 @@ bool CmdDriveDistance::IsFinished() {
 
 void CmdDriveDistance::End() {
   Robot::m_drive.SetDriveInUse(false);
-
-  switch (m_status) {
-    case csSkip:
-      sprintf(Robot::message, "Drive:    Distance SKIP");
-      break;
-
-    case csDone:
-      sprintf(Robot::message, "Drive:    Distance DONE   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-
-    case csCancel:
-      sprintf(Robot::message, "Drive:    Distance CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-
-    case csTimedOut:
-      sprintf(Robot::message, "Drive:    Distance TIMED OUT   Heading=%5.1f", Robot::m_drive.GetHeading());
-      break;
-      
-    default:;
-  }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 void CmdDriveDistance::Interrupted() {
