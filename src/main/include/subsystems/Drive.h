@@ -4,6 +4,7 @@
 #include "frc/WPILib.h"
 #include <frc/commands/Subsystem.h>
 #include "PIDControl.h"
+#include "ctre/phoenix.h"
 
 class Drive : public frc::Subsystem {
  public:
@@ -65,10 +66,10 @@ private:
 
   UseEncoder          m_useEncoder;
 
-  frc::VictorSP       m_driveLeft1{pwmDriveLeft1};
-  frc::VictorSP       m_driveLeft2{pwmDriveLeft2};
-  frc::VictorSP       m_driveRight1{pwmDriveRight1};
-  frc::VictorSP       m_driveRight2{pwmDriveRight2};
+  WPI_VictorSPX       m_driveLeft1{canDriveLeft1};
+  WPI_VictorSPX       m_driveLeft2{canDriveLeft2};
+  WPI_VictorSPX       m_driveRight1{canDriveRight1};
+  WPI_VictorSPX       m_driveRight2{canDriveRight2};
 
   frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
   frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};

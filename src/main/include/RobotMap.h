@@ -18,15 +18,18 @@ typedef enum {
 } RobotMode;
 
 typedef enum {
-    pwmDriveLeft1,
-    pwmDriveLeft2,
-    pwmDriveRight1,
-    pwmDriveRight2,
     pwmElevatorMotor,
     pwmFootMotor,
     pwmShoulder,
     pwmWrist
 } RoboRioPwm;
+    
+typedef enum {    
+    canDriveLeft1,
+    canDriveLeft2,
+    canDriveRight1,
+    canDriveRight2
+} RoboRioCan;
 
 typedef enum {
     dioEncoderLeftChannelA,
