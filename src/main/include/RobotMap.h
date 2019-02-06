@@ -10,11 +10,11 @@ typedef enum {
 } CommandStatus;
 
 typedef enum {
-    pwmDriveLeft1,
-    pwmDriveLeft2,
-    pwmDriveRight1,
-    pwmDriveRight2
-} RoboRioPwm;
+    canDriveLeft1,
+    canDriveLeft2,
+    canDriveRight1,
+    canDriveRight2
+} RoboRioCan;
 
 typedef enum {
     dioEncoderLeftChannelA,
