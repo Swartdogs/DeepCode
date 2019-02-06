@@ -228,7 +228,9 @@ void Dashboard::SetTimeStamp(std::string now) {					// Set the driver station ti
 void Dashboard::TcpLoop(Dashboard *host) {
 	struct sockaddr_in	addrHost, addrClient;
 	size_t				position;
-	std::string			commandPrefix = host->GetCommandPrefix();
+	std::string 		commandGET 		= host->GetCommandPrefix() + "GET";
+	std::string 		commandPUT		= host->GetCommandPrefix() + "PUT";
+	std::string 		commandCOUNT 	= host->GetCommandPrefix() + "COUNT";
 	std::string			command;
 	std::string			reply;
 	std::string			clientMesg;
@@ -281,18 +283,19 @@ void Dashboard::TcpLoop(Dashboard *host) {
 				if ((position = clientMesg.find(":")) != std::string::npos) {				// Look for colon at end of command
 					command = clientMesg.substr(0, position);								// Parse command
 					clientMesg.erase(0, position + 1);										// Erase command from message
+					reply = "";
 
-					if (command == (commandPrefix + "COUNT")) {												// COUNT command requesting data counts
+					if (command == (commandCOUNT)) {										// COUNT command requesting data counts
 						reply = host->CountReply();											// Reply from Host
 
-					} else if (command == (commandPrefix + "GET")) {											// GET command requesting Robot data
+					} else if (command == (commandGET)) {									// GET command requesting Robot data
 						if ((position = clientMesg.find("|")) != std::string::npos) {		// Look for pipe at end of Time Stamp
 							host->SetTimeStamp(clientMesg.substr(0, position));				// Parse and Set Time Stamp
 							clientMesg.erase(0, position + 1);
 							reply = host->GetReply();
 						}
 
-					} else if (command == (commandPrefix + "PUT")) {											// PUT command sending Dashboard data
+					} else if (command == (commandPUT)) {									// PUT command sending Dashboard data
 						reply = "PUT:";
 						bool saveFile = false;
 
