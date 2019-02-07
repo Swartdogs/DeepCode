@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum {
+typedef enum {              // Command Status   (Commands)
     csRun,
     csSkip,
     csDone,
@@ -9,22 +9,22 @@ typedef enum {
     csContinue
 } CommandStatus;
 
-typedef enum {
-    rmInit,					// Robot Mode 		(Dashboard, RobotLog)
+typedef enum {              // Robot Mode       (Dashboard, RobotLog)
+    rmInit,					
 	rmDisabled,
     rmAutonomous,
     rmTeleop,
     rmTest
 } RobotMode;
 
-typedef enum {
+typedef enum {              // PWM channels on RoboRIO
     pwmElevatorMotor,
     pwmFootMotor,
     pwmShoulder,
     pwmWrist
 } RoboRioPwm;
     
-typedef enum {    
+typedef enum {              // CAN Ids for Victors
     canUnused,
     canDriveLeft1,
     canDriveLeft2,
@@ -32,7 +32,7 @@ typedef enum {
     canDriveRight2
 } RoboRioCan;
 
-typedef enum {
+typedef enum {              // Digital Input/Output channels on RoboRIO
     dioEncoderLeftChannelA,
     dioEncoderLeftChannelB,
     dioEncoderRightChannelA,
@@ -45,32 +45,32 @@ typedef enum {
     dioSonarRightPing
 } RoboRioDio;
 
-typedef enum {
+typedef enum {              // Analog channels on RoboRIO
     aioElevatorPot,
     aioShoulderPot,
     aioWristPot
 } RoboRioAio;
 
-typedef enum {
+typedef enum {              // Solenoid channels on PCM
     solShifter,
     solFoot
 } RoboRioSol;
 
-typedef enum {
-    pdpDriveLeft1,
-    pdpDriveLeft2,
-    pdpDriveRight1,
-    pdpDriveRight2,
+typedef enum {              // Power channels on PDP
     pdpElevator,
     pdpShoulder,
-    pdpWrist
+    pdpWrist,
+    pdpDriveLeft2   = 12,
+    pdpDriveLeft1   = 13,
+    pdpDriveRight2  = 14,
+    pdpDriveRight1  = 15,
 } PdpPowerChannels;
 
-typedef enum {
+typedef enum {              // Dashboard: Robot Status indexes
     rsNone
 } RobotStatus;
 
-typedef enum {
+typedef enum {              // Dashboard: Robot Value indexes
     rvDriveGyro,
     rvDriveEncoderL,
     rvDriveEncoderR,
@@ -90,11 +90,11 @@ typedef enum {
     rvWristAmps
 } RobotValue;
 
-typedef enum { 
+typedef enum {              // Dashborad: Dash Button indexes
     dbRunPid
 } DashButton;
 
-typedef enum{ 
+typedef enum{               // Dashboard: Dash Value indexes
     dvPidSelect,
     dvPidSetpoint,
     dvPidMaxOut,
