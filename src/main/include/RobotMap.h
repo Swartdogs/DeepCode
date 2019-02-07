@@ -10,7 +10,7 @@ typedef enum {
 } CommandStatus;
 
 typedef enum {
-    canDriveLeft1,
+    canDriveLeft1 = 1,
     canDriveLeft2,
     canDriveRight1,
     canDriveRight2
