@@ -126,7 +126,7 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvDriveAmpsRight2, m_pdp.GetCurrent(pdpDriveRight2));
   m_dashboard.SetRobotValue(rvElevatorPosition, m_elevator.GetElevatorPosition());
   m_dashboard.SetRobotValue(rvElevatorSetpoint, m_elevator.GetElevatorSetpoint());
-  // m_dashboard.SetRobotValue(rvElevatorFoot, );
+  m_dashboard.SetRobotValue(rvElevatorFoot, (m_elevator.GetFootPosition() == Elevator::fpRetracted ? 0 : 1));
   m_dashboard.SetRobotValue(rvElevatorAmps, m_pdp.GetCurrent(pdpElevator));
   m_dashboard.SetRobotValue(rvShoulderPosition, m_arm.GetShoulderDegrees());
   // m_dashboard.SetRobotValue(rvShoulderSetpoint, );
