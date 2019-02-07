@@ -18,6 +18,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
   m_oi.Periodic();
+  SetDashRobotValues();
 }
 
 void Robot::DisabledInit() {
@@ -116,10 +117,24 @@ void Robot::TestPeriodic() {
 }
 
 void Robot::SetDashRobotValues() {
+  m_dashboard.SetRobotValue(rvDriveGyro, m_drive.GetHeading());
+  m_dashboard.SetRobotValue(rvDriveEncoderL, m_drive.GetDistance(Drive::ueLeftEncoder));
+  m_dashboard.SetRobotValue(rvDriveEncoderR, m_drive.GetDistance(Drive::ueRightEncoder));
   m_dashboard.SetRobotValue(rvDriveAmpsLeft1, m_pdp.GetCurrent(pdpDriveLeft1));
-
+  m_dashboard.SetRobotValue(rvDriveAmpsLeft2, m_pdp.GetCurrent(pdpDriveLeft2));
+  m_dashboard.SetRobotValue(rvDriveAmpsRight1, m_pdp.GetCurrent(pdpDriveRight1));
+  m_dashboard.SetRobotValue(rvDriveAmpsRight2, m_pdp.GetCurrent(pdpDriveRight2));
+  m_dashboard.SetRobotValue(rvElevatorPosition, m_elevator.GetElevatorPosition());
+  m_dashboard.SetRobotValue(rvElevatorSetpoint, m_elevator.GetElevatorSetpoint());
+  // m_dashboard.SetRobotValue(rvElevatorFoot, );
+  m_dashboard.SetRobotValue(rvElevatorAmps, m_pdp.GetCurrent(pdpElevator));
+  m_dashboard.SetRobotValue(rvShoulderPosition, m_arm.GetShoulderDegrees());
+  // m_dashboard.SetRobotValue(rvShoulderSetpoint, );
+  m_dashboard.SetRobotValue(rvShoulderAmps, m_pdp.GetCurrent(pdpShoulder));
+  m_dashboard.SetRobotValue(rvWristPosition, m_arm.GetWristDegrees());
+  // m_dashboard.SetRobotValue(rvWristSetpoint, );
+  m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
 }
-
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif
