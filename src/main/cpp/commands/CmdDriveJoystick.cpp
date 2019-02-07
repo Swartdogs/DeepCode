@@ -12,8 +12,8 @@ void CmdDriveJoystick::Initialize() {
 }
 
 void CmdDriveJoystick::Execute() {
-  Robot::m_drive.ArcadeDrive( Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickY(), 0.1), 
-                              Robot::m_oi.ApplyDeadband(Robot::m_oi.GetDriveJoystickX(), 0.1));
+  Robot::m_drive.ArcadeDrive( Robot::m_oi.GetDriveJoystickY(), 
+                              Robot::m_oi.GetDriveJoystickX());
 }
 
 bool CmdDriveJoystick::IsFinished() { return false; }
