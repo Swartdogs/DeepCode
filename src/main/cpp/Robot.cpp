@@ -1,7 +1,6 @@
 #include "Robot.h"
 
 #include <frc/commands/Scheduler.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 
 char      Robot::message[100];
 
@@ -114,6 +113,11 @@ void Robot::TestPeriodic() {
   } else {
     tunePID = -1;
   }
+}
+
+void Robot::SetDashRobotValues() {
+  m_dashboard.SetRobotValue(rvDriveAmpsLeft1, m_pdp.GetCurrent(pdpDriveLeft1));
+
 }
 
 #ifndef RUNNING_FRC_TESTS

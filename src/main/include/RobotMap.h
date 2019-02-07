@@ -25,6 +25,7 @@ typedef enum {
 } RoboRioPwm;
     
 typedef enum {    
+    canUnused,
     canDriveLeft1,
     canDriveLeft2,
     canDriveRight1,
@@ -54,6 +55,16 @@ typedef enum {
     solShifter,
     solFoot
 } RoboRioSol;
+
+typedef enum {
+    pdpDriveLeft1,
+    pdpDriveLeft2,
+    pdpDriveRight1,
+    pdpDriveRight2,
+    pdpElevator,
+    pdpShoulder,
+    pdpWrist
+} PdpPowerChannels;
 
 typedef enum {
     rsNone

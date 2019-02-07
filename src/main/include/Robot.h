@@ -2,7 +2,6 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/commands/Command.h>
-#include <frc/smartdashboard/SendableChooser.h>
 
 #include "OI.h"
 #include "subsystems/Elevator.h"
@@ -36,7 +35,8 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
  private:
-  frc::SendableChooser<frc::Command*> m_chooser;
+  PIDControl                  m_tunePID{"Tune"};
+  frc::PowerDistributionPanel m_pdp{};
 
-  PIDControl  m_tunePID{"Tune"};
+  void SetDashRobotValues();
 };
