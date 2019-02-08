@@ -9,7 +9,6 @@
 #include "Robot.h"
 
 Arm::Arm() : Subsystem("Arm") {
-  m_armInUse = false;
   m_manualDrive = false;
 
   m_handMode = hmCargo;
@@ -55,7 +54,7 @@ void Arm::InitDefaultCommand() {
 }
 
 void Arm::Periodic() {
-  static bool wasManuallyDriven = false;
+  //static bool wasManuallyDriven = false;
   static int  timer           = 0;
 
   double      shoulderDegrees = GetShoulderDegrees();
@@ -77,7 +76,7 @@ void Arm::Periodic() {
       break; 
 
     case imOut:
-      if(timer < (int)(EJECT_TIMEOUT*1000)/50) {
+      if(timer < EJECT_TIMEOUT) {
         topPower = -Robot::m_dashboard.GetDashValue(dvCargoSpeedOut);
         bottomPower = topPower;
         
@@ -92,7 +91,7 @@ void Arm::Periodic() {
 
     case imRotate:
       topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedRotate);
-      bottomPower = -topPower * Robot::m_dashboard.GetDashValue(dvCargoRotateRatio);
+      bottomPower = -PowerLimit(topPower * Robot::m_dashboard.GetDashValue(dvCargoRotateRatio));
       break;
 
     default:;
@@ -118,41 +117,54 @@ void Arm::Periodic() {
         SetShoulderPosition(shoulderDegrees);
       }
     } 
+
+    if (joyWrist < 0) {
+      if (wristDegrees < Robot::m_dashboard.GetDashValue(dvWristMin) + 4) {
+        wristPower = 0;
+      } else {
+        wristPower = joyWrist;
+      } 
+
+      SetWristPosition(wristDegrees);
+      
+    } else if (joyWrist > 0) {
+      if ((wristDegrees < Robot::m_dashboard.GetDashValue(dvWristMax) - 4)
+           && wristPower < joyWrist) {
+        wristPower = joyWrist;
+        SetWristPosition(wristDegrees);
+      }
+    } 
   }
 
 
-  if (!m_manualDrive) {
-    if (wasManuallyDriven) {
-      SetShoulderPosition(GetShoulderDegrees());
-      SetWristPosition(GetWristDegrees());
-    }
+  // if (!m_manualDrive) {
+  //   if (wasManuallyDriven) {
+  //     SetShoulderPosition(GetShoulderDegrees());
+  //     SetWristPosition(GetWristDegrees());
+  //   }
 
-    shoulderPower = m_shoulderPID.Calculate(GetShoulderDegrees());
-    wristPower = m_wristPID.Calculate(GetWristDegrees());
+  //   shoulderPower = m_shoulderPID.Calculate(GetShoulderDegrees());
+  //   wristPower = m_wristPID.Calculate(GetWristDegrees());
   
-  } else {
-    if(!wasManuallyDriven){
-      m_shoulderPosition = apUnknown;
-      m_wristPosition = apUnknown;
-    }
+  // } else {
+  //   if(!wasManuallyDriven){
+  //     m_shoulderPosition = apUnknown;
+  //     m_wristPosition = apUnknown;
+  //   }
 
-    double joyX = Robot::m_oi.GetArmJoystickX();
-    double joyY = Robot::m_oi.GetArmJoystickY();
+  //   double joyX = Robot::m_oi.GetArmJoystickX();
+  //   double joyY = Robot::m_oi.GetArmJoystickY();
 
-    if ((GetShoulderDegrees() >= 7 && joyY > 0) || (GetShoulderDegrees() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
-    if ((GetWristDegrees() >= 7 && joyX > 0) || (GetWristDegrees() <= 4 && joyX < 0)) joyX = 0;
-  }
+  //   if ((GetShoulderDegrees() >= 7 && joyY > 0) || (GetShoulderDegrees() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
+  //   if ((GetWristDegrees() >= 7 && joyX > 0) || (GetWristDegrees() <= 4 && joyX < 0)) joyX = 0;
+  // }
 
-  wasManuallyDriven = m_manualDrive;
+  // wasManuallyDriven = m_manualDrive;
 
   m_shoulderMotor.Set(shoulderPower);
   m_wristMotor.Set(wristPower);
   m_handTop.Set(topPower);
   m_handBottom.Set(bottomPower);
-}
-
-bool Arm::GetArmInUse() {
-  return m_armInUse;
 }
 
 std::string Arm::GetArmPositionName(ArmPosition position) {
@@ -210,7 +222,7 @@ Arm::IntakeMode Arm::GetIntakeMode(){
 }
 
 double Arm::GetShoulderDegrees() {
-  return (m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE) + Robot::m_dashboard.GetDashValue(dvShoulderOffset); //TODO: Add offset
+  return (m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE) + Robot::m_dashboard.GetDashValue(dvShoulderOffset);
 }
 
 Arm::ArmPosition Arm::GetShoulderPosition(){
@@ -222,7 +234,7 @@ double Arm::GetShoulderSetpoint() {
 }
 
 double Arm::GetWristDegrees() {
-  return (m_wristPot.GetAverageValue() / WRIST_COUNTS_PER_DEGREE) + Robot::m_dashboard.GetDashValue(dvWristOffset); //TODO: Add offset
+  return (m_wristPot.GetAverageValue() / WRIST_COUNTS_PER_DEGREE) + Robot::m_dashboard.GetDashValue(dvWristOffset); 
 }
 
 Arm::ArmPosition Arm::GetWristPosition(){
@@ -237,8 +249,10 @@ bool Arm::IsDrivenManually() {
   return m_manualDrive;
 }
 
-void Arm::SetArmInUse(bool inUse) {
-  m_armInUse = inUse;
+double Arm::PowerLimit(double value) {
+  if (value > 1.0) return 1.0;
+  else if (value < -1.0) return -1.0;
+  return value;
 }
 
 void Arm::SetDrivenManually(bool isManual) {
@@ -249,6 +263,7 @@ void Arm::SetHandMode(HandMode mode) {
   if(mode != m_handMode) {
     m_solHand.Set(mode == hmHatch);
     m_handMode = mode;
+    Robot::m_dashboard.SetRobotStatus(rsHatchMode, mode == hmHatch);
   }
 }
 
@@ -256,6 +271,7 @@ void Arm::SetHatchState(HatchState state) {
   if (state != m_hatchState) {
     m_solHatch.Set(state == hsGrab);
     m_hatchState = state;
+    Robot::m_dashboard.SetRobotStatus(rsHatchGrab, state == hsGrab);
   }
 }
 

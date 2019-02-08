@@ -167,6 +167,7 @@ void Elevator::SetFootPosition(FootPosition position) {
   if (position != m_footPosition) {
     m_footSol.Set(position == fpRetracted);
     m_footPosition = position;
+    Robot::m_dashboard.SetRobotStatus(rsFootRetracted, position == fpRetracted);
 
     sprintf(Robot::message,"Elevator: Set Foot Position=%s", GetFootPositionName(m_footPosition).c_str());
     Robot::m_robotLog.Write(Robot::message);

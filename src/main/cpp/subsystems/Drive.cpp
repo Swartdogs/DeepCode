@@ -7,6 +7,7 @@
 
 #include "subsystems/Drive.h"
 #include "commands/CmdDriveJoystick.h"
+#include "Robot.h"
 
 Drive::Drive() : Subsystem("Drive") {
   m_driveEnable = true;
@@ -207,5 +208,6 @@ void Drive::SetShifter(ShifterPosition position) {
   if (position != m_shifterPosition) {
     m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
+    Robot::m_dashboard.SetRobotStatus(rsShifterLow, position == spLow);
   }
 }

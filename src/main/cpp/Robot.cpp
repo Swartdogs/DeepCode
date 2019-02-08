@@ -134,13 +134,9 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvWristSetpoint, m_arm.GetWristSetpoint());
   m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
 
-  m_dashboard.SetRobotStatus(rsShifterLow, (m_drive.GetShifterPosition() == Drive::spLow));
-  m_dashboard.SetRobotStatus(rsFootRetracted, (m_elevator.GetFootPosition() == Elevator::fpRetracted));
   m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
   m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));
   m_dashboard.SetRobotStatus(rsCargo, m_arm.GetCargoDetected());
-  m_dashboard.SetRobotStatus(rsHatchMode, (m_arm.GetHandMode() == Arm::hmHatch));
-  m_dashboard.SetRobotStatus(rsHatchGrab, (m_arm.GetHatchState() == Arm::hsGrab));
 }
 
 #ifndef RUNNING_FRC_TESTS

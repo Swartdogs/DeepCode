@@ -44,7 +44,6 @@ class Arm : public frc::Subsystem {
     void InitDefaultCommand() override;    
     void Periodic() override;
     
-    bool          GetArmInUse(); 
     std::string   GetArmPositionName(ArmPosition position);
     bool          GetCargoDetected(); 
     HandMode      GetHandMode();
@@ -59,7 +58,6 @@ class Arm : public frc::Subsystem {
     ArmPosition   GetWristPosition();
     double        GetWristSetpoint();
     bool          IsDrivenManually();
-    void          SetArmInUse(bool inUse);
     void          SetDrivenManually(bool isManual);
     void          SetHandMode(HandMode mode);
     void          SetHatchState(HatchState state);
@@ -74,9 +72,10 @@ class Arm : public frc::Subsystem {
   private:
     const double      SHOULDER_COUNTS_PER_DEGREE = 16.3;
     const double      WRIST_COUNTS_PER_DEGREE = 7;
-    const double      EJECT_TIMEOUT = 1;                  //It is in seconds
+    const int         EJECT_TIMEOUT = 50;                  //Sets to 20ms counts (1 sec = 50 counts)
 
-    bool              m_armInUse;
+    double            PowerLimit(double value);
+
     bool              m_manualDrive;
     double            m_shoulderSetpoint;
     double            m_wristSetpoint;
