@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 0, 17, 1, 42);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 16, 1, 44);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -126,7 +126,6 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvDriveAmpsRight2, m_pdp.GetCurrent(pdpDriveRight2));
   m_dashboard.SetRobotValue(rvElevatorPosition, m_elevator.GetElevatorPosition());
   m_dashboard.SetRobotValue(rvElevatorSetpoint, m_elevator.GetElevatorSetpoint());
-  m_dashboard.SetRobotValue(rvElevatorFoot, (m_elevator.GetFootPosition() == Elevator::fpRetracted ? 0 : 1));
   m_dashboard.SetRobotValue(rvElevatorAmps, m_pdp.GetCurrent(pdpElevator));
   m_dashboard.SetRobotValue(rvShoulderPosition, m_arm.GetShoulderDegrees());
   m_dashboard.SetRobotValue(rvShoulderSetpoint, m_arm.GetShoulderSetpoint());
@@ -134,6 +133,14 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvWristPosition, m_arm.GetWristDegrees());
   m_dashboard.SetRobotValue(rvWristSetpoint, m_arm.GetWristSetpoint());
   m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
+
+  m_dashboard.SetRobotStatus(rsShifterLow, (m_drive.GetShifterPosition() == Drive::spLow));
+  m_dashboard.SetRobotStatus(rsFootRetracted, (m_elevator.GetFootPosition() == Elevator::fpRetracted));
+  m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
+  m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));
+  m_dashboard.SetRobotStatus(rsCargo, m_arm.GetCargoDetected());
+  m_dashboard.SetRobotStatus(rsHatchMode, (m_arm.GetHandMode() == Arm::hmHatch));
+  m_dashboard.SetRobotStatus(rsHatchGrab, (m_arm.GetHatchState() == Arm::hsGrab));
 }
 
 #ifndef RUNNING_FRC_TESTS

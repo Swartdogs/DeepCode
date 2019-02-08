@@ -72,7 +72,13 @@ typedef enum {              // Power channels on PDP
 } PdpPowerChannels;
 
 typedef enum {              // Dashboard: Robot Status indexes
-    rsNone
+    rsShifterLow,
+    rsFootRetracted,
+    rsFloorFront,
+    rsFloorRear,
+    rsCargo,
+    rsHatchMode,
+    rsHatchGrab
 } RobotStatus;
 
 typedef enum {              // Dashboard: Robot Value indexes
@@ -85,7 +91,6 @@ typedef enum {              // Dashboard: Robot Value indexes
     rvDriveAmpsRight2,
     rvElevatorPosition,
     rvElevatorSetpoint,
-    rvElevatorFoot,
     rvElevatorAmps,
     rvShoulderPosition,
     rvShoulderSetpoint,
@@ -96,7 +101,8 @@ typedef enum {              // Dashboard: Robot Value indexes
 } RobotValue;
 
 typedef enum {              // Dashborad: Dash Button indexes
-    dbRunPid
+    dbRunPid,
+    dbDataCapture,
 } DashButton;
 
 typedef enum{               // Dashboard: Dash Value indexes
@@ -115,7 +121,7 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvElevOffset,
     dvElevMin,
     dvElevMax,
-    dvSensorMin,
+    dvFloorSensorMin,
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3,
@@ -140,6 +146,8 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvWristRocketMid,
     dvWristRocketHigh,
     dvWristModify,
-    dvIntakeSpeed,
-    dvIntakeRatio
+    dvCargoSpeedIn,
+    dvCargoSpeedOut,
+    dvCargoSpeedRotate,
+    dvCargoRotateRatio
 } DashValue;

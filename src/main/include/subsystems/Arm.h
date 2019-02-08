@@ -46,6 +46,7 @@ class Arm : public frc::Subsystem {
     
     bool          GetArmInUse(); 
     std::string   GetArmPositionName(ArmPosition position);
+    bool          GetCargoDetected(); 
     HandMode      GetHandMode();
     std::string   GetHandModeName(HandMode mode);
     HatchState    GetHatchState();

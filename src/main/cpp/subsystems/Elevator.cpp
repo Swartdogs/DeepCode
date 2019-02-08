@@ -44,7 +44,7 @@ bool Elevator::ElevatorAtSetpoint() {
 }
 
 bool Elevator::FloorDetected (FloorSensor sensor) {
-  if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvSensorMin)) return false;
+  if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvFloorSensorMin)) return false;
 
   switch (sensor) {
     case fsFront: return  !m_frontSensor.Get();
@@ -98,7 +98,7 @@ std::string Elevator::GetFootPositionName(FootPosition position) {
 }
 
 bool Elevator::SafeToRaise() {
-    if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvSensorMin)) return true;
+    if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvFloorSensorMin)) return true;
 
     return (!m_frontSensor.Get() && !m_rearSensor.Get());
 }
