@@ -23,12 +23,34 @@ class Arm : public frc::Subsystem {
       apUnknown
     } ArmPosition;
 
+    typedef enum {
+      hmCargo,
+      hmHatch
+    } HandMode;
+
+    typedef enum {
+      hsRelease,
+      hsGrab
+    } HatchState;
+
+    typedef enum{
+      imOff,
+      imIn,
+      imOut,
+      imRotate
+    } IntakeMode;
+
     Arm();
     void InitDefaultCommand() override;    
     void Periodic() override;
     
     bool          GetArmInUse(); 
     std::string   GetArmPositionName(ArmPosition position);
+    HandMode      GetHandMode();
+    std::string   GetHandModeName(HandMode mode);
+    HatchState    GetHatchState();
+    std::string   GetHatchStateName(HatchState state);
+    IntakeMode    GetIntakeMode();
     double        GetShoulderDegrees();
     ArmPosition   GetShoulderPosition();
     double        GetShoulderSetpoint();
@@ -38,6 +60,9 @@ class Arm : public frc::Subsystem {
     bool          IsDrivenManually();
     void          SetArmInUse(bool inUse);
     void          SetDrivenManually(bool isManual);
+    void          SetHandMode(HandMode mode);
+    void          SetHatchState(HatchState state);
+    void          SetIntakeMode(IntakeMode mode);
     void          SetShoulderPosition(ArmPosition position);
     void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown);
     void          SetWristPosition(ArmPosition position);
@@ -48,6 +73,7 @@ class Arm : public frc::Subsystem {
   private:
     const double      SHOULDER_COUNTS_PER_DEGREE = 16.3;
     const double      WRIST_COUNTS_PER_DEGREE = 7;
+    const double      EJECT_TIMEOUT = 1;                  //It is in seconds
 
     bool              m_armInUse;
     bool              m_manualDrive;
@@ -56,9 +82,19 @@ class Arm : public frc::Subsystem {
 
     ArmPosition       m_shoulderPosition;
     ArmPosition       m_wristPosition;
+  
+    HandMode          m_handMode;
+
+    HatchState        m_hatchState;
+
+    IntakeMode        m_intakeMode;
 
     frc::VictorSP     m_shoulderMotor{pwmShoulder};
     frc::VictorSP     m_wristMotor{pwmWrist};
+    frc::VictorSP     m_handTop{pwmHandTop};
+    frc::VictorSP     m_handBottom{pwmHandBottom};
+
+    frc::DigitalInput m_cargoSensor{dioCargoSensor};
 
     frc::AnalogInput  m_shoulderPot{aioShoulderPot};
     frc::AnalogInput  m_wristPot{aioWristPot};
@@ -66,4 +102,6 @@ class Arm : public frc::Subsystem {
     PIDControl        m_shoulderPID{"Shoulder"};
     PIDControl        m_wristPID{"Wrist"};
 
+    frc::Solenoid     m_solHand{solHand};
+    frc::Solenoid     m_solHatch{solHatch};
 };

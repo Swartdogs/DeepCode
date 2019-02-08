@@ -12,6 +12,12 @@ Arm::Arm() : Subsystem("Arm") {
   m_armInUse = false;
   m_manualDrive = false;
 
+  m_handMode = hmCargo;
+
+  m_hatchState = hsRelease;
+
+  m_intakeMode = imOff;
+
   m_shoulderPosition = apUnknown;
   m_wristPosition = apUnknown;
 
@@ -38,6 +44,9 @@ Arm::Arm() : Subsystem("Arm") {
   m_wristPID.SetOutputRamp(0.25, 0.05);
   m_wristPID.SetSetpointDeadband(1.0); 
   m_wristPID.SetSetpoint(m_wristSetpoint, m_wristSetpoint);
+
+  m_solHand.Set(false);
+  m_solHatch.Set(false);
 }
 
 void Arm::InitDefaultCommand() {
@@ -47,8 +56,51 @@ void Arm::InitDefaultCommand() {
 
 void Arm::Periodic() {
   static bool wasManuallyDriven = false;
+  static int timer = 0;
   double shoulderPower = 0;
   double wristPower = 0;
+  double topPower = 0;
+  double bottomPower = 0;
+
+  switch(m_intakeMode) {
+    case imOff:
+      topPower = 0;
+      bottomPower = 0;
+      break;
+
+    case imIn:
+      if(m_cargoSensor.Get()) {
+        topPower = Robot::m_dashboard.GetDashValue(dvIntakeSpeed);
+        bottomPower = Robot::m_dashboard.GetDashValue(dvIntakeSpeed);
+      } else {
+        topPower = 0;
+        bottomPower = 0;
+        SetIntakeMode(imOff);        
+      }
+
+      break; 
+
+    case imOut:
+      if(timer < (int)(EJECT_TIMEOUT*1000)/50) {
+        topPower = -Robot::m_dashboard.GetDashValue(dvIntakeSpeed);
+        bottomPower = -Robot::m_dashboard.GetDashValue(dvIntakeSpeed);
+        
+        if (m_cargoSensor.Get()) timer++;
+        else timer = 0;
+
+      } else {
+        topPower = 0;
+        bottomPower = 0;
+        timer = 0;
+        SetIntakeMode(imOff);        
+      }
+      break;
+
+    case imRotate:
+      topPower = Robot::m_dashboard.GetDashValue(dvIntakeSpeed);
+      bottomPower = -(Robot::m_dashboard.GetDashValue(dvIntakeSpeed)*Robot::m_dashboard.GetDashValue(dvIntakeRatio));
+      break;
+  }
 
   if (!m_manualDrive) {
     if (wasManuallyDriven) {
@@ -79,6 +131,8 @@ void Arm::Periodic() {
 
   m_shoulderMotor.Set(shoulderPower);
   m_wristMotor.Set(wristPower);
+  m_handTop.Set(topPower);
+  m_handBottom.Set(bottomPower);
 }
 
 bool Arm::GetArmInUse() {
@@ -99,6 +153,40 @@ std::string Arm::GetArmPositionName(ArmPosition position) {
   }
 
   return name;
+}
+
+Arm::HandMode Arm::GetHandMode() {
+  return m_handMode;
+}
+
+std::string Arm::GetHandModeName(HandMode mode) {
+ std::string name = "";
+
+  switch (mode) {
+      case hmCargo:    name = "Cargo";    break;
+      case hmHatch:    name = "Hatch";    break;
+  }
+
+  return name; 
+}
+
+Arm::HatchState Arm::GetHatchState () {
+  return m_hatchState;
+}
+
+std::string Arm::GetHatchStateName(HatchState state) {
+   std::string name = "";
+
+  switch (state) {
+      case hsGrab:       name = "Grab";       break;
+      case hsRelease:    name = "Release";    break;
+  }
+
+  return name; 
+}
+
+Arm::IntakeMode Arm::GetIntakeMode(){
+  return m_intakeMode;
 }
 
 double Arm::GetShoulderDegrees() {
@@ -135,6 +223,26 @@ void Arm::SetArmInUse(bool inUse) {
 
 void Arm::SetDrivenManually(bool isManual) {
   m_manualDrive = isManual;
+}
+
+void Arm::SetHandMode(HandMode mode) {
+  if(mode != m_handMode) {
+    m_solHand.Set(mode == hmHatch);
+    m_handMode = mode;
+  }
+}
+
+void Arm::SetHatchState(HatchState state) {
+  if (state != m_hatchState) {
+    m_solHatch.Set(state == hsGrab);
+    m_hatchState = state;
+  }
+}
+
+void Arm::SetIntakeMode(IntakeMode mode) {
+  if (mode != m_intakeMode) {
+    m_intakeMode = mode;
+  }
 }
 
 void Arm::SetShoulderPosition(ArmPosition position) {

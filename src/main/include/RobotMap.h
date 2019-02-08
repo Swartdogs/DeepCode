@@ -21,7 +21,9 @@ typedef enum {              // PWM channels on RoboRIO
     pwmElevatorMotor,
     pwmFootMotor,
     pwmShoulder,
-    pwmWrist
+    pwmWrist,
+    pwmHandTop,
+    pwmHandBottom
 } RoboRioPwm;
     
 typedef enum {              // CAN Ids for Victors
@@ -42,7 +44,8 @@ typedef enum {              // Digital Input/Output channels on RoboRIO
     dioSonarLeftEcho,
     dioSonarLeftPing,
     dioSonarRightEcho,
-    dioSonarRightPing
+    dioSonarRightPing,
+    dioCargoSensor
 } RoboRioDio;
 
 typedef enum {              // Analog channels on RoboRIO
@@ -53,7 +56,9 @@ typedef enum {              // Analog channels on RoboRIO
 
 typedef enum {              // Solenoid channels on PCM
     solShifter,
-    solFoot
+    solFoot,
+    solHand,
+    solHatch
 } RoboRioSol;
 
 typedef enum {              // Power channels on PDP
@@ -134,5 +139,7 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvWristRocketLow,
     dvWristRocketMid,
     dvWristRocketHigh,
-    dvWristModify
+    dvWristModify,
+    dvIntakeSpeed,
+    dvIntakeRatio
 } DashValue;
