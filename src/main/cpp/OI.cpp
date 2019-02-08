@@ -7,9 +7,9 @@
 #include "subsystems/Drive.h"
 
 OI::OI() {
-  m_InternalLevel2.WhenPressed    (new GrpClimb(Elevator::epLevel2));
-  m_InternalLevel3.WhenPressed    (new GrpClimb(Elevator::epLevel3));
-  m_buttonClimbCancel.WhenPressed (new CmdCancelClimb());
+  //m_InternalLevel2.WhenPressed    (new GrpClimb(Elevator::epLevel2));
+  //m_InternalLevel3.WhenPressed    (new GrpClimb(Elevator::epLevel3));
+  //m_buttonClimbCancel.WhenPressed (new CmdCancelClimb());
   m_buttonShifter.WhenPressed     (new CmdDriveSetGear(Drive::spLow));
   m_buttonShifter.WhenReleased    (new CmdDriveSetGear(Drive::spHigh));
 }
@@ -27,11 +27,13 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
 }
 
 double OI::GetArmJoystickX() {
-  return ApplyDeadband(m_armJoystick.GetX(), 0.05);
+  //return ApplyDeadband(m_armJoystick.GetX(), 0.05);
+  return 0;
 }
 
 double OI::GetArmJoystickY() {
-  return -ApplyDeadband(m_armJoystick.GetY(), 0.05);
+  //return -ApplyDeadband(m_armJoystick.GetY(), 0.05);
+  return 0;
 }
 
 double OI::GetDriveJoystickX(){
@@ -43,6 +45,6 @@ double OI::GetDriveJoystickY(){
 }
 
 void OI::Periodic() {
-  m_InternalLevel2.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel2.Get());
-  m_InternalLevel3.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel3.Get());
+  //m_InternalLevel2.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel2.Get());
+  //m_InternalLevel3.SetPressed(m_buttonClimbEnable.Get() && m_buttonClimbLevel3.Get());
 }

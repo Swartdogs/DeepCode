@@ -13,7 +13,7 @@ Elevator  Robot::m_elevator;
 OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
-  m_vision.InitVision();
+ // m_vision.InitVision();
 }
 
 void Robot::RobotPeriodic() {
@@ -129,12 +129,13 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvElevatorFoot, (m_elevator.GetFootPosition() == Elevator::fpRetracted ? 0 : 1));
   m_dashboard.SetRobotValue(rvElevatorAmps, m_pdp.GetCurrent(pdpElevator));
   m_dashboard.SetRobotValue(rvShoulderPosition, m_arm.GetShoulderDegrees());
-  // m_dashboard.SetRobotValue(rvShoulderSetpoint, );
+  m_dashboard.SetRobotValue(rvShoulderSetpoint, m_arm.GetShoulderSetpoint());
   m_dashboard.SetRobotValue(rvShoulderAmps, m_pdp.GetCurrent(pdpShoulder));
   m_dashboard.SetRobotValue(rvWristPosition, m_arm.GetWristDegrees());
-  // m_dashboard.SetRobotValue(rvWristSetpoint, );
+  m_dashboard.SetRobotValue(rvWristSetpoint, m_arm.GetWristSetpoint());
   m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
 }
+
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif

@@ -31,8 +31,10 @@ class Arm : public frc::Subsystem {
     std::string   GetArmPositionName(ArmPosition position);
     double        GetShoulderDegrees();
     ArmPosition   GetShoulderPosition();
+    double        GetShoulderSetpoint();
     double        GetWristDegrees();
     ArmPosition   GetWristPosition();
+    double        GetWristSetpoint();
     bool          IsDrivenManually();
     void          SetArmInUse(bool inUse);
     void          SetDrivenManually(bool isManual);
@@ -49,6 +51,8 @@ class Arm : public frc::Subsystem {
 
     bool              m_armInUse;
     bool              m_manualDrive;
+    double            m_shoulderSetpoint;
+    double            m_wristSetpoint;
 
     ArmPosition       m_shoulderPosition;
     ArmPosition       m_wristPosition;

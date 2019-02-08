@@ -5,6 +5,8 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_elevatorPot.SetAverageBits(2);
   m_elevatorPot.SetOversampleBits(0);
 
+  m_elevatorSetpoint = GetElevatorPosition();
+
   m_elevatorPID.SetCoefficient('P', 0, 0.04, 0);
   m_elevatorPID.SetCoefficient('I', 10, 0, 0.0025);
   m_elevatorPID.SetCoefficient('D', 0, 0.25, 0);
@@ -17,7 +19,6 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_cancelClimb = false;
   m_elevatorPosition = epUnknown;
-  m_elevatorSetpoint = GetElevatorPosition();
   m_footPosition = fpExtended;
   m_footInUse = false;
 
