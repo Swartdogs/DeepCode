@@ -62,7 +62,7 @@ typedef enum {              // Solenoid channels on PCM
 } RoboRioSol;
 
 typedef enum {              // Power channels on PDP
-    pdpElevator,
+    pdpElevator     = 3,
     pdpShoulder,
     pdpWrist,
     pdpDriveLeft2   = 12,
