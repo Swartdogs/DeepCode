@@ -14,6 +14,7 @@ OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
  // m_vision.InitVision();
+ m_solSensorPower.Set(true);
 }
 
 void Robot::RobotPeriodic() {

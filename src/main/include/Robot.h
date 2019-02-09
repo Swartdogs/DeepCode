@@ -38,5 +38,7 @@ class Robot : public frc::TimedRobot {
   PIDControl                  m_tunePID{"Tune"};
   frc::PowerDistributionPanel m_pdp{};
 
+  frc::Solenoid               m_solSensorPower{solSensorPower};
+
   void SetDashRobotValues();
 };

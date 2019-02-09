@@ -58,7 +58,8 @@ typedef enum {              // Solenoid channels on PCM
     solShifter,
     solFoot,
     solHand,
-    solHatch
+    solHatch,
+    solSensorPower = 7
 } RoboRioSol;
 
 typedef enum {              // Power channels on PDP
