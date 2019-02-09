@@ -52,9 +52,6 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() { 
   m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
-  m_drive.Periodic();
-  m_arm.Periodic();
-  m_elevator.Periodic();
   m_robotLog.EndPeriodic();
 }
 
