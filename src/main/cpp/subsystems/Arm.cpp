@@ -260,6 +260,8 @@ void Arm::SetDrivenManually(bool isManual) {
 }
 
 void Arm::SetHandMode(HandMode mode) {
+  if (!m_cargoSensor.Get() && m_handMode == hmCargo) return;
+
   if(mode != m_handMode) {
     m_solHand.Set(mode == hmHatch);
     m_handMode = mode;
