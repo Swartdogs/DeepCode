@@ -7,6 +7,9 @@ Elevator::Elevator() : Subsystem("Elevator") {
 
   m_elevatorSetpoint = GetElevatorPosition();
 
+  m_elevatorMotor.SetInverted(true);
+  m_footMotor.SetInverted(true);
+
   m_elevatorPID.SetCoefficient('P', 0, 0.04, 0);
   m_elevatorPID.SetCoefficient('I', 10, 0, 0.0025);
   m_elevatorPID.SetCoefficient('D', 0, 0.25, 0);
@@ -33,8 +36,11 @@ void Elevator::Periodic() {
   //m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
 
   //if (!m_footInUse) m_footMotor.Set(0);
+  double joyY  = Robot::m_oi.GetDriveJoystickY();
+  // printf("Joy Value=%f\n", joyY);
 
-  m_elevatorMotor.Set(Robot::m_oi.GetDriveJoystickY());
+  m_elevatorMotor.Set(joyY);
+  //m_footMotor.Set(joyY);
 }
 
 void Elevator::DriveFoot(double speed) {
@@ -60,7 +66,7 @@ bool Elevator::GetCancelClimb() {
 }
 
 double Elevator::GetElevatorPosition() {
-  return (m_elevatorPot.GetAverageValue() / COUNTS_PER_INCH) - Robot::m_dashboard.GetDashValue(dvElevOffset);
+  return (m_elevatorPot.GetAverageValue() * INCHES_PER_COUNT) - Robot::m_dashboard.GetDashValue(dvElevOffset);
 }
 
 std::string Elevator::GetElevatorPositionName(ElevatorPosition position)  {

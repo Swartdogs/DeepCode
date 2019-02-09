@@ -95,6 +95,7 @@ void Robot::TestPeriodic() {
                                         m_dashboard.GetDashValue(dvDabove),
                                         m_dashboard.GetDashValue(dvDbelow));
         m_tunePID.Reset();
+        m_tunePID.SetShowOutput(true);
       }
 
       switch(tunePID) {

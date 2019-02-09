@@ -7,7 +7,7 @@
 
 class Elevator : public frc::Subsystem {
  public:
-  static constexpr double   COUNTS_PER_INCH = 36.64;
+  static constexpr double   INCHES_PER_COUNT = 0.00689;
 
   typedef enum {
     fpExtended,
