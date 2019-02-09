@@ -9,6 +9,7 @@
 class Drive : public frc::Subsystem {
  public:
   static constexpr double   SONAR_SEPARATION = 24;
+  static constexpr double   SONAR_THRESHOLD = 36;
 
   typedef enum {
     spLow,

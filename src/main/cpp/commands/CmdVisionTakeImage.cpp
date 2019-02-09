@@ -9,7 +9,7 @@
 #include "commands/CmdVisionTakeImage.h"
 
 CmdVisionTakeImage::CmdVisionTakeImage(Vision::TargetSelect targetSelect) {
-  Requires(&Robot::m_vision);
+  m_targetSelect = targetSelect;
 }
 
 // Called just before this Command runs the first time
