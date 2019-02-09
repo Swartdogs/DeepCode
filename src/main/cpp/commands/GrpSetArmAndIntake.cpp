@@ -5,12 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "subsystems/Arm.h"
-#include "commands/GrpCargoPickup.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetIntakeMode.h"
+#include "commands/GrpSetArmAndIntake.h"
 
-GrpCargoPickup::GrpCargoPickup() {
-  AddParallel (new CmdArmSetArmPosition(Arm::apPickup));
-  AddParallel (new CmdArmSetIntakeMode(Arm::imIn));
+GrpSetArmAndIntake::GrpSetArmAndIntake(Arm::ArmPosition position, Arm::IntakeMode mode) {
+  AddParallel (new CmdArmSetArmPosition(position));
+  AddParallel (new CmdArmSetIntakeMode(mode));
 }
