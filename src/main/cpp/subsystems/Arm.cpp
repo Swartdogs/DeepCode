@@ -288,13 +288,26 @@ void Arm::SetShoulderPosition(ArmPosition position) {
 
   if(m_shoulderPosition != position) {
     switch (position) {
-        case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderTravel);      break;
-        case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderPickup);      break;
-        case apLow:       degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketLow);   break;
-        case apMid:       degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketMid);   break;
-        case apHigh:      degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketHigh);  break;
-        case apCargoShip: degrees = Robot::m_dashboard.GetDashValue(dvShoulderCargo);       break;
-        default:                                                                            return;
+      case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderTravel);      break;
+      case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderPickup);      break;
+
+      case apLow:       m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketLow) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketLow) + 
+                                  Robot::m_dashboard.GetDashValue(dvShoulderModify);      break;
+
+      case apMid:       m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketMid) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketMid) +
+                                  Robot::m_dashboard.GetDashValue(dvShoulderModify);      break;
+                                                          
+      case apHigh:      m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketHigh) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvShoulderRocketHigh) +
+                                  Robot::m_dashboard.GetDashValue(dvShoulderModify);      break;
+
+      case apCargoShip: degrees = Robot::m_dashboard.GetDashValue(dvShoulderCargo);       break;
+      default:                                                                            return;
     }
 
     SetShoulderPosition(degrees, position);
@@ -322,13 +335,26 @@ void Arm::SetWristPosition(ArmPosition position) {
 
   if (m_wristPosition != position) {
     switch (position) {
-        case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvWristTravel);     break;
-        case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvWristPickup);     break;
-        case apLow:       degrees = Robot::m_dashboard.GetDashValue(dvWristRocketLow);  break;
-        case apMid:       degrees = Robot::m_dashboard.GetDashValue(dvWristRocketMid);  break;
-        case apHigh:      degrees = Robot::m_dashboard.GetDashValue(dvWristRocketHigh); break;
-        case apCargoShip: degrees = Robot::m_dashboard.GetDashValue(dvWristCargo);      break;
-        default:                                                                        return;
+      case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvWristTravel);       break;
+      case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvWristPickup);       break;
+      
+      case apLow:       m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketLow) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketLow) +
+                                  Robot::m_dashboard.GetDashValue(dvWristModify);       break;
+      
+      case apMid:       m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketMid) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketMid) +
+                                  Robot::m_dashboard.GetDashValue(dvWristModify);       break;
+
+      case apHigh:      m_handMode == hmHatch ?
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketHigh) :
+                        degrees = Robot::m_dashboard.GetDashValue(dvWristRocketHigh) +
+                                  Robot::m_dashboard.GetDashValue(dvWristModify);       break;
+
+      case apCargoShip: degrees = Robot::m_dashboard.GetDashValue(dvWristCargo);        break;
+      default:                                                                          return;
     }
 
     SetWristPosition(degrees, position);
