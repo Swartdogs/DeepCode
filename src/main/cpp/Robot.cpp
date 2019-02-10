@@ -112,6 +112,8 @@ void Robot::TestPeriodic() {
       }
   } else {
     tunePID = -1;
+    m_drive.ArcadeDrive(0,0);
+    m_elevator.SetElevatorMotor(0);
   }
 }
 

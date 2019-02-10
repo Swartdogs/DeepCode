@@ -5,6 +5,7 @@ CmdDriveSetGear::CmdDriveSetGear(Drive::ShifterPosition position) {
   Requires(&Robot::m_drive);
   m_position  = position;
   m_timeCount = -1;
+  printf("CmdDriveSetGear=%s\n", Robot::m_drive.GetShifterPositionName(m_position).c_str());
 }
 
 void CmdDriveSetGear::Initialize() {
