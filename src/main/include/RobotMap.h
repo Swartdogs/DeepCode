@@ -35,16 +35,16 @@ typedef enum {              // CAN Ids for Victors
 } RoboRioCan;
 
 typedef enum {              // Digital Input/Output channels on RoboRIO
-    dioEncoderLeftChannelA,
-    dioEncoderLeftChannelB,
-    dioEncoderRightChannelA,
-    dioEncoderRightChannelB,
-    dioFrontSensor,
-    dioRearSensor,
     dioSonarLeftEcho,
     dioSonarLeftPing,
     dioSonarRightEcho,
     dioSonarRightPing,
+    dioFrontSensor,
+    dioRearSensor,
+    dioEncoderLeftChannelA,
+    dioEncoderLeftChannelB,
+    dioEncoderRightChannelA,
+    dioEncoderRightChannelB,
     dioCargoSensor
 } RoboRioDio;
 

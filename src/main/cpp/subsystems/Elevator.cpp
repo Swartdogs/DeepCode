@@ -39,7 +39,7 @@ void Elevator::Periodic() {
   double joyY  = Robot::m_oi.GetDriveJoystickY();
   // printf("Joy Value=%f\n", joyY);
 
-  m_elevatorMotor.Set(joyY);
+  //m_elevatorMotor.Set(joyY);
   //m_footMotor.Set(joyY);
 }
 
