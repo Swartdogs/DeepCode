@@ -68,20 +68,27 @@ void Robot::TestPeriodic() {
   static int          tunePID = -1;
   
   if(m_dashboard.GetDashButton(dbRunPid)) {
-      if(tunePID < 0) {
+      if(tunePID < 0) { 
+        m_robotLog.WritePid("");
         tunePID   = m_dashboard.GetDashValue(dvPidSelect);
         setpoint  = m_dashboard.GetDashValue(dvPidSetpoint);
 
         switch(tunePID) {
-            case 0:                       //Rotate PID
+            case 0:                       // Rotate PID
+              m_robotLog.WritePid("Tune Rotate PID");
               m_drive.RotatePidTune();
               break;
-            case 1:                       //Drive PID
+            case 1:                       // Drive PID
+              m_robotLog.WritePid("Tune Drive PID");
               m_drive.DrivePidTune();
               m_drive.RotateInit(0, 0.6, true);
               break;
+            case 2:                       // Elevator PID
+              m_robotLog.WritePid("Tune Elevator PID");
+              break;
             default:;
         }
+
         m_tunePID.SetOutputRamp(0.2, 0.05);
         m_tunePID.SetSetpoint(setpoint, 0);
         m_tunePID.SetOutputRange(-m_dashboard.GetDashValue(dvPidMaxOut),m_dashboard.GetDashValue(dvPidMaxOut));
@@ -99,6 +106,24 @@ void Robot::TestPeriodic() {
                                         m_dashboard.GetDashValue(dvDbelow));
         m_tunePID.Reset();
         m_tunePID.SetShowOutput(true);
+
+        sprintf(message, "Setpoint=%f  Maximum Output=%f", setpoint, m_dashboard.GetDashValue(dvPidMaxOut));
+        m_robotLog.WritePid(message);
+
+        sprintf(message, "P: Threshold=%f  Above=%f  Below=%f", m_dashboard.GetDashValue(dvPthreshold),
+                                                                 m_dashboard.GetDashValue(dvPabove),
+                                                                 m_dashboard.GetDashValue(dvPbelow));
+        m_robotLog.WritePid(message);
+
+        sprintf(message, "I: Threshold=%f  Above=%f  Below=%f", m_dashboard.GetDashValue(dvIthreshold),
+                                                                 m_dashboard.GetDashValue(dvIabove),
+                                                                 m_dashboard.GetDashValue(dvIbelow));
+        m_robotLog.WritePid(message);
+
+        sprintf(message, "D: Threshold=%f  Above=%f  Below=%f", m_dashboard.GetDashValue(dvDthreshold),
+                                                                 m_dashboard.GetDashValue(dvDabove),
+                                                                 m_dashboard.GetDashValue(dvDbelow));
+        m_robotLog.WritePid(message);
       }
 
       switch(tunePID) {
@@ -140,8 +165,6 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
   m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));
   m_dashboard.SetRobotStatus(rsCargo, m_arm.GetCargoDetected());
-
- // printf("Front Sensor=%d\n", m_elevator.FloorDetected(Elevator::fsFront));
 }
 
 #ifndef RUNNING_FRC_TESTS
