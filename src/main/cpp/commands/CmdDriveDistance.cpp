@@ -24,6 +24,7 @@ void CmdDriveDistance::Initialize() {
   } else {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);
+    Robot::m_drive.SetBrakeMode(true);
 
     if (m_useSonar) m_distance = Robot::m_drive.GetSonarDistance() - fabs(m_distance);
 

@@ -12,6 +12,7 @@ void CmdVisionFindTarget::Initialize() {
   } else {
     m_status = csRun;
     Robot::m_vision.FindTarget(m_targetSelect);
+    Robot::m_robotLog.Write("Vision:   Find Target INIT");
   }
 }
 

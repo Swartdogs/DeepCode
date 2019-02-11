@@ -19,6 +19,7 @@ void CmdDriveRotate::Initialize() {
   } else {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);
+    Robot::m_drive.SetBrakeMode(false);
 
     if (m_useSonar) m_heading = Robot::m_drive.GetSonarAngle();
 

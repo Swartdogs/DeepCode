@@ -9,10 +9,10 @@ CmdDriveJoystick::CmdDriveJoystick() {
 
 void CmdDriveJoystick::Initialize() {
   Robot::m_drive.SetDriveInUse(true);
+  Robot::m_drive.SetBrakeMode(false);
 }
 
 void CmdDriveJoystick::Execute() {
-  //Robot::m_drive.ArcadeDrive(0, 0);
   Robot::m_drive.ArcadeDrive( Robot::m_oi.GetDriveJoystickY(), 
                                Robot::m_oi.GetDriveJoystickX());
 }
