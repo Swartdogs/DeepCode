@@ -8,8 +8,6 @@ CmdElevatorSetFoot::CmdElevatorSetFoot(Elevator::FootPosition position, double t
 }
 
 void CmdElevatorSetFoot::Initialize() {
-  printf("Foot Position= %s %d\n", Robot::m_elevator.GetFootPositionName(Robot::m_elevator.GetFootPosition()), Robot::m_elevator.m_footSol.Get());
-
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
     m_status = csCancel;
     Robot::m_robotLog.Write("Elevator: Set Foot Canceled");
