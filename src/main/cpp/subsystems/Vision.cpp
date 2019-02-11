@@ -71,11 +71,11 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
         m_targetAngle = targetAngle;
         m_targetDistance = targetDistance;
 
-        sprintf(m_buffer, "Vision:  Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
+        sprintf(m_buffer, "Vision:   Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
         Robot::m_robotLog.Write(m_buffer);
     } else {
         m_searchState = ssNoTarget;
-        Robot::m_robotLog.Write("Vision:  No Target Found");
+        Robot::m_robotLog.Write("Vision:   No Target Found");
     }
 }
 
@@ -110,7 +110,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
         imageA.deallocate();                                                // Free memory used by images
         imageB.deallocate();
 
-        printf("Contours Found=%i\n", contours.size());
+        printf("  Contours Found=%i\n", contours.size());
     
         if (contours.size() > 0) {                                          // Contours found
             std::vector<visionTape> tapes;                                  // Create vector of Vision Tapes
@@ -142,7 +142,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                 }
             }
 
-            printf("Tapes Found=%i\n", tapes.size());
+            printf("  Tapes Found=%i\n", tapes.size());
 
             if (tapes.size() > 0) {                                         // Tapes Found
                 std::vector<visionTarget> targets;                          // Create vector of Vision Targets
@@ -150,13 +150,13 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                 int leftTape = -2;
 
                 for (int i = 0; i < tapes.size(); i++) {                    // Iterate thru tapes looking for Targets
-                    printf("Tape %i: Angle %f rectX=%i rectWidth= %i\n", i, tapes[i].angle,
+                    printf("  Tape %i: Angle %f rectX=%i rectWidth= %i\n", i, tapes[i].angle,
                             tapes[i].x, tapes[i].width);
                     
                     if (tapes[i].angle > 0){                                // Based on angle, tape is a left tape
                         leftTape = i;
                     } else if (leftTape == i - 1){                          // Current Tape and previous Tape are a Target pair
-                        printf("Target Found: Tapes %i and %i\n", i - 1, i);
+                        printf("  Target Found: Tapes %i and %i\n", i - 1, i);
                                                                             // Define bounding rectangle around Target
                         int     targetWidth = tapes[i].x - tapes[i - 1].x + tapes[i].width;
                         double  targetCenter = (((double)targetWidth / 2) + (double)tapes[i - 1].x - 160) / 160;
@@ -169,7 +169,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                     }
                 }
 
-                printf("Targets Found=%i\n", targets.size());
+                printf("  Targets Found=%i\n", targets.size());
 
                 if(targets.size() > 0) {
                     int targetIndex = 0;                                    // Index 0 is leftmost Target
@@ -177,14 +177,14 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                     if(targetSelect == Vision::tsBest){                     // Search for Target closest to center of Image
                         for (int i = 1; i < targets.size(); i++) {
                             if (fabs(targets[i].angle) < fabs(targets[targetIndex].angle)) targetIndex = i;
-                            printf("Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
+                            printf("  Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
                         }
 
                     } else if (targetSelect == Vision::tsRight){
                         targetIndex = targets.size() - 1;
                     }
 
-                    printf("Selected Target: %i\n", targetIndex);
+                    printf("  Selected Target: %i\n", targetIndex);
                     targetFound = true;
                     targetAngle = targets[targetIndex].angle;
                     targetDistance = targets[targetIndex].distance;
@@ -194,7 +194,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
 
     } else {                                                                // No image from Camera
         imageA.deallocate();
-        Robot::m_robotLog.Write("Vision:  No Image from Camera");
+        Robot::m_robotLog.Write("Vision:   No Image from Camera");
     }
 
     host->SearchResults(targetFound, targetAngle, targetDistance);

@@ -7,7 +7,7 @@ CmdElevatorSetHeight::CmdElevatorSetHeight(double inches) {
 
 void CmdElevatorSetHeight::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
-    Robot::m_robotLog.Write("Elevator: Set Height Canceled");
+    Robot::m_robotLog.Write("Elevator: Set Height SKIP");
   } else {
     Robot::m_elevator.SetElevatorSetpoint( m_inches );
   }

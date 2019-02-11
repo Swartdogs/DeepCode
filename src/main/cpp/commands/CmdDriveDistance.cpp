@@ -24,6 +24,7 @@ void CmdDriveDistance::Initialize() {
   } else {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);
+    Robot::m_drive.SetBrakeMode(true);
 
     if (m_useSonar) m_distance = Robot::m_drive.GetSonarDistance() - fabs(m_distance);
 
@@ -72,15 +73,21 @@ void CmdDriveDistance::End() {
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:    Distance DONE   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Distance DONE       Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+              Robot::m_drive.GetHeading());
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:    Distance CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Distance CANCELED   Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+              Robot::m_drive.GetHeading());
       break;
 
     case csTimedOut:
-      sprintf(Robot::message, "Drive:    Distance TIMED OUT   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Distance TIMED OUT  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+              Robot::m_drive.GetHeading());
       break;
       
     default:;

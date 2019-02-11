@@ -35,7 +35,7 @@ Drive::Drive() : Subsystem("Drive") {
   m_drivePID.SetCoefficient('I', 10, 0, 0.0025);
   m_drivePID.SetCoefficient('D', 0, 0.25, 0);
   m_drivePID.SetInputRange(-500, 500);
-  m_drivePID.SetOutputRamp(0.25, 0.05);
+  m_drivePID.SetOutputRamp(0.1, 0.05);
   m_drivePID.SetSetpointDeadband(1.0); 
 
   m_sonarLeft.SetAutomaticMode(true);
@@ -194,6 +194,20 @@ bool Drive::RotateIsFinished() {
 
 void Drive::RotatePidTune() {
   m_gyro.Reset();
+}
+
+void Drive::SetBrakeMode(bool brakesOn) {
+  if (brakesOn) {
+    m_driveLeft1.SetNeutralMode(NeutralMode::Brake);
+    m_driveLeft2.SetNeutralMode(NeutralMode::Brake);
+    m_driveRight1.SetNeutralMode(NeutralMode::Brake);
+    m_driveRight2.SetNeutralMode(NeutralMode::Brake);
+  } else {
+    m_driveLeft1.SetNeutralMode(NeutralMode::Coast);
+    m_driveLeft2.SetNeutralMode(NeutralMode::Coast);
+    m_driveRight1.SetNeutralMode(NeutralMode::Coast);
+    m_driveRight2.SetNeutralMode(NeutralMode::Coast);
+  }
 }
 
 void Drive::SetDriveEnable(bool enable) {

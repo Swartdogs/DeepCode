@@ -20,6 +20,8 @@ void CmdElevatorDriveFoot::Initialize() {
     m_stopCounter = 0;
     Robot::m_elevator.SetFootInUse(true);
     Robot::m_drive.SetDriveInUse(true);
+    Robot::m_drive.SetBrakeMode(true);
+
     if (m_timeout > 0) SetTimeout(m_timeout);
 
     sprintf(Robot::message, "Elevator: Drive Foot at %3.1f for %4.1f seconds", m_footSpeed, m_timeout);

@@ -45,6 +45,7 @@ class Drive : public frc::Subsystem {
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
   void              RotatePidTune();
+  void              SetBrakeMode(bool brakesOn);
   void              SetDriveEnable(bool enable); 
   void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);
