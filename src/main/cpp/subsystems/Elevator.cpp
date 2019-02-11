@@ -10,12 +10,12 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_elevatorMotor.SetInverted(true);
   m_footMotor.SetInverted(true);
 
-  m_elevatorPID.SetCoefficient('P', 0, 0.04, 0);
-  m_elevatorPID.SetCoefficient('I', 10, 0, 0.0025);
-  m_elevatorPID.SetCoefficient('D', 0, 0.25, 0);
-  m_elevatorPID.SetInputRange(-360, 360);
+  m_elevatorPID.SetCoefficient('P', 0, 0.8, 0);
+  m_elevatorPID.SetCoefficient('I', 1, 0, 0.06);
+  m_elevatorPID.SetCoefficient('D', 0, 0, 0);
+  m_elevatorPID.SetInputRange(-20, 1.3);
   m_elevatorPID.SetOutputRamp(0.25, 0.05);
-  m_elevatorPID.SetSetpointDeadband(1.0); 
+  m_elevatorPID.SetSetpointDeadband(0.5); 
   m_elevatorPID.SetSetpoint(m_elevatorSetpoint, m_elevatorSetpoint);
 
   m_footSol.Set(false);
@@ -33,10 +33,10 @@ void Elevator::InitDefaultCommand() {
 }
 
 void Elevator::Periodic() {
-  //m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
+  m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
 
-  //if (!m_footInUse) m_footMotor.Set(0);
-  double joyY  = Robot::m_oi.GetDriveJoystickY();
+  if (!m_footInUse) m_footMotor.Set(0);
+  //double joyY  = Robot::m_oi.GetDriveJoystickY();
   // printf("Joy Value=%f\n", joyY);
 
   //m_elevatorMotor.Set(joyY);
@@ -52,7 +52,7 @@ bool Elevator::ElevatorAtSetpoint() {
 }
 
 bool Elevator::FloorDetected (FloorSensor sensor) {
-  if (GetElevatorPosition() < Robot::m_dashboard.GetDashValue(dvFloorSensorMin)) return false;
+  if (GetElevatorPosition() > Robot::m_dashboard.GetDashValue(dvFloorSensorMin)) return false;
 
   switch (sensor) {
     case fsFront: return  !m_frontSensor.Get();

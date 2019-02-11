@@ -50,6 +50,8 @@ class Elevator : public frc::Subsystem {
   void            SetFootPosition(FootPosition position);
   void            SetFootInUse(bool inUse);
 
+  frc::Solenoid       m_footSol{solFoot};
+
  private:
   FootPosition        m_footPosition;
   ElevatorPosition    m_elevatorPosition;
@@ -63,8 +65,6 @@ class Elevator : public frc::Subsystem {
 
   frc::DigitalInput   m_frontSensor{dioFrontSensor};
   frc::DigitalInput   m_rearSensor{dioRearSensor};
-
-  frc::Solenoid       m_footSol{solFoot};
 
   frc::VictorSP       m_elevatorMotor{pwmElevatorMotor};
   frc::VictorSP       m_footMotor{pwmFootMotor};

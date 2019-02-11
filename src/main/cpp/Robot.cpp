@@ -26,6 +26,8 @@ void Robot::DisabledInit() {
   m_robotLog.SetMode(rmDisabled);
   m_robotLog.Close(); 
   m_dashboard.SetRobotMode(rmDisabled);
+  m_elevator.SetElevatorPosition(Elevator::epRetracted);
+  m_elevator.SetFootPosition(Elevator::fpExtended);
 }
 
 void Robot::DisabledPeriodic() { 
@@ -138,6 +140,8 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
   m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));
   m_dashboard.SetRobotStatus(rsCargo, m_arm.GetCargoDetected());
+
+ // printf("Front Sensor=%d\n", m_elevator.FloorDetected(Elevator::fsFront));
 }
 
 #ifndef RUNNING_FRC_TESTS

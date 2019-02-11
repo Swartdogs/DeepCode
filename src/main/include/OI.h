@@ -20,8 +20,8 @@ class OI {
   //frc::Joystick  m_buttonBox{2};
 
   frc::JoystickButton m_buttonShifter{&m_driveJoystick, 1};
-  frc::JoystickButton m_buttonClimbEnable{&m_driveJoystick, 11};
-  frc::JoystickButton m_buttonClimbCancel{&m_driveJoystick, 12};
+  frc::JoystickButton m_buttonClimbEnable{&m_driveJoystick, 9};
+  frc::JoystickButton m_buttonClimbCancel{&m_driveJoystick, 10};
   //frc::JoystickButton m_buttonClimbLevel2{&m_buttonBox, 1};
   //frc::JoystickButton m_buttonClimbLevel3{&m_buttonBox, 2};
  

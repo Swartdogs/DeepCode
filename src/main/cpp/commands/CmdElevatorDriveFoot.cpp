@@ -1,13 +1,15 @@
 #include "commands/CmdElevatorDriveFoot.h"
 #include "Robot.h"
 
-CmdElevatorDriveFoot::CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout) {
+CmdElevatorDriveFoot::CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout, int addTime) {
   Requires(&Robot::m_drive);
 
   m_footSpeed       = footSpeed;
   m_floorSensor     = floorSensor;
   m_status          = csRun;
   m_timeout         = fabs(timeout);
+  m_stopCounter     = 0;
+  m_addTime         = addTime;
 }
 
 void CmdElevatorDriveFoot::Initialize() {
@@ -15,6 +17,7 @@ void CmdElevatorDriveFoot::Initialize() {
       m_status = csSkip;
   } else {
     m_status = csRun;
+    m_stopCounter = 0;
     Robot::m_elevator.SetFootInUse(true);
     Robot::m_drive.SetDriveInUse(true);
     if (m_timeout > 0) SetTimeout(m_timeout);
@@ -34,7 +37,8 @@ void CmdElevatorDriveFoot::Execute() {
         m_status = csTimedOut;
         if (this->IsParented()) this->GetGroup()->Cancel();
       } else if (Robot::m_elevator.FloorDetected(m_floorSensor)) {
-        m_status = csDone;
+        m_stopCounter++;
+        if (m_stopCounter >= m_addTime) m_status = csDone;
       } else {
         speed = m_footSpeed;
       }

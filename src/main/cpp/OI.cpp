@@ -9,7 +9,8 @@
 OI::OI() {
   //m_InternalLevel2.WhenPressed    (new GrpClimb(Elevator::epLevel2));
   //m_InternalLevel3.WhenPressed    (new GrpClimb(Elevator::epLevel3));
-  //m_buttonClimbCancel.WhenPressed (new CmdCancelClimb());
+  m_buttonClimbEnable.WhenPressed (new GrpClimb(Elevator::epLevel2));
+  m_buttonClimbCancel.WhenPressed (new CmdCancelClimb());
   m_buttonShifter.WhenPressed     (new CmdDriveSetGear(Drive::spLow));
   m_buttonShifter.WhenReleased    (new CmdDriveSetGear(Drive::spHigh));
 }
