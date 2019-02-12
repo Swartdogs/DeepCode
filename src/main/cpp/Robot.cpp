@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 16, 1, 44);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 16, 1, 45);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;

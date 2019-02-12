@@ -150,5 +150,6 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvCargoSpeedOut,
     dvCargoSpeedRotate,
     dvCargoRotateRatio,
-    dvCargoEjectTime
+    dvCargoEjectTime,
+    dvCargoRotateTime
 } DashValue;

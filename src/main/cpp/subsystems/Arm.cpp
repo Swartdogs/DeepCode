@@ -56,6 +56,10 @@ void Arm::Periodic() {
   double      bottomPower     = 0;
 
   switch(m_intakeMode) {
+    case imOff:
+      timer = 0;
+      break;
+
     case imIn:
       if(m_cargoSensor.Get()) {
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
@@ -63,7 +67,6 @@ void Arm::Periodic() {
       } else {
         SetIntakeMode(imOff);        
       }
-
       break; 
 
     case imOut:
@@ -75,14 +78,19 @@ void Arm::Periodic() {
         else timer = 0;
 
       } else {
-        timer = 0;
         SetIntakeMode(imOff);        
       }
       break;
 
     case imRotate:
-      topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedRotate);
-      bottomPower = -PowerLimit(topPower * Robot::m_dashboard.GetDashValue(dvCargoRotateRatio));
+      if(timer < Robot::m_dashboard.GetDashValue(dvCargoRotateTime)) {
+        timer++;
+
+        topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedRotate);
+        bottomPower = -PowerLimit(topPower * Robot::m_dashboard.GetDashValue(dvCargoRotateRatio));
+      } else {
+        SetIntakeMode(imOff);
+      }
       break;
 
     default:;
