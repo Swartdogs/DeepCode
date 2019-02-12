@@ -49,12 +49,9 @@ Arm::Arm() : Subsystem("Arm") {
 }
 
 void Arm::InitDefaultCommand() {
-  // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
 }
 
 void Arm::Periodic() {
-  //static bool wasManuallyDriven = false;
   static int  timer           = 0;
 
   double      shoulderDegrees = GetShoulderDegrees();
@@ -76,7 +73,7 @@ void Arm::Periodic() {
       break; 
 
     case imOut:
-      if(timer < EJECT_TIMEOUT) {
+      if(timer < Robot::m_dashboard.GetDashValue(dvCargoEjectTime)) {
         topPower = -Robot::m_dashboard.GetDashValue(dvCargoSpeedOut);
         bottomPower = topPower;
         
@@ -135,31 +132,6 @@ void Arm::Periodic() {
       }
     } 
   }
-
-
-  // if (!m_manualDrive) {
-  //   if (wasManuallyDriven) {
-  //     SetShoulderPosition(GetShoulderDegrees());
-  //     SetWristPosition(GetWristDegrees());
-  //   }
-
-  //   shoulderPower = m_shoulderPID.Calculate(GetShoulderDegrees());
-  //   wristPower = m_wristPID.Calculate(GetWristDegrees());
-  
-  // } else {
-  //   if(!wasManuallyDriven){
-  //     m_shoulderPosition = apUnknown;
-  //     m_wristPosition = apUnknown;
-  //   }
-
-  //   double joyX = Robot::m_oi.GetArmJoystickX();
-  //   double joyY = Robot::m_oi.GetArmJoystickY();
-
-  //   if ((GetShoulderDegrees() >= 7 && joyY > 0) || (GetShoulderDegrees() <= 4 && joyY < 0)) joyY = 0; //Update min and max values
-  //   if ((GetWristDegrees() >= 7 && joyX > 0) || (GetWristDegrees() <= 4 && joyX < 0)) joyX = 0;
-  // }
-
-  // wasManuallyDriven = m_manualDrive;
 
   m_shoulderMotor.Set(shoulderPower);
   m_wristMotor.Set(wristPower);
@@ -283,6 +255,10 @@ void Arm::SetIntakeMode(IntakeMode mode) {
   }
 }
 
+void Arm::SetShoulderMotor(double speed) {
+  m_shoulderMotor.Set(speed);
+}
+
 void Arm::SetShoulderPosition(ArmPosition position) {
   double degrees = 0;
 
@@ -328,6 +304,10 @@ void Arm::SetShoulderPosition(double degrees, ArmPosition position) {
   }
 
   Robot::m_robotLog.Write(Robot::message);
+}
+
+void Arm::SetWristMotor(double speed) {
+  m_wristMotor.Set(speed);
 }
 
 void Arm::SetWristPosition(ArmPosition position) {

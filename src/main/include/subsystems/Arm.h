@@ -62,8 +62,10 @@ class Arm : public frc::Subsystem {
     void          SetHandMode(HandMode mode);
     void          SetHatchState(HatchState state);
     void          SetIntakeMode(IntakeMode mode);
+    void          SetShoulderMotor(double speed);
     void          SetShoulderPosition(ArmPosition position);
     void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown);
+    void          SetWristMotor(double speed);
     void          SetWristPosition(ArmPosition position);
     void          SetWristPosition(double degrees, ArmPosition position = apUnknown);
     bool          ShoulderAtSetpoint();
@@ -72,7 +74,6 @@ class Arm : public frc::Subsystem {
   private:
     const double      SHOULDER_COUNTS_PER_DEGREE = 16.3;
     const double      WRIST_COUNTS_PER_DEGREE = 7;
-    const int         EJECT_TIMEOUT = 50;                  //Sets to 20ms counts (1 sec = 50 counts)
 
     double            PowerLimit(double value);
 

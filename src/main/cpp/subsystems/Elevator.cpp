@@ -28,23 +28,15 @@ Elevator::Elevator() : Subsystem("Elevator") {
 }
 
 void Elevator::InitDefaultCommand() {
-  // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
 }
 
 void Elevator::Periodic() {
   m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
-
   if (!m_footInUse) m_footMotor.Set(0);
-  //double joyY  = Robot::m_oi.GetDriveJoystickY();
-  // printf("Joy Value=%f\n", joyY);
-
-  //m_elevatorMotor.Set(joyY);
-  //m_footMotor.Set(joyY);
 }
 
 void Elevator::DriveFoot(double speed) {
-  m_footMotor.Set(speed > 1 ? 1 : (speed < -1 ? -1 : speed));
+  m_footMotor.Set(speed > 1.0 ? 1.0 : (speed < -1.0 ? -1.0 : speed));
 }
 
 bool Elevator::ElevatorAtSetpoint() {

@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 16, 1, 43);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 16, 1, 44);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -37,10 +37,6 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
   m_dashboard.SetRobotMode(rmAutonomous);
-
-  // if (m_autonomousCommand != nullptr) {
-  //   m_autonomousCommand->Start();
-  // }
 }
 
 void Robot::AutonomousPeriodic() { 
@@ -85,6 +81,12 @@ void Robot::TestPeriodic() {
               break;
             case 2:                       // Elevator PID
               m_robotLog.WritePid("Tune Elevator PID");
+              break;
+            case 3:                       // Shoulder PID
+              m_robotLog.WritePid("Tune Shoulder PID");
+              break;
+            case 4:                       // Wrist PID
+              m_robotLog.WritePid("Tune Wrist PID");
               break;
             default:;
         }
@@ -136,11 +138,19 @@ void Robot::TestPeriodic() {
         case 2:                                                                 //Elevator PID
           m_elevator.SetElevatorMotor(m_tunePID.Calculate(m_elevator.GetElevatorPosition()));
           break;
+        case 3:                                                                 // Shoulder PID
+          m_arm.SetShoulderMotor(m_tunePID.Calculate(m_arm.GetShoulderDegrees()));
+          break;
+        case 4:                                                                 // Wrist PID
+          m_arm.SetWristMotor(m_tunePID.Calculate(m_arm.GetWristDegrees()));
+          break;
       }
   } else {
     tunePID = -1;
     m_drive.ArcadeDrive(0,0);
     m_elevator.SetElevatorMotor(0);
+    m_arm.SetShoulderMotor(0);
+    m_arm.SetWristMotor(0);
   }
 }
 
