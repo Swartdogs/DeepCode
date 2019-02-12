@@ -9,9 +9,9 @@
 GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
   AddSequential(new CmdElevatorSetFoot(Elevator::fpExtended, 1.0));
   AddSequential(new CmdElevatorSetPosition(position, true));
-  AddSequential(new CmdElevatorDriveFoot(Elevator::fsFront, 0.9, 4.0, 5));
+  AddSequential(new CmdElevatorDriveFoot(Elevator::fsFront, 0.9, 0.1, 4.0, 5));
   AddSequential(new CmdElevatorSetFoot(Elevator::fpRetracted, 1.0));
-  AddSequential(new CmdElevatorDriveFoot(Elevator::fsRear, 0.9, 4.0, 20));
+  AddSequential(new CmdElevatorDriveFoot(Elevator::fsRear, 0.9, 0.1, 4.0, 20));
   AddSequential(new CmdElevatorSetPosition(Elevator::epRetracted, true, 0.3, 0.1));
   AddSequential(new CmdDriveDistance(8, 0, 0.2, 0, true, true, 4.0));
   AddSequential(new CmdElevatorSetFoot(Elevator::fpExtended, 0));

@@ -126,7 +126,6 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3,
-    dvDriveRatio,
     dvShoulderMin, 
     dvShoulderMax,
     dvShoulderOffset,

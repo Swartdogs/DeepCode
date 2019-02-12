@@ -1,13 +1,13 @@
 #include "Robot.h"
 #include "commands/CmdElevatorSetPosition.h"
 
-CmdElevatorSetPosition::CmdElevatorSetPosition(Elevator::ElevatorPosition position, bool waitForDone, double footWheelSpeed,
-                                                double driveWheelSpeed) {
+CmdElevatorSetPosition::CmdElevatorSetPosition(Elevator::ElevatorPosition position, bool waitForDone, double footSpeed,
+                                               double driveSpeed) {
   m_elevatorPosition  = position;
   m_waitForDone       = waitForDone;
   m_status            = csDone;
-  m_footWheelSpeed    = footWheelSpeed;
-  m_driveWheelSpeed   = driveWheelSpeed;
+  m_footSpeed         = footSpeed;
+  m_driveSpeed        = driveSpeed;
 }
 
 void CmdElevatorSetPosition::Initialize() {
@@ -32,8 +32,8 @@ void CmdElevatorSetPosition::Execute() {
   if (m_status == csRun) {
     if (Robot::m_elevator.ElevatorAtSetpoint()) m_status = csDone;
 
-    Robot::m_elevator.DriveFoot(m_footWheelSpeed);
-    Robot::m_drive.ArcadeDrive(m_driveWheelSpeed, 0);
+    Robot::m_elevator.DriveFoot(m_footSpeed);
+    Robot::m_drive.ArcadeDrive(m_driveSpeed, 0);
   }
 }
 

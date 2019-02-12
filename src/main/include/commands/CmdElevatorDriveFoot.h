@@ -6,7 +6,8 @@
 
 class CmdElevatorDriveFoot : public frc::Command {
  public:
-  CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double timeout, int addTime);
+  CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, double footSpeed, double driveSpeed, 
+                       double timeout, int addTime);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -14,6 +15,7 @@ class CmdElevatorDriveFoot : public frc::Command {
   void Interrupted() override;
 
   private:
+    double                      m_driveSpeed;
     double                      m_footSpeed;
     Elevator::FloorSensor       m_floorSensor;
     CommandStatus               m_status;
