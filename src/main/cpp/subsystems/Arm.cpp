@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "subsystems/Arm.h"
 #include "Robot.h"
 
@@ -52,6 +45,7 @@ void Arm::InitDefaultCommand() {
 }
 
 void Arm::Periodic() {
+  static bool inManualDrive   = false;
   static int  timer           = 0;
 
   double      shoulderDegrees = GetShoulderDegrees();
@@ -95,6 +89,13 @@ void Arm::Periodic() {
   }
 
   if (m_manualDrive) {
+    if (!inManualDrive) {
+      inManualDrive = true;
+      sprintf(Robot::message,"Arm:      Manual START  Shoulder=%4.1f  Wrist=%4.1f", 
+              GetShoulderDegrees(), GetWristDegrees());
+      Robot::m_robotLog.Write(Robot::message);
+    }
+
     double joyShoulder  = Robot::m_oi.GetArmJoystickY();
     double joyWrist     = Robot::m_oi.GetArmJoystickX();
 
@@ -131,6 +132,11 @@ void Arm::Periodic() {
         SetWristPosition(wristDegrees);
       }
     } 
+  } else if (inManualDrive) {
+    inManualDrive = false;
+    sprintf(Robot::message,"Arm:      Manual END    Shoulder=%4.1f  Wrist=%4.1f", 
+            GetShoulderDegrees(), GetWristDegrees());
+    Robot::m_robotLog.Write(Robot::message);
   }
 
   m_shoulderMotor.Set(shoulderPower);
@@ -238,6 +244,12 @@ void Arm::SetHandMode(HandMode mode) {
     m_solHand.Set(mode == hmHatch);
     m_handMode = mode;
     Robot::m_dashboard.SetRobotStatus(rsHatchMode, mode == hmHatch);
+
+    SetShoulderPosition(m_shoulderPosition);
+    SetWristPosition(m_wristPosition);
+
+    sprintf(Robot::message, "Arm:      Hand Mode=%s", GetHandModeName(m_handMode).c_str());
+    Robot::m_robotLog.Write(Robot::message);
   }
 }
 
@@ -246,6 +258,9 @@ void Arm::SetHatchState(HatchState state) {
     m_solHatch.Set(state == hsGrab);
     m_hatchState = state;
     Robot::m_dashboard.SetRobotStatus(rsHatchGrab, state == hsGrab);
+
+    sprintf(Robot::message, "Arm:      Hatch State=%s", GetHatchStateName(m_hatchState).c_str());
+    Robot::m_robotLog.Write(Robot::message);
   }
 }
 
@@ -260,9 +275,10 @@ void Arm::SetShoulderMotor(double speed) {
 }
 
 void Arm::SetShoulderPosition(ArmPosition position) {
-  double degrees = 0;
+  static HandMode handMode = hmCargo;
+  double degrees = GetShoulderDegrees();
 
-  if(m_shoulderPosition != position) {
+  if(m_shoulderPosition != position || m_handMode != handMode) {
     switch (position) {
       case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderTravel);      break;
       case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvShoulderPickup);      break;
@@ -286,7 +302,8 @@ void Arm::SetShoulderPosition(ArmPosition position) {
       default:                                                                            return;
     }
 
-    SetShoulderPosition(degrees, position);
+    handMode = m_handMode;
+    if (m_shoulderSetpoint != degrees) SetShoulderPosition(degrees, position);
   }
 }
 
@@ -296,14 +313,11 @@ void Arm::SetShoulderPosition(double degrees, ArmPosition position) {
 
   m_shoulderPID.SetSetpoint(degrees, GetShoulderPosition());
  
-  if(position == apUnknown){
-    sprintf(Robot::message,"Arm:      Set Shoulder Position=%4.1f", degrees);
-  } else {
+  if(position != apUnknown){
     sprintf(Robot::message,"Arm:      Set Shoulder Position=%s (%4.1f)", 
-          GetArmPositionName(position).c_str(), degrees);
+            GetArmPositionName(position).c_str(), degrees);
+    Robot::m_robotLog.Write(Robot::message);
   }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 void Arm::SetWristMotor(double speed) {
@@ -311,9 +325,10 @@ void Arm::SetWristMotor(double speed) {
 }
 
 void Arm::SetWristPosition(ArmPosition position) {
-  double degrees = 0;
+  static HandMode handMode = hmCargo;
+  double degrees = GetWristDegrees();
 
-  if (m_wristPosition != position) {
+  if (m_wristPosition != position || m_handMode != handMode) {
     switch (position) {
       case apTravel:    degrees = Robot::m_dashboard.GetDashValue(dvWristTravel);       break;
       case apPickup:    degrees = Robot::m_dashboard.GetDashValue(dvWristPickup);       break;
@@ -337,7 +352,8 @@ void Arm::SetWristPosition(ArmPosition position) {
       default:                                                                          return;
     }
 
-    SetWristPosition(degrees, position);
+    handMode = m_handMode;
+    if (m_wristSetpoint != degrees) SetWristPosition(degrees, position);
   }
 }
 
@@ -347,14 +363,11 @@ void Arm::SetWristPosition(double degrees, ArmPosition position) {
   
   m_wristPID.SetSetpoint(degrees, GetWristPosition());
 
-  if(position == apUnknown){
-    sprintf(Robot::message,"Arm:      Set Wrist Position=%4.1f", degrees);
-  } else {
+  if(position != apUnknown){
     sprintf(Robot::message,"Arm:      Set Wrist Position=%s (%4.1f)", 
-          GetArmPositionName(position).c_str(), degrees);
+            GetArmPositionName(position).c_str(), degrees);
+    Robot::m_robotLog.Write(Robot::message);
   }
-
-  Robot::m_robotLog.Write(Robot::message);
 }
 
 bool Arm::ShoulderAtSetpoint() {
