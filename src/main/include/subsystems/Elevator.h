@@ -68,6 +68,4 @@ class Elevator : public frc::Subsystem {
 
   frc::VictorSP       m_elevatorMotor{pwmElevatorMotor};
   frc::VictorSP       m_footMotor{pwmFootMotor};
-
-  frc::Solenoid       m_footSol{solFoot};
 };
