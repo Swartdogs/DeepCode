@@ -15,9 +15,9 @@ class CmdElevatorSetPosition : public frc::Command {
   void Interrupted() override;
 
  private:
+  double                     m_driveSpeed;
   Elevator::ElevatorPosition m_elevatorPosition;
+  double                     m_footSpeed;
   CommandStatus              m_status;
   bool                       m_waitForDone;
-  double                     m_footSpeed;
-  double                     m_driveSpeed;
 };
