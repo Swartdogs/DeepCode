@@ -35,17 +35,16 @@ typedef enum {              // CAN Ids for Victors
 } RoboRioCan;
 
 typedef enum {              // Digital Input/Output channels on RoboRIO
-    dioSonarLeftEcho,
-    dioSonarLeftPing,
-    dioSonarRightEcho,
-    dioSonarRightPing,
+    dioUnused0,
+    dioUnused1,
+    dioUnused2,
+    dioCargoSensor,
     dioFrontSensor,
     dioRearSensor,
     dioEncoderLeftChannelA,
     dioEncoderLeftChannelB,
     dioEncoderRightChannelA,
     dioEncoderRightChannelB,
-    dioCargoSensor
 } RoboRioDio;
 
 typedef enum {              // Analog channels on RoboRIO
@@ -64,8 +63,8 @@ typedef enum {              // Solenoid channels on PCM
 
 typedef enum {              // Power channels on PDP
     pdpElevator     = 3,
-    pdpShoulder,
-    pdpWrist,
+    pdpShoulder     = 8,
+    pdpWrist        = 9,
     pdpDriveLeft2   = 12,
     pdpDriveLeft1   = 13,
     pdpDriveRight2  = 14,

@@ -67,8 +67,8 @@ class Arm : public frc::Subsystem {
     bool          WristAtSetpoint();
 
   private:
-    const double      SHOULDER_COUNTS_PER_DEGREE = 1;
-    const double      WRIST_COUNTS_PER_DEGREE = 1;
+    const double      SHOULDER_COUNTS_PER_DEGREE = 12;
+    const double      WRIST_COUNTS_PER_DEGREE = 12;
 
     double            PowerLimit(double value);
 

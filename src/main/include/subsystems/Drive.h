@@ -73,6 +73,6 @@ private:
   WPI_VictorSPX       m_driveRight1{canDriveRight1};
   WPI_VictorSPX       m_driveRight2{canDriveRight2};
 
-  frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
-  frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};
+  // frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
+  // frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};
 };
