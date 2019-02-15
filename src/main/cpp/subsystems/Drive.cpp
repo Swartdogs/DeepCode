@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "subsystems/Drive.h"
 #include "commands/CmdDriveJoystick.h"
 #include "Robot.h"
@@ -28,7 +21,7 @@ Drive::Drive() : Subsystem("Drive") {
   m_rotatePID.SetCoefficient('I', 10, 0, 0.0025);
   m_rotatePID.SetCoefficient('D', 0, 0.25, 0);
   m_rotatePID.SetInputRange(-360, 360);
-  m_rotatePID.SetOutputRamp(0.25, 0.05);
+  m_rotatePID.SetOutputRamp(0.1, 0.05);
   m_rotatePID.SetSetpointDeadband(1.0); 
 
   m_drivePID.SetCoefficient('P', 0, 0.04, 0);

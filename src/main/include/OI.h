@@ -17,7 +17,7 @@ class OI {
  private:
   frc::Joystick  m_driveJoystick{0};
   //frc::Joystick  m_armJoystick{1};
-  //frc::Joystick  m_buttonBox{2};
+  frc::Joystick  m_buttonBox{2};
 
   frc::JoystickButton m_buttonShifter{&m_driveJoystick, 1};
   frc::JoystickButton m_buttonClimbEnable{&m_driveJoystick, 9};
@@ -25,6 +25,12 @@ class OI {
   //frc::JoystickButton m_buttonClimbLevel2{&m_buttonBox, 1};
   //frc::JoystickButton m_buttonClimbLevel3{&m_buttonBox, 2};
  
+  frc::JoystickButton m_buttonIntakeIn{&m_buttonBox, 1};
+  frc::JoystickButton m_buttonIntakeOut{&m_buttonBox, 2};
+  frc::JoystickButton m_buttonIntakeRotate{&m_buttonBox, 3};
+  frc::JoystickButton m_buttonHandHatch{&m_buttonBox, 4};
+  frc::JoystickButton m_buttonHandCargo{&m_buttonBox, 5};
+
 
   frc::InternalButton m_InternalLevel2;
   frc::InternalButton m_InternalLevel3;

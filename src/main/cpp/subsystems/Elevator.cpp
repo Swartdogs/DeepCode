@@ -14,7 +14,7 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_elevatorPID.SetCoefficient('I', 1, 0, 0.06);
   m_elevatorPID.SetCoefficient('D', 0, 0, 0);
   m_elevatorPID.SetInputRange(-20, 1.3);
-  m_elevatorPID.SetOutputRamp(0.25, 0.05);
+  m_elevatorPID.SetOutputRamp(0.10, 0.05);
   m_elevatorPID.SetSetpointDeadband(0.5); 
   m_elevatorPID.SetSetpoint(m_elevatorSetpoint, m_elevatorSetpoint);
 

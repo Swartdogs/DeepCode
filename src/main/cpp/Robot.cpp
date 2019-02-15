@@ -26,6 +26,9 @@ void Robot::DisabledInit() {
   m_robotLog.SetMode(rmDisabled);
   m_robotLog.Close(); 
   m_dashboard.SetRobotMode(rmDisabled);
+
+  m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
+  m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_elevator.SetFootPosition(Elevator::fpExtended);
 }
