@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 #include <frc/WPILib.h>
 #include <frc/commands/Subsystem.h>
@@ -14,13 +7,14 @@
 class Arm : public frc::Subsystem {
   public:
     typedef enum {
+      apUnknown,
       apTravel,
       apPickup,
       apLow,
       apMid,
       apHigh,
       apCargoShip,
-      apUnknown
+      apWait
     } ArmPosition;
 
     typedef enum {
@@ -58,6 +52,7 @@ class Arm : public frc::Subsystem {
     ArmPosition   GetWristPosition();
     double        GetWristSetpoint();
     bool          IsDrivenManually();
+    void          SetArmPosition(ArmPosition position);
     void          SetDrivenManually(bool isManual);
     void          SetHandMode(HandMode mode);
     void          SetHatchState(HatchState state);
@@ -78,9 +73,12 @@ class Arm : public frc::Subsystem {
     double            PowerLimit(double value);
 
     bool              m_manualDrive;
+    double            m_shoulderPending;
     double            m_shoulderSetpoint;
+    double            m_wristPending;
     double            m_wristSetpoint;
 
+    ArmPosition       m_armPosition;
     ArmPosition       m_shoulderPosition;
     ArmPosition       m_wristPosition;
   

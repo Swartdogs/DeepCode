@@ -98,7 +98,11 @@ typedef enum {              // Dashboard: Robot Value indexes
     rvShoulderAmps,
     rvWristPosition,
     rvWristSetpoint,
-    rvWristAmps
+    rvWristAmps,
+    rvVisionStatus,
+    rvVisionSelect,
+    rvVisionAngle,
+    rvVisionDistance,
 } RobotValue;
 
 typedef enum {              // Dashborad: Dash Button indexes
@@ -126,9 +130,10 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvElevRetracted,
     dvElevLevel2,
     dvElevLevel3,
+    dvShoulderOffset,
     dvShoulderMin, 
     dvShoulderMax,
-    dvShoulderOffset,
+    dvShoulderClear,
     dvShoulderTravel,
     dvShoulderPickup,
     dvShoulderCargo,
@@ -136,9 +141,10 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvShoulderRocketMid,
     dvShoulderRocketHigh,
     dvShoulderModify,
+    dvWristOffset,
     dvWristMin,
     dvWristMax,
-    dvWristOffset,
+    dvWristClear,
     dvWristTravel,
     dvWristPickup,
     dvWristCargo,

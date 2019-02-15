@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 16, 1, 45);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 20, 1, 47);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -171,6 +171,10 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvWristPosition, m_arm.GetWristDegrees());
   m_dashboard.SetRobotValue(rvWristSetpoint, m_arm.GetWristSetpoint());
   m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
+  m_dashboard.SetRobotValue(rvVisionStatus, (double)m_vision.GetSearchState());
+  m_dashboard.SetRobotValue(rvVisionSelect, (double)m_vision.GetTargetSelect());
+  m_dashboard.SetRobotValue(rvVisionAngle, m_vision.GetTargetAngle());
+  m_dashboard.SetRobotValue(rvVisionDistance, m_vision.GetTargetDistance());
 
   m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
   m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));

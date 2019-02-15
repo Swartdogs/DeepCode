@@ -22,12 +22,14 @@ Vision::Vision() {
     m_searchState = ssDone;
     m_targetAngle = 0;
     m_targetDistance = 0;
+    m_targetSelect = tsBest;
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
     Robot::m_robotLog.Write("Vision:  Initiate Target search");
     m_targetAngle = 0;                                                      // Initialize variables
     m_targetDistance = 0;
+    m_targetSelect = targetSelect;
     m_searchState = ssLooking;
 
     m_task = new std::thread(TargetSearch, this, targetSelect);             // Start TargetSearch thread
@@ -49,6 +51,10 @@ double Vision::GetTargetAngle() {
 
 double Vision::GetTargetDistance() {
     return m_targetDistance;
+}
+
+Vision::TargetSelect Vision::GetTargetSelect() {
+    return m_targetSelect;
 }
 
 void Vision::InitVision() {

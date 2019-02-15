@@ -16,6 +16,7 @@ class Vision {
   SearchState   GetSearchState();
   double        GetTargetAngle();
   double        GetTargetDistance();
+  TargetSelect  GetTargetSelect();
   void          InitVision();
   void          SearchResults(bool targetFound, double targetAngle, double targetDistance);
   static void   TargetSearch(Vision* host, Vision::TargetSelect targetSelect);
@@ -28,6 +29,7 @@ private:
   cs::VideoSink m_server;
   double        m_targetAngle;
   double        m_targetDistance;
+  TargetSelect  m_targetSelect;
   std::thread*  m_task;
 
 };
