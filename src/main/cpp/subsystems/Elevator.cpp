@@ -31,8 +31,8 @@ void Elevator::InitDefaultCommand() {
 }
 
 void Elevator::Periodic() {
-  // m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
-  // if (!m_footInUse) m_footMotor.Set(0);
+  m_elevatorMotor.Set(m_elevatorPID.Calculate(GetElevatorPosition()));
+  if (!m_footInUse) m_footMotor.Set(0);
 }
 
 void Elevator::DriveFoot(double speed) {

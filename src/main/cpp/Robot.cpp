@@ -14,7 +14,7 @@ OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
  // m_vision.InitVision();
- m_solSensorPower.Set(true);
+  StartDriverCamera();
 }
 
 void Robot::RobotPeriodic() {
@@ -31,8 +31,6 @@ void Robot::DisabledInit() {
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_elevator.SetFootPosition(Elevator::fpExtended);
-  m_arm.SetHandMode(Arm::hmCargo);
-
 }
 
 void Robot::DisabledPeriodic() { 
@@ -42,6 +40,13 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
   m_dashboard.SetRobotMode(rmAutonomous);
+  m_arm.SetHandMode(m_arm.GetHandMode(), true);
+
+  // if (m_oi.InHatchMode()) {
+  //   m_arm.SetHandMode(Arm::hmHatch);
+  // } else {
+  //   m_arm.SetHandMode(Arm::hmCargo);
+  // }
 }
 
 void Robot::AutonomousPeriodic() { 
@@ -51,6 +56,13 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   m_robotLog.SetMode(rmTeleop);
   m_dashboard.SetRobotMode(rmTeleop);
+  m_arm.SetHandMode(m_arm.GetHandMode(), true);
+
+  // if (m_oi.InHatchMode()) {
+  //   m_arm.SetHandMode(Arm::hmHatch);
+  // } else {
+  //   m_arm.SetHandMode(Arm::hmCargo);
+  // }
 }
 
 void Robot::TeleopPeriodic() { 
@@ -184,6 +196,19 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotStatus(rsFloorFront, m_elevator.FloorDetected(Elevator::fsFront));
   m_dashboard.SetRobotStatus(rsFloorRear, m_elevator.FloorDetected(Elevator::fsRear));
   m_dashboard.SetRobotStatus(rsCargo, m_arm.GetCargoDetected());
+}
+
+void Robot::StartDriverCamera() {
+  frc::CameraServer* cameraServer = frc::CameraServer::GetInstance();
+
+  m_cameraDriver = cameraServer->StartAutomaticCapture(0);
+  m_cameraDriver.SetResolution(320, 240);
+  m_cameraDriver.SetFPS(20);
+  m_cameraDriver.SetBrightness(30);
+  m_cameraDriver.SetExposureAuto();
+
+  m_cameraServer.SetSource(m_cameraDriver);
+  m_cameraServer = cameraServer->GetServer();
 }
 
 #ifndef RUNNING_FRC_TESTS

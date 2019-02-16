@@ -54,7 +54,7 @@ class Arm : public frc::Subsystem {
     bool          IsDrivenManually();
     void          SetArmPosition(ArmPosition position);
     void          SetDrivenManually(bool isManual);
-    void          SetHandMode(HandMode mode);
+    void          SetHandMode(HandMode mode, bool fromSwitch = false);
     void          SetHatchState(HatchState state);
     void          SetIntakeMode(IntakeMode mode);
     void          SetShoulderMotor(double speed);

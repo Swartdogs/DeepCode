@@ -24,20 +24,23 @@ Arm::Arm() : Subsystem("Arm") {
   m_shoulderPID.SetCoefficient('I', 10, 0, 0.0025);
   m_shoulderPID.SetCoefficient('D', 0, 0.25, 0);
   m_shoulderPID.SetInputRange(0, 300);
+  m_shoulderPID.SetOutputRange(-0.5, 0.5);
   m_shoulderPID.SetOutputRamp(0.10, 0.05);
   m_shoulderPID.SetSetpointDeadband(1.0); 
   m_shoulderPID.SetSetpoint(m_shoulderSetpoint, m_shoulderSetpoint);
 
   m_wristPID.SetCoefficient('P', 0, 0.01, 0);
-  m_wristPID.SetCoefficient('I', 15, 0, 0.0008);
+  m_wristPID.SetCoefficient('I', 20, 0, 0.0008);
   m_wristPID.SetCoefficient('D', 0, 0, 0);
   m_wristPID.SetInputRange(0, 250);
+  m_wristPID.SetOutputRange(-0.5, 0.5);
   m_wristPID.SetOutputRamp(0.10, 0.05);
   m_wristPID.SetSetpointDeadband(1.0); 
   m_wristPID.SetSetpoint(m_wristSetpoint, m_wristSetpoint);
 
   m_handBottom.SetInverted(true);
   m_handTop.SetInverted(true);
+  m_shoulderMotor.SetInverted(true);
 
   m_solHand.Set(false);
   m_solHatch.Set(false);
@@ -50,11 +53,11 @@ void Arm::Periodic() {
 
   // TEST CODE
   
-  double joy  = Robot::m_oi.GetDriveJoystickY();
-  // printf("Joystick value=%f\n", joy);
+ // double joy  = Robot::m_oi.GetDriveJoystickY();
+  //printf("Joystick value=%f\n", joy);
 
-//  m_shoulderMotor.Set(joy);
-  m_wristMotor.Set(joy);
+  //m_shoulderMotor.Set(joy);
+ // m_wristMotor.Set(joy);
 
 
 
@@ -64,9 +67,11 @@ void Arm::Periodic() {
   static int  timer           = 0;
 
   double      shoulderNow     = GetShoulderDegrees();
-  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);;
+  double      shoulderPower   = 0;
+//  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);;
   double      wristNow        = GetWristDegrees();
-  double      wristPower      = m_wristPID.Calculate(wristNow);
+  double      wristPower      = 0;
+//  double      wristPower      = m_wristPID.Calculate(wristNow);
   double      topPower        = 0;
   double      bottomPower     = 0;
 
@@ -124,8 +129,40 @@ void Arm::Periodic() {
   //     Robot::m_robotLog.Write(Robot::message);
   //   }
 
-  //   double joyShoulder  = Robot::m_oi.GetArmJoystickY();
-  //   double joyWrist     = Robot::m_oi.GetArmJoystickX();
+    double joyShoulder  = Robot::m_oi.GetArmJoystickY() * 0.5;
+    double joyWrist     = Robot::m_oi.GetArmJoystickX() * 0.5;
+
+//    printf("Shoulder=%f  Wrist=%f\n", joyShoulder, joyWrist);
+
+    if (joyShoulder < 0) {
+      if (shoulderNow < 2) {
+        shoulderPower = 0;
+      } else {
+        shoulderPower = joyShoulder;
+      } 
+
+    } else {
+      if (shoulderNow > 110) {
+        shoulderPower = 0;
+      } else {
+        shoulderPower = joyShoulder;
+      }
+    }
+
+    if (joyWrist < 0) {
+      if (wristNow < 2) {
+        wristPower = 0;
+      } else {
+        wristPower = joyWrist;
+      }
+    } else {
+      if (wristNow > 200) {
+        wristPower = 0;
+      } else {
+        wristPower = joyWrist;
+      }
+    }
+
 
   //   if (joyShoulder < 0) {
   //     if (shoulderNow < Robot::m_dashboard.GetDashValue(dvShoulderMin) + 4) {
@@ -182,8 +219,8 @@ void Arm::Periodic() {
   //   }
   // }
 
-  // m_shoulderMotor.Set(shoulderPower);
-  // m_wristMotor.Set(wristPower);
+  m_shoulderMotor.Set(shoulderPower);
+  m_wristMotor.Set(wristPower);
   m_handTop.Set(topPower);
   m_handBottom.Set(bottomPower);
 }
@@ -244,7 +281,7 @@ Arm::IntakeMode Arm::GetIntakeMode(){
 }
 
 double Arm::GetShoulderDegrees() {
-  return (m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE) + Robot::m_dashboard.GetDashValue(dvShoulderOffset);
+  return (m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE) - Robot::m_dashboard.GetDashValue(dvShoulderOffset);
 }
 
 Arm::ArmPosition Arm::GetShoulderPosition(){
@@ -373,16 +410,13 @@ void Arm::SetDrivenManually(bool isManual) {
   m_manualDrive = isManual;
 }
 
-void Arm::SetHandMode(HandMode mode) {
-  if (!m_cargoSensor.Get() && m_handMode == hmCargo) return;
+void Arm::SetHandMode(HandMode mode, bool fromSwitch) {
+  if (fromSwitch) mode = Robot::m_oi.InHatchMode() ? hmHatch : hmCargo;
 
   if(mode != m_handMode) {
     m_solHand.Set(mode == hmHatch);
     m_handMode = mode;
     Robot::m_dashboard.SetRobotStatus(rsHatchMode, mode == hmHatch);
-
-    SetShoulderPosition(m_shoulderPosition);
-    SetWristPosition(m_wristPosition);
 
     sprintf(Robot::message, "Arm:      Hand Mode=%s", GetHandModeName(m_handMode).c_str());
     Robot::m_robotLog.Write(Robot::message);
