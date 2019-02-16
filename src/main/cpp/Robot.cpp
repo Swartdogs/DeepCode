@@ -31,6 +31,8 @@ void Robot::DisabledInit() {
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_elevator.SetFootPosition(Elevator::fpExtended);
+  m_arm.SetHandMode(Arm::hmCargo);
+
 }
 
 void Robot::DisabledPeriodic() { 
@@ -94,7 +96,7 @@ void Robot::TestPeriodic() {
             default:;
         }
 
-        m_tunePID.SetOutputRamp(0.2, 0.05);
+        m_tunePID.SetOutputRamp(0.1, 0.05);
         m_tunePID.SetSetpoint(setpoint, 0);
         m_tunePID.SetOutputRange(-m_dashboard.GetDashValue(dvPidMaxOut),m_dashboard.GetDashValue(dvPidMaxOut));
 

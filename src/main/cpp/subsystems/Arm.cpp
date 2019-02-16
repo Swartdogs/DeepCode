@@ -28,17 +28,16 @@ Arm::Arm() : Subsystem("Arm") {
   m_shoulderPID.SetSetpointDeadband(1.0); 
   m_shoulderPID.SetSetpoint(m_shoulderSetpoint, m_shoulderSetpoint);
 
-  m_wristPID.SetCoefficient('P', 0, 0.04, 0);
-  m_wristPID.SetCoefficient('I', 10, 0, 0.0025);
-  m_wristPID.SetCoefficient('D', 0, 0.25, 0);
-  m_wristPID.SetInputRange(0, 300);
+  m_wristPID.SetCoefficient('P', 0, 0.01, 0);
+  m_wristPID.SetCoefficient('I', 15, 0, 0.0008);
+  m_wristPID.SetCoefficient('D', 0, 0, 0);
+  m_wristPID.SetInputRange(0, 250);
   m_wristPID.SetOutputRamp(0.10, 0.05);
   m_wristPID.SetSetpointDeadband(1.0); 
   m_wristPID.SetSetpoint(m_wristSetpoint, m_wristSetpoint);
 
   m_handBottom.SetInverted(true);
   m_handTop.SetInverted(true);
-  //m_wristMotor.SetInverted(true);
 
   m_solHand.Set(false);
   m_solHatch.Set(false);
@@ -52,7 +51,7 @@ void Arm::Periodic() {
   // TEST CODE
   
   double joy  = Robot::m_oi.GetDriveJoystickY();
-  printf("Joystick value=%f\n", joy);
+  // printf("Joystick value=%f\n", joy);
 
 //  m_shoulderMotor.Set(joy);
   m_wristMotor.Set(joy);
@@ -89,7 +88,6 @@ void Arm::Periodic() {
       if(timer < Robot::m_dashboard.GetDashValue(dvCargoEjectTime)) {
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedOut);
         bottomPower = topPower;
-        printf("TopPower=%f\n", topPower);
         
         if (m_cargoSensor.Get()) timer++;
         else timer = 0;
@@ -170,7 +168,7 @@ void Arm::Periodic() {
   //   }
 
   //   if (m_shoulderNext >= 0) {                                                                // Shoulder waiting for Wrist
-  //     if (wristNow > Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
+  //     if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
   //       SetShoulderPosition(m_shoulderNext, m_armPosition);
   //       m_shoulderNext = -1;
   //     }
@@ -336,7 +334,7 @@ void Arm::SetArmPosition(ArmPosition position) {
       if (shoulderNew > shoulderNow) {                                            // SHOULDER MOVING UP
         SetShoulderPosition(shoulderNew, position);                               // Move Shoulder to New
 
-        if (wristNew > wristClear) {                                              // New Wrist above Clear
+        if (wristNew < wristClear) {                                              // New Wrist above Clear
           SetWristPosition(wristNew, position);                                   // Move Wrist to New
         } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
           SetWristPosition(wristNew, position);                                   // Move Wrist to New
@@ -348,14 +346,14 @@ void Arm::SetArmPosition(ArmPosition position) {
       } else {                                                                    // SHOULDER MOVING DOWN
         if (shoulderNew > shoulderClear) {                                        // Shoulder New above Clear
           SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
-        } else if (wristNow > wristClear && wristNew > wristClear) {              // Wrist Now and New above Clear
+        } else if (wristNow < wristClear && wristNew < wristClear) {              // Wrist Now and New above Clear
           SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
         } else {                                                                  // Wrist Now or New below Clear
           m_shoulderNext = shoulderNew;                                           // Move Shoulder to Clear and wait for Wrist
           SetShoulderPosition(shoulderClear, apWait);
         }  
 
-        if (wristNew > wristClear) {                                              // Wrist New above Clear
+        if (wristNew < wristClear) {                                              // Wrist New above Clear
           SetWristPosition(wristNew, position);                                   // Move Wrist to New
         } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
           SetWristPosition(wristNew, position);                                   // Move Wrist to New
