@@ -18,24 +18,22 @@ OI::OI() {
   m_buttonShifter.WhenPressed       (new CmdDriveSetGear(Drive::spLow));
   m_buttonShifter.WhenReleased      (new CmdDriveSetGear(Drive::spHigh));
 
-  m_button12.WhenPressed            (new CmdArmSetIntakeMode(Arm::imIn));
-  m_button4.WhenPressed             (new CmdArmSetIntakeMode(Arm::imOut));
-  m_button8.WhenPressed             (new CmdArmSetIntakeMode(Arm::imRotate));
+  m_buttonBox12.WhenPressed         (new CmdArmSetIntakeMode(Arm::imIn));
+  m_buttonBox4.WhenPressed          (new CmdArmSetIntakeMode(Arm::imOut));
+  m_buttonBox8.WhenPressed          (new CmdArmSetIntakeMode(Arm::imRotate));
 
   m_InternalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
   m_InternalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));
 
-  m_button3.WhenPressed             (new CmdArmSetHatchState(Arm::hsGrab));
-  m_button7.WhenPressed             (new CmdArmSetHatchState(Arm::hsRelease));
+  m_buttonBox3.WhenPressed          (new CmdArmSetHatchState(Arm::hsGrab));
+  m_buttonBox7.WhenPressed          (new CmdArmSetHatchState(Arm::hsRelease));
 
-  m_button1.WhenPressed             (new CmdArmSetArmPosition(Arm::apHigh));
-  m_button5.WhenPressed             (new CmdArmSetArmPosition(Arm::apMid));
-  m_button9.WhenPressed             (new CmdArmSetArmPosition(Arm::apLow));
-
-  m_button2.WhenPressed             (new CmdArmSetArmPosition(Arm::apCargoShip));
-  m_button6.WhenPressed             (new CmdArmSetArmPosition(Arm::apPickup));
-  m_button10.WhenPressed            (new CmdArmSetArmPosition(Arm::apTravel));
-
+  m_buttonBox1.WhenPressed          (new CmdArmSetArmPosition(Arm::apHigh));
+  m_buttonBox5.WhenPressed          (new CmdArmSetArmPosition(Arm::apMid));
+  m_buttonBox9.WhenPressed          (new CmdArmSetArmPosition(Arm::apLow));
+  m_buttonBox2.WhenPressed          (new CmdArmSetArmPosition(Arm::apCargoShip));
+  m_buttonBox6.WhenPressed          (new CmdArmSetArmPosition(Arm::apPickup));
+  m_buttonBox10.WhenPressed         (new CmdArmSetArmPosition(Arm::apTravel));
 }
 
 double OI::ApplyDeadband(double joystickValue, double deadband) {
