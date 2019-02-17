@@ -12,8 +12,8 @@ GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
   AddSequential(new CmdElevatorDriveFoot(Elevator::fsFront, 0.9, 0.1, 4.0, 5));       // Drive Foot until front sensor detects floor
   AddSequential(new CmdElevatorSetFoot(Elevator::fpRetracted, 1.0));                  // Retract Foot
   AddSequential(new CmdElevatorDriveFoot(Elevator::fsRear, 0.9, 0.1, 4.0, 20));       // Drive Foot until rear sensor detects floor
-  AddSequential(new CmdElevatorSetPosition(Elevator::epRetracted, true, 0.3, 0.1));   // Move Elevator to retracted while moving Robot forward
-  AddSequential(new CmdDriveDistance(8, 0, 0.2, 0, true, true, 4.0));                 // Drive Robot further on the platform
+  AddSequential(new CmdElevatorSetPosition(Elevator::epRetracted, true, 0.3, 0.2));   // Move Elevator to retracted while moving Robot forward
+  AddSequential(new CmdDriveDistance(12, 0, 0.2, 0, true, true, 4.0));                 // Drive Robot further on the platform
   AddSequential(new CmdElevatorSetFoot(Elevator::fpExtended, 0));                     // Move Foot back to extended
 }
 
