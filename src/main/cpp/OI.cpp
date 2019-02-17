@@ -1,6 +1,7 @@
 #include "OI.h"
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
+#include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetIntakeMode.h"
 #include "commands/CmdCancelClimb.h"
@@ -17,15 +18,23 @@ OI::OI() {
   m_buttonShifter.WhenPressed       (new CmdDriveSetGear(Drive::spLow));
   m_buttonShifter.WhenReleased      (new CmdDriveSetGear(Drive::spHigh));
 
-  m_buttonIntakeIn.WhenPressed      (new CmdArmSetIntakeMode(Arm::imIn));
-  m_buttonIntakeOut.WhenPressed     (new CmdArmSetIntakeMode(Arm::imOut));
-  m_buttonIntakeRotate.WhenPressed  (new CmdArmSetIntakeMode(Arm::imRotate));
+  m_button12.WhenPressed            (new CmdArmSetIntakeMode(Arm::imIn));
+  m_button4.WhenPressed             (new CmdArmSetIntakeMode(Arm::imOut));
+  m_button8.WhenPressed             (new CmdArmSetIntakeMode(Arm::imRotate));
 
   m_InternalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
   m_InternalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));
 
-  m_buttonGrabHatch.WhenPressed     (new CmdArmSetHatchState(Arm::hsGrab));
-  m_buttonReleaseHatch.WhenPressed  (new CmdArmSetHatchState(Arm::hsRelease));
+  m_button3.WhenPressed             (new CmdArmSetHatchState(Arm::hsGrab));
+  m_button7.WhenPressed             (new CmdArmSetHatchState(Arm::hsRelease));
+
+  m_button1.WhenPressed             (new CmdArmSetArmPosition(Arm::apHigh));
+  m_button5.WhenPressed             (new CmdArmSetArmPosition(Arm::apMid));
+  m_button9.WhenPressed             (new CmdArmSetArmPosition(Arm::apLow));
+
+  m_button2.WhenPressed             (new CmdArmSetArmPosition(Arm::apCargoShip));
+  m_button6.WhenPressed             (new CmdArmSetArmPosition(Arm::apPickup));
+  m_button10.WhenPressed            (new CmdArmSetArmPosition(Arm::apTravel));
 
 }
 
@@ -42,12 +51,12 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
 }
 
 double OI::GetArmJoystickX() {
-  return ApplyDeadband(m_armJoystick.GetX(), 0.15);
+  //return ApplyDeadband(m_armJoystick.GetX(), 0.15);
   return 0;
 }
 
 double OI::GetArmJoystickY() {
-  return ApplyDeadband(m_armJoystick.GetY(), 0.15);
+  //return ApplyDeadband(m_armJoystick.GetY(), 0.15);
   return 0;
 }
 

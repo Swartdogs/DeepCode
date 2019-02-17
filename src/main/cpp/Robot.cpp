@@ -41,7 +41,8 @@ void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
   m_dashboard.SetRobotMode(rmAutonomous);
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
-
+  m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
+  m_arm.SetWristPosition(m_arm.GetWristDegrees());
   // if (m_oi.InHatchMode()) {
   //   m_arm.SetHandMode(Arm::hmHatch);
   // } else {
@@ -57,6 +58,8 @@ void Robot::TeleopInit() {
   m_robotLog.SetMode(rmTeleop);
   m_dashboard.SetRobotMode(rmTeleop);
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
+  m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
+  m_arm.SetWristPosition(m_arm.GetWristDegrees());
 
   // if (m_oi.InHatchMode()) {
   //   m_arm.SetHandMode(Arm::hmHatch);

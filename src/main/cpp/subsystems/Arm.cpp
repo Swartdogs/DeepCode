@@ -9,7 +9,7 @@ Arm::Arm() : Subsystem("Arm") {
 
   m_intakeMode        = imOff;
   m_handMode          = hmCargo;
-  m_hatchState        = hsRelease;
+  m_hatchState        = hsGrab;
   m_manualDrive       = false;
   m_shoulderNext      = -1;
   m_shoulderSetpoint  = GetShoulderDegrees();
@@ -21,10 +21,10 @@ Arm::Arm() : Subsystem("Arm") {
   m_wristPosition     = apUnknown;
 
   m_shoulderPID.SetCoefficient('P', 0, 0.04, 0);
-  m_shoulderPID.SetCoefficient('I', 10, 0, 0.0025);
-  m_shoulderPID.SetCoefficient('D', 0, 0.25, 0);
-  m_shoulderPID.SetInputRange(0, 300);
-  m_shoulderPID.SetOutputRange(-0.5, 0.5);
+  m_shoulderPID.SetCoefficient('I', 15, 0, 0.001);
+  m_shoulderPID.SetCoefficient('D', 0, 0, 0);
+  m_shoulderPID.SetInputRange(0, 125);
+  m_shoulderPID.SetOutputRange(-0.3, 0.7);
   m_shoulderPID.SetOutputRamp(0.10, 0.05);
   m_shoulderPID.SetSetpointDeadband(1.0); 
   m_shoulderPID.SetSetpoint(m_shoulderSetpoint, m_shoulderSetpoint);
@@ -67,11 +67,11 @@ void Arm::Periodic() {
   static int  timer           = 0;
 
   double      shoulderNow     = GetShoulderDegrees();
-  double      shoulderPower   = 0;
-//  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);;
+//  double      shoulderPower   = 0;
+  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);;
   double      wristNow        = GetWristDegrees();
-  double      wristPower      = 0;
-//  double      wristPower      = m_wristPID.Calculate(wristNow);
+//  double      wristPower      = 0;
+  double      wristPower      = m_wristPID.Calculate(wristNow);
   double      topPower        = 0;
   double      bottomPower     = 0;
 
@@ -116,52 +116,52 @@ void Arm::Periodic() {
     default:;
   }
 
-  // if (m_manualDrive) {
-  //   if (!inManualDrive) {
-  //     inManualDrive = true;
-  //     m_armPosition = apUnknown;
-  //     m_shoulderNext = -1;
-  //     m_wristNext = -1;
-  //     SetShoulderPosition(shoulderNow);
-  //     SetWristPosition(wristNow);
+  if (m_manualDrive) {
+    if (!inManualDrive) {
+      inManualDrive = true;
+      m_armPosition = apUnknown;
+      m_shoulderNext = -1;
+      m_wristNext = -1;
+      SetShoulderPosition(shoulderNow);
+      SetWristPosition(wristNow);
 
-  //     sprintf(Robot::message,"Arm:      Manual START  Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
-  //     Robot::m_robotLog.Write(Robot::message);
-  //   }
+      sprintf(Robot::message,"Arm:      Manual START  Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
+      Robot::m_robotLog.Write(Robot::message);
+    }
 
     double joyShoulder  = Robot::m_oi.GetArmJoystickY() * 0.5;
     double joyWrist     = Robot::m_oi.GetArmJoystickX() * 0.5;
 
 //    printf("Shoulder=%f  Wrist=%f\n", joyShoulder, joyWrist);
 
-    if (joyShoulder < 0) {
-      if (shoulderNow < 2) {
-        shoulderPower = 0;
-      } else {
-        shoulderPower = joyShoulder;
-      } 
+    // if (joyShoulder < 0) {
+    //   if (shoulderNow < 2) {
+    //     shoulderPower = 0;
+    //   } else {
+    //     shoulderPower = joyShoulder;
+    //   } 
 
-    } else {
-      if (shoulderNow > 110) {
-        shoulderPower = 0;
-      } else {
-        shoulderPower = joyShoulder;
-      }
-    }
+    // } else {
+    //   if (shoulderNow > 110) {
+    //     shoulderPower = 0;
+    //   } else {
+    //     shoulderPower = joyShoulder;
+    //   }
+    // }
 
-    if (joyWrist < 0) {
-      if (wristNow < 2) {
-        wristPower = 0;
-      } else {
-        wristPower = joyWrist;
-      }
-    } else {
-      if (wristNow > 200) {
-        wristPower = 0;
-      } else {
-        wristPower = joyWrist;
-      }
-    }
+    // if (joyWrist < 0) {
+    //   if (wristNow < 2) {
+    //     wristPower = 0;
+    //   } else {
+    //     wristPower = joyWrist;
+    //   }
+    // } else {
+    //   if (wristNow > 200) {
+    //     wristPower = 0;
+    //   } else {
+    //     wristPower = joyWrist;
+    //   }
+    // }
 
 
   //   if (joyShoulder < 0) {
@@ -197,27 +197,27 @@ void Arm::Periodic() {
   //       SetWristPosition(wristNow);
   //     }
   //   } 
-  // } else {
-  //   if (inManualDrive) {
-  //     inManualDrive = false;
-  //     sprintf(Robot::message,"Arm:      Manual END    Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
-  //     Robot::m_robotLog.Write(Robot::message);
-  //   }
+  } else {
+    if (inManualDrive) {
+      inManualDrive = false;
+      sprintf(Robot::message,"Arm:      Manual END    Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
+      Robot::m_robotLog.Write(Robot::message);
+    }
 
-  //   if (m_shoulderNext >= 0) {                                                                // Shoulder waiting for Wrist
-  //     if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
-  //       SetShoulderPosition(m_shoulderNext, m_armPosition);
-  //       m_shoulderNext = -1;
-  //     }
-  //   }
+    if (m_shoulderNext >= 0) {                                                                // Shoulder waiting for Wrist
+      if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
+        SetShoulderPosition(m_shoulderNext, m_armPosition);
+        m_shoulderNext = -1;
+      }
+    }
 
-  //   if (m_wristNext >= 0 && m_shoulderNext < 0) {                                             // Wrist waiting for Shoulder
-  //     if (shoulderNow > Robot::m_dashboard.GetDashValue(dvShoulderClear) || ShoulderAtSetpoint()) {   // Shoulder Clear or Stopped
-  //       SetWristPosition(m_wristNext, m_armPosition);
-  //       m_wristNext = -1;
-  //     }
-  //   }
-  // }
+    if (m_wristNext >= 0 && m_shoulderNext < 0) {                                             // Wrist waiting for Shoulder
+      if (shoulderNow > Robot::m_dashboard.GetDashValue(dvShoulderClear) || ShoulderAtSetpoint()) {   // Shoulder Clear or Stopped
+        SetWristPosition(m_wristNext, m_armPosition);
+        m_wristNext = -1;
+      }
+    }
+  }
 
   m_shoulderMotor.Set(shoulderPower);
   m_wristMotor.Set(wristPower);
@@ -320,7 +320,8 @@ void Arm::SetArmPosition(ArmPosition position) {
   double wristNew     = 0;
   double wristNow     = GetWristDegrees();
 
-  if (m_armPosition != position) {
+  // if (m_armPosition != position) 
+  {
     switch (position) {
       case apTravel:    shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);    
                         wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
@@ -425,9 +426,9 @@ void Arm::SetHandMode(HandMode mode, bool fromSwitch) {
 
 void Arm::SetHatchState(HatchState state) {
   if (state != m_hatchState) {
-    m_solHatch.Set(state == hsGrab);
+    m_solHatch.Set(state == hsRelease);
     m_hatchState = state;
-    Robot::m_dashboard.SetRobotStatus(rsHatchGrab, state == hsGrab);
+    Robot::m_dashboard.SetRobotStatus(rsHatchGrab, state == hsRelease);
 
     sprintf(Robot::message, "Arm:      Hatch State=%s", GetHatchStateName(m_hatchState).c_str());
     Robot::m_robotLog.Write(Robot::message);

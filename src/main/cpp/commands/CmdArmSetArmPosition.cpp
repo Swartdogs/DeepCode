@@ -18,8 +18,7 @@ void CmdArmSetArmPosition::Initialize() {
       m_status = csDone;
     }
 
-    Robot::m_arm.SetShoulderPosition(m_position);
-    Robot::m_arm.SetWristPosition(m_position);
+    Robot::m_arm.SetArmPosition(m_position);
   }
 }
 
