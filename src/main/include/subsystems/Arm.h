@@ -10,6 +10,7 @@ class Arm : public frc::Subsystem {
       apUnknown,
       apTravel,
       apPickup,
+      apLoad,
       apLow,
       apMid,
       apHigh,

@@ -31,7 +31,7 @@ Arm::Arm() : Subsystem("Arm") {
 
   m_wristPID.SetCoefficient('P', 0, 0.01, 0);
   m_wristPID.SetCoefficient('I', 20, 0, 0.0008);
-  m_wristPID.SetCoefficient('D', 0, 0, 0);
+  m_wristPID.SetCoefficient('D', 0, 0.05, 0);
   m_wristPID.SetInputRange(0, 250);
   m_wristPID.SetOutputRange(-0.5, 0.5);
   m_wristPID.SetOutputRamp(0.10, 0.05);
@@ -205,6 +205,8 @@ void Arm::Periodic() {
       Robot::m_robotLog.Write(Robot::message);
     }
 
+    if(m_shoulderSetpoint < 3 && GetShoulderDegrees() < 3) shoulderPower = 0;
+
     if (m_shoulderNext >= 0) {                                                                // Shoulder waiting for Wrist
       if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
         SetShoulderPosition(m_shoulderNext, m_armPosition);
@@ -233,6 +235,7 @@ std::string Arm::GetArmPositionName(ArmPosition position) {
       case apUnknown:   name = "Unknown";         break;
       case apTravel:    name = "Travel";          break;
       case apPickup:    name = "Pickup";          break;
+      case apLoad:      name = "Load";            break;
       case apLow:       name = "Low";             break;
       case apMid:       name = "Mid";             break;
       case apHigh:      name = "High";            break;
@@ -328,7 +331,8 @@ void Arm::SetArmPosition(ArmPosition position) {
         
         shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
         wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
-        
+        SetIntakeMode(imOff);
+
         break;
 
       case apPickup:  
@@ -342,6 +346,14 @@ void Arm::SetArmPosition(ArmPosition position) {
           wristNew    = Robot::m_dashboard.GetDashValue(dvWHPickup);
         }
         
+        break;
+
+      case apLoad:
+
+        shoulderNew   = Robot::m_dashboard.GetDashValue(dvSCLoad);
+        wristNew      = Robot::m_dashboard.GetDashValue(dvWCLoad);
+        SetIntakeMode(imIn);
+
         break;
 
       case apLow:    

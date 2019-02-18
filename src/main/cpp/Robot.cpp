@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 20, 1, 53);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 20, 1, 55);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -13,8 +13,8 @@ Elevator  Robot::m_elevator;
 OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
- // m_vision.InitVision();
-  StartDriverCamera();
+  m_vision.InitVision();
+  //StartDriverCamera();
 }
 
 void Robot::RobotPeriodic() {
