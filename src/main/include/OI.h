@@ -27,6 +27,7 @@ class OI {
   frc::JoystickButton m_buttonArm1{&m_armJoystick, 1};
   frc::JoystickButton m_buttonArm8{&m_armJoystick, 8};
   frc::JoystickButton m_buttonArm9{&m_armJoystick, 9};
+  frc::JoystickButton m_buttonArm11{&m_armJoystick, 11};
  
   frc::JoystickButton m_buttonBox1{&m_buttonBox, 1};
   frc::JoystickButton m_buttonBox2{&m_buttonBox, 2};

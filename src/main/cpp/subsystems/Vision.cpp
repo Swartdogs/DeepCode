@@ -26,7 +26,7 @@ Vision::Vision() {
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
-    Robot::m_robotLog.Write("Vision:  Initiate Target search");
+    Robot::m_robotLog.Write("Vision:  Initiate Target search", false);
     m_targetAngle = 0;                                                      // Initialize variables
     m_targetDistance = 0;
     m_targetSelect = targetSelect;
@@ -59,13 +59,13 @@ Vision::TargetSelect Vision::GetTargetSelect() {
 
 void Vision::InitVision() {
     frc::CameraServer* cameraServer = frc::CameraServer::GetInstance();     // Get instance of Camera Server
-    m_camera = cameraServer->StartAutomaticCapture("aimCamera", 0);         // Start Aim camera image capture
+    m_camera = cameraServer->StartAutomaticCapture("Vision", 0);            // Start Aim camera image capture
     m_camera.SetResolution(320, 240);                                       // Configure camera
     m_camera.SetFPS(20);
-    m_camera.SetBrightness(20);
+    m_camera.SetBrightness(0);
     m_camera.SetExposureManual(10);
 
-    m_sink = cameraServer->GetVideo("aimCamera");                           // Create sink to get images for Target Search
+    m_sink = cameraServer->GetVideo("Vision");                              // Create sink to get images for Target Search
     
     m_server.SetSource(m_camera);
     m_server = cameraServer->GetServer();
@@ -78,10 +78,26 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
         m_targetDistance = targetDistance;
 
         sprintf(m_buffer, "Vision:   Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
-        Robot::m_robotLog.Write(m_buffer);
+        Robot::m_robotLog.Write(m_buffer, false);
     } else {
         m_searchState = ssNoTarget;
-        Robot::m_robotLog.Write("Vision:   No Target Found");
+        Robot::m_robotLog.Write("Vision:   No Target Found", false);
+    }
+}
+
+void Vision::SetCameraMode(CameraMode mode) {
+    static CameraMode modeNow = cmFindTarget;
+
+    if (modeNow != mode) {
+        modeNow = mode;
+
+        if (mode == cmFindTarget) {
+            m_camera.SetBrightness(0);
+            m_camera.SetExposureManual(10);
+        } else {
+            m_camera.SetBrightness(30);
+            m_camera.SetExposureAuto();
+        }
     }
 }
 
@@ -116,7 +132,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
         imageA.deallocate();                                                // Free memory used by images
         imageB.deallocate();
 
-        printf("  Contours Found=%i\n", contours.size());
+        printf("        Contours Found=%i\n", contours.size());
     
         if (contours.size() > 0) {                                          // Contours found
             std::vector<visionTape> tapes;                                  // Create vector of Vision Tapes
@@ -130,7 +146,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                 if (fabs(rectAngle) > 5 && fabs(rectAngle) < 25) {          // Filter angles within 10 degrees of +-15 degrees
                     cv::Rect rect = cv::boundingRect(contour);              // Draw bounding rectangle around contour
                     
-                    if(rect.width >= 10 && rect.height >=20) {              // Filter by size of bounding rectangle
+                    if(rect.width >= 5 && rect.height >=10) {               // Filter by size of bounding rectangle
                         visionTape tape;                                    // Create new Vision Tape element
                         tape.angle  = rectAngle;                                
                         tape.x = rect.x;
@@ -148,7 +164,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                 }
             }
 
-            printf("  Tapes Found=%i\n", tapes.size());
+            printf("        Tapes Found=%i\n", tapes.size());
 
             if (tapes.size() > 0) {                                         // Tapes Found
                 std::vector<visionTarget> targets;                          // Create vector of Vision Targets
@@ -175,7 +191,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                     }
                 }
 
-                printf("  Targets Found=%i\n", targets.size());
+                printf("        Targets Found=%i\n", targets.size());
 
                 if(targets.size() > 0) {
                     int targetIndex = 0;                                    // Index 0 is leftmost Target
@@ -190,7 +206,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
                         targetIndex = targets.size() - 1;
                     }
 
-                    printf("  Selected Target: %i\n", targetIndex);
+                    printf("        Selected Target: %i\n", targetIndex);
                     targetFound = true;
                     targetAngle = targets[targetIndex].angle;
                     targetDistance = targets[targetIndex].distance;
@@ -200,7 +216,7 @@ void Vision::SearchResults(bool targetFound, double targetAngle, double targetDi
 
     } else {                                                                // No image from Camera
         imageA.deallocate();
-        Robot::m_robotLog.Write("Vision:   No Image from Camera");
+        Robot::m_robotLog.Write("Vision:   No Image from Camera", false);
     }
 
     host->SearchResults(targetFound, targetAngle, targetDistance);

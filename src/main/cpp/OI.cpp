@@ -4,6 +4,7 @@
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetIntakeMode.h"
+#include "commands/CmdArmSetManual.h"
 #include "commands/CmdCancelClimb.h"
 #include "commands/CmdDriveSetGear.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -11,6 +12,7 @@
 #include "subsystems/Elevator.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
+#include "Robot.h"
 
 OI::OI() {
   m_InternalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
@@ -39,7 +41,9 @@ OI::OI() {
   m_buttonBox6.WhenPressed          (new CmdArmSetArmPosition(Arm::apPickup));
   m_buttonBox10.WhenPressed         (new CmdArmSetArmPosition(Arm::apTravel));
 
-  m_buttonArm1.WhenPressed          (new CmdVisionFindTarget(Vision::tsBest));
+  m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
+  m_buttonArm1.WhenReleased         (new CmdArmSetManual(false));
+  m_buttonArm11.WhenPressed         (new CmdVisionFindTarget(Vision::tsBest));
 }
 
 double OI::ApplyDeadband(double joystickValue, double deadband) {
@@ -55,13 +59,11 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
 }
 
 double OI::GetArmJoystickX() {
-  //return ApplyDeadband(m_armJoystick.GetX(), 0.15);
-  return 0;
+  return ApplyDeadband(m_armJoystick.GetX(), 0.15);
 }
 
 double OI::GetArmJoystickY() {
-  //return ApplyDeadband(m_armJoystick.GetY(), 0.15);
-  return 0;
+  return ApplyDeadband(m_armJoystick.GetY(), 0.15);
 }
 
 double OI::GetDriveJoystickX() {
@@ -77,6 +79,15 @@ bool OI::InHatchMode() {
 }
 
 void OI::Periodic() {
+  static bool oldHandMode = (m_buttonBox.GetX() < -0.5);
+
+  bool newHandMode = (m_buttonBox.GetX() < -0.5);
+  if (oldHandMode != newHandMode) {
+    oldHandMode = newHandMode;
+    sprintf(Robot::message, "OI Change in Hand Mode to %d", newHandMode);
+    Robot::m_robotLog.Write(Robot::message);
+  }
+
   m_InternalLevel2.SetPressed(m_buttonDrive9.Get() && m_buttonArm8.Get());
   m_InternalLevel3.SetPressed(m_buttonDrive9.Get() && m_buttonArm9.Get());
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);

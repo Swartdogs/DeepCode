@@ -14,7 +14,7 @@ OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
   m_vision.InitVision();
-  //StartDriverCamera();
+  StartDriverCamera();
 }
 
 void Robot::RobotPeriodic() {
@@ -40,14 +40,12 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
   m_dashboard.SetRobotMode(rmAutonomous);
+
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
-  // if (m_oi.InHatchMode()) {
-  //   m_arm.SetHandMode(Arm::hmHatch);
-  // } else {
-  //   m_arm.SetHandMode(Arm::hmCargo);
-  // }
+
+  m_vision.SetCameraMode(Vision::cmFindTarget);
 }
 
 void Robot::AutonomousPeriodic() { 
@@ -57,15 +55,12 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   m_robotLog.SetMode(rmTeleop);
   m_dashboard.SetRobotMode(rmTeleop);
+
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
 
-  // if (m_oi.InHatchMode()) {
-  //   m_arm.SetHandMode(Arm::hmHatch);
-  // } else {
-  //   m_arm.SetHandMode(Arm::hmCargo);
-  // }
+  m_vision.SetCameraMode(Vision::cmVision);
 }
 
 void Robot::TeleopPeriodic() { 
@@ -204,7 +199,7 @@ void Robot::SetDashRobotValues() {
 void Robot::StartDriverCamera() {
   frc::CameraServer* cameraServer = frc::CameraServer::GetInstance();
 
-  m_cameraDriver = cameraServer->StartAutomaticCapture(0);
+  m_cameraDriver = cameraServer->StartAutomaticCapture("Driver", 1);
   m_cameraDriver.SetResolution(320, 240);
   m_cameraDriver.SetFPS(20);
   m_cameraDriver.SetBrightness(30);

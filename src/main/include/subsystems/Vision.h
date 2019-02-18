@@ -7,6 +7,7 @@
 
 class Vision {
  public:
+   typedef enum{cmFindTarget, cmVision} CameraMode;
    typedef enum{ssDone, ssLooking, ssNoTarget, ssTargetFound} SearchState;
    typedef enum{tsBest, tsLeft, tsRight} TargetSelect;
 
@@ -19,6 +20,7 @@ class Vision {
   TargetSelect  GetTargetSelect();
   void          InitVision();
   void          SearchResults(bool targetFound, double targetAngle, double targetDistance);
+  void          SetCameraMode(CameraMode mode);
   static void   TargetSearch(Vision* host, Vision::TargetSelect targetSelect);
 
 private:
