@@ -1,6 +1,8 @@
 #include "OI.h"
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
+#include "commands/GrpEndHatch.h"
+#include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetIntakeMode.h"
@@ -43,7 +45,13 @@ OI::OI() {
 
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
   m_buttonArm1.WhenReleased         (new CmdArmSetManual(false));
-  m_buttonArm11.WhenPressed         (new CmdVisionFindTarget(Vision::tsBest));
+
+  m_buttonArm6.WhenPressed          (new GrpEndHatch(Vision::tsLeft));
+  m_buttonArm7.WhenPressed          (new CmdVisionFindTarget(Vision::tsBest));
+
+  m_buttonArm10.WhenPressed          (new CmdArmIncrementShoulder(-1.0));
+  m_buttonArm11.WhenPressed          (new CmdArmIncrementShoulder(1.0));
+
 }
 
 double OI::ApplyDeadband(double joystickValue, double deadband) {
