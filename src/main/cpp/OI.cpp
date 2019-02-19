@@ -2,6 +2,7 @@
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
 #include "commands/GrpEndHatch.h"
+#include "commands/GrpLoadHatch.h"
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
@@ -20,9 +21,10 @@ OI::OI() {
   m_InternalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
   m_InternalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
 
+//  m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
+  m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
+  m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
-  m_buttonDrive1.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
-  m_buttonDrive1.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
 
   m_buttonBox12.WhenPressed         (new CmdArmSetIntakeMode(Arm::imIn));
   m_buttonBox4.WhenPressed          (new CmdArmSetIntakeMode(Arm::imOut));

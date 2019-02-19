@@ -6,7 +6,7 @@
 
 class CmdVisionFindTarget : public frc::Command {
  public:
-  CmdVisionFindTarget(Vision::TargetSelect targetSelect);
+  CmdVisionFindTarget(Vision::TargetSelect targetSelect = Vision::tsBest);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;

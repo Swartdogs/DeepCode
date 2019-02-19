@@ -7,4 +7,8 @@
 #include "commands/CmdVisionFindTarget.h"
 
 GrpLoadHatch::GrpLoadHatch() {
+  AddSequential (new CmdVisionFindTarget());
+  AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
+  AddSequential (new CmdArmSetArmPosition(Arm::apLow, true));
+  AddSequential (new CmdDriveToTarget(-70.0, 3.0));
 }

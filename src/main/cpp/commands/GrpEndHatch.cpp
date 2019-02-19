@@ -12,7 +12,7 @@ GrpEndHatch::GrpEndHatch(Vision::TargetSelect target) {
   AddSequential (new CmdDriveDistance(48, 0, 0.3, 0, true, true, 3.0));
   AddSequential (new CmdVisionFindTarget(target));
   AddSequential (new CmdArmSetArmPosition(Arm::apLow));
-  AddSequential (new CmdDriveToTarget(-42.0, 3.0));
+  AddSequential (new CmdDriveToTarget(-50.0, 3.0));
   AddSequential (new frc::WaitCommand(0.5));
   AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
   AddSequential (new CmdDriveDistance(-24, 0, 0.3, 0, true, true, 3.0));
