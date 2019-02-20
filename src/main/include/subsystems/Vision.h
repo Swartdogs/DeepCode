@@ -7,7 +7,7 @@
 
 class Vision {
  public:
-   typedef enum{cmFindTarget, cmVision} CameraMode;
+   typedef enum{cmTarget, cmDriver} CameraMode;
    typedef enum{ssDone, ssLooking, ssNoTarget, ssTargetFound} SearchState;
    typedef enum{tsBest, tsLeft, tsRight} TargetSelect;
 
@@ -33,5 +33,4 @@ private:
   double        m_targetDistance;
   TargetSelect  m_targetSelect;
   std::thread*  m_task;
-
 };

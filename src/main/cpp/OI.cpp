@@ -21,7 +21,7 @@ OI::OI() {
   m_InternalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
   m_InternalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
 
-//  m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
+  m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
@@ -48,8 +48,8 @@ OI::OI() {
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
   m_buttonArm1.WhenReleased         (new CmdArmSetManual(false));
 
-  m_buttonArm6.WhenPressed          (new GrpEndHatch(Vision::tsLeft));
-  m_buttonArm7.WhenPressed          (new CmdVisionFindTarget(Vision::tsBest));
+  // m_buttonArm8.WhenPressed          (new GrpLoadHatch());
+  // m_buttonArm9.WhenPressed          (new CmdVisionFindTarget(Vision::tsBest));
 
   m_buttonArm10.WhenPressed          (new CmdArmIncrementShoulder(-1.0));
   m_buttonArm11.WhenPressed          (new CmdArmIncrementShoulder(1.0));
@@ -89,16 +89,16 @@ bool OI::InHatchMode() {
 }
 
 void OI::Periodic() {
-  static bool oldHandMode = (m_buttonBox.GetX() < -0.5);
+  // static bool oldHandMode = (m_buttonBox.GetX() < -0.5);
 
-  bool newHandMode = (m_buttonBox.GetX() < -0.5);
-  if (oldHandMode != newHandMode) {
-    oldHandMode = newHandMode;
-    sprintf(Robot::message, "OI Change in Hand Mode to %d", newHandMode);
-    Robot::m_robotLog.Write(Robot::message);
-  }
+  // bool newHandMode = (m_buttonBox.GetX() < -0.5);
+  // if (oldHandMode != newHandMode) {
+  //   oldHandMode = newHandMode;
+  //   sprintf(Robot::message, "OI Change in Hand Mode to %d", newHandMode);
+  //   Robot::m_robotLog.Write(Robot::message);
+  // }
 
-  m_InternalLevel2.SetPressed(m_buttonDrive9.Get() && m_buttonArm8.Get());
-  m_InternalLevel3.SetPressed(m_buttonDrive9.Get() && m_buttonArm9.Get());
+  m_InternalLevel2.SetPressed(m_buttonDrive9.Get() && m_buttonArm7.Get());
+  m_InternalLevel3.SetPressed(m_buttonDrive9.Get() && m_buttonArm6.Get());
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
 }

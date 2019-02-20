@@ -17,6 +17,8 @@
 //							 = (2339 / Tan(25.35)) / Target pixel width
 //							 = 4937 / Target pixel width
 
+std::mutex myMutex;
+
 Vision::Vision() {
     m_task = nullptr;
     m_searchState = ssDone;
@@ -26,7 +28,6 @@ Vision::Vision() {
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
-    Robot::m_robotLog.Write("Vision:  Initiate Target search", false);
     m_targetAngle = 0;                                                      // Initialize variables
     m_targetDistance = 0;
     m_targetSelect = targetSelect;
@@ -42,14 +43,17 @@ bool Vision::GetCameraImage(cv::Mat& image) {
 }
 
 Vision::SearchState Vision::GetSearchState() {
+    std::lock_guard<std::mutex> guard(myMutex);
     return m_searchState;
 }
 
 double Vision::GetTargetAngle() {
+    std::lock_guard<std::mutex> guard(myMutex);
     return m_targetAngle;
 }
 
 double Vision::GetTargetDistance() {
+    std::lock_guard<std::mutex> guard(myMutex);
     return m_targetDistance;
 }
 
@@ -72,26 +76,27 @@ void Vision::InitVision() {
 }
 
 void Vision::SearchResults(bool targetFound, double targetAngle, double targetDistance) {
+    std::lock_guard<std::mutex> guard(myMutex);
     if(targetFound) {                                                       // Post search results to Robot thread
-        m_searchState = ssTargetFound;
         m_targetAngle = targetAngle;
         m_targetDistance = targetDistance;
 
-        sprintf(m_buffer, "Vision:   Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
-        Robot::m_robotLog.Write(m_buffer, false);
+        // sprintf(m_buffer, "Vision:   Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
+        // Robot::m_robotLog.Write(m_buffer, false);
+        m_searchState = ssTargetFound;
     } else {
+        // Robot::m_robotLog.Write("Vision:   No Target Found", false);
         m_searchState = ssNoTarget;
-        Robot::m_robotLog.Write("Vision:   No Target Found", false);
     }
 }
 
 void Vision::SetCameraMode(CameraMode mode) {
-    static CameraMode modeNow = cmFindTarget;
+    static CameraMode modeNow = cmTarget;
 
     if (modeNow != mode) {
         modeNow = mode;
 
-        if (mode == cmFindTarget) {
+        if (mode == cmTarget) {
             m_camera.SetBrightness(0);
             m_camera.SetExposureManual(10);
         } else {
@@ -132,7 +137,7 @@ void Vision::SetCameraMode(CameraMode mode) {
         imageA.deallocate();                                                // Free memory used by images
         imageB.deallocate();
 
-        printf("        Contours Found=%i\n", contours.size());
+        printf("    Contours Found=%i\n", contours.size());
     
         if (contours.size() > 0) {                                          // Contours found
             std::vector<visionTape> tapes;                                  // Create vector of Vision Tapes
@@ -164,7 +169,7 @@ void Vision::SetCameraMode(CameraMode mode) {
                 }
             }
 
-            printf("        Tapes Found=%i\n", tapes.size());
+            printf("    Tapes Found=%i\n", tapes.size());
 
             if (tapes.size() > 0) {                                         // Tapes Found
                 std::vector<visionTarget> targets;                          // Create vector of Vision Targets
@@ -172,13 +177,13 @@ void Vision::SetCameraMode(CameraMode mode) {
                 int leftTape = -2;
 
                 for (int i = 0; i < tapes.size(); i++) {                    // Iterate thru tapes looking for Targets
-                    printf("  Tape %i: Angle %f rectX=%i rectWidth= %i\n", i, tapes[i].angle,
+                    printf("    Tape %i: Angle %f rectX=%i rectWidth= %i\n", i, tapes[i].angle,
                             tapes[i].x, tapes[i].width);
                     
                     if (tapes[i].angle > 0){                                // Based on angle, tape is a left tape
                         leftTape = i;
                     } else if (leftTape == i - 1){                          // Current Tape and previous Tape are a Target pair
-                        printf("  Target Found: Tapes %i and %i\n", i - 1, i);
+                        printf("    Target Found: Tapes %i and %i\n", i - 1, i);
                                                                             // Define bounding rectangle around Target
                         int     targetWidth = tapes[i].x - tapes[i - 1].x + tapes[i].width;
                         double  targetCenter = (((double)targetWidth / 2) + (double)tapes[i - 1].x - 160) / 160;
@@ -191,7 +196,7 @@ void Vision::SetCameraMode(CameraMode mode) {
                     }
                 }
 
-                printf("        Targets Found=%i\n", targets.size());
+                printf("    Targets Found=%i\n", targets.size());
 
                 if(targets.size() > 0) {
                     int targetIndex = 0;                                    // Index 0 is leftmost Target
@@ -199,14 +204,14 @@ void Vision::SetCameraMode(CameraMode mode) {
                     if(targetSelect == Vision::tsBest){                     // Search for Target closest to center of Image
                         for (int i = 1; i < targets.size(); i++) {
                             if (fabs(targets[i].angle) < fabs(targets[targetIndex].angle)) targetIndex = i;
-                            printf("  Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
+                            printf("    Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
                         }
 
                     } else if (targetSelect == Vision::tsRight){
                         targetIndex = targets.size() - 1;
                     }
 
-                    printf("        Selected Target: %i\n", targetIndex);
+                    printf("    Selected Target: %i\n", targetIndex);
                     targetFound = true;
                     targetAngle = targets[targetIndex].angle;
                     targetDistance = targets[targetIndex].distance;

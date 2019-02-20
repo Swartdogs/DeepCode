@@ -1,10 +1,11 @@
 #include "commands/CmdDriveToTarget.h"
 #include "Robot.h"
 
-CmdDriveToTarget::CmdDriveToTarget(double addToDistance, double timeout) {
+CmdDriveToTarget::CmdDriveToTarget(double addToDistance, double maxSpeed, double timeout) {
   Requires(&Robot::m_drive);
 
   m_addToDistance = addToDistance;
+  m_maxSpeed      = maxSpeed;
   m_distance      = 0;
   m_heading       = 0;
   m_timeout       = timeout;
@@ -20,9 +21,9 @@ void CmdDriveToTarget::Initialize() {
     Robot::m_drive.SetBrakeMode(true);
 
     m_distance  = Robot::m_vision.GetTargetDistance() + m_addToDistance;
-    m_heading   = Robot::m_vision.GetTargetAngle();
+    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionAngleOffset);
     
-    Robot::m_drive.DriveInit(m_distance, m_heading, 0.3, 0, true, true);
+    Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true);
 
     if (m_timeout > 0) SetTimeout(m_timeout);
     

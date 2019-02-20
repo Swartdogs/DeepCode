@@ -6,7 +6,7 @@ CmdArmIncrementShoulder::CmdArmIncrementShoulder(double degrees) {
 }
 
 void CmdArmIncrementShoulder::Initialize() {
-  Robot::m_arm.SetShoulderPosition(m_degrees + Robot::m_arm.GetShoulderDegrees());
+  Robot::m_arm.SetShoulderPosition(m_degrees + Robot::m_arm.GetShoulderSetpoint());
 }
 
 void CmdArmIncrementShoulder::Execute() {}

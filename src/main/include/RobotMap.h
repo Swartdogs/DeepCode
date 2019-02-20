@@ -56,8 +56,9 @@ typedef enum {              // Analog channels on RoboRIO
 typedef enum {              // Solenoid channels on PCM
     solShifter,
     solFoot,
-    solHand,
+    solHandCargo,
     solHatch,
+    solHandHatch
 } RoboRioSol;
 
 typedef enum {              // Power channels on PDP
@@ -163,5 +164,6 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvCargoSpeedRotate,
     dvCargoRotateRatio,
     dvCargoEjectTime,
-    dvCargoRotateTime
+    dvCargoRotateTime,
+    dvVisionAngleOffset
 } DashValue;

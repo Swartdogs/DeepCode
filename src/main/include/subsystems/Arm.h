@@ -46,6 +46,7 @@ class Arm : public frc::Subsystem {
     HatchState    GetHatchState();
     std::string   GetHatchStateName(HatchState state);
     IntakeMode    GetIntakeMode();
+    std::string   GetIntakeModeName(IntakeMode mode);
     double        GetShoulderDegrees();
     ArmPosition   GetShoulderPosition();
     double        GetShoulderSetpoint();
@@ -102,6 +103,7 @@ class Arm : public frc::Subsystem {
     PIDControl        m_shoulderPID{"Shoulder"};
     PIDControl        m_wristPID{"Wrist"};
 
-    frc::Solenoid     m_solHand{solHand};
+    frc::Solenoid     m_solHandHatch{solHandHatch};
+    frc::Solenoid     m_solHandCargo{solHandCargo};
     frc::Solenoid     m_solHatch{solHatch};
 };

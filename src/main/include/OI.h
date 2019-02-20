@@ -20,7 +20,7 @@ class OI {
   frc::Joystick  m_armJoystick{1};
   frc::Joystick  m_buttonBox{2};
 
-//  frc::JoystickButton m_buttonDrive1{&m_driveJoystick, 1};
+  frc::JoystickButton m_buttonDrive1{&m_driveJoystick, 1};
   frc::JoystickButton m_buttonDrive2{&m_driveJoystick, 2};
   frc::JoystickButton m_buttonDrive9{&m_driveJoystick, 9};
   frc::JoystickButton m_buttonDrive10{&m_driveJoystick, 10};

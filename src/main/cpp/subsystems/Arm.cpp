@@ -42,7 +42,8 @@ Arm::Arm() : Subsystem("Arm") {
   m_handTop.SetInverted(true);
   m_shoulderMotor.SetInverted(true);
 
-  m_solHand.Set(false);
+  m_solHandHatch.Set(false);
+  m_solHandCargo.Set(false);
   m_solHatch.Set(false);
 }
 
@@ -161,16 +162,14 @@ void Arm::Periodic() {
     }
 
     if(m_shoulderSetpoint < 3 && GetShoulderDegrees() < 3) shoulderPower = 0;
-    if (m_wristSetpoint < 2 && GetWristDegrees() < 2) wristPower = 0;
+    if (m_wristSetpoint < 3 && GetWristDegrees() < 3) wristPower = 0;
 
-    if (m_shoulderNext >= 0) {                                                                // Shoulder waiting for Wrist
+    if (m_shoulderNext >= 0) {                                                  // Shoulder waiting for Wrist
       if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
         SetShoulderPosition(m_shoulderNext, m_armPosition);
         m_shoulderNext = -1;
       }
-    }
-
-    if (m_wristNext >= 0 && m_shoulderNext < 0) {                                             // Wrist waiting for Shoulder
+    } else if (m_wristNext >= 0) {                                              // Wrist waiting for Shoulder
       if (shoulderNow > Robot::m_dashboard.GetDashValue(dvShoulderClear) || ShoulderAtSetpoint()) {   // Shoulder Clear or Stopped
         SetWristPosition(m_wristNext, m_armPosition);
         m_wristNext = -1;
@@ -237,8 +236,8 @@ std::string Arm::GetHatchStateName(HatchState state) {
    std::string name = "";
 
   switch (state) {
-      case hsGrab:       name = "Grab";       break;
-      case hsRelease:    name = "Release";    break;
+    case hsGrab:       name = "Grab";       break;
+    case hsRelease:    name = "Release";    break;
   }
 
   return name; 
@@ -246,6 +245,19 @@ std::string Arm::GetHatchStateName(HatchState state) {
 
 Arm::IntakeMode Arm::GetIntakeMode(){
   return m_intakeMode;
+}
+
+std::string Arm::GetIntakeModeName(IntakeMode mode) {
+  std::string name = "";
+
+  switch (mode) {
+    case imOff:     name = "Off";     break;
+    case imIn:      name = "In";      break;
+    case imOut:     name = "Out";     break;
+    case imRotate:  name = "Rotate";  break;
+  }
+
+  return name;
 }
 
 double Arm::GetShoulderDegrees() {
@@ -422,8 +434,16 @@ void Arm::SetHandMode(HandMode mode, bool fromSwitch) {
   if (fromSwitch) mode = Robot::m_oi.InHatchMode() ? hmHatch : hmCargo;
 
   if(mode != m_handMode) {
-    m_solHand.Set(mode == hmHatch);
     m_handMode = mode;
+
+    if (m_handMode == hmHatch) {
+      m_solHandHatch.Set(true);
+      m_solHandCargo.Set(false);
+    } else {
+      m_solHandHatch.Set(false);
+      m_solHandCargo.Set(true);
+    }
+
     Robot::m_dashboard.SetRobotStatus(rsHatchMode, mode == hmHatch);
 
     sprintf(Robot::message, "Arm:      Hand Mode=%s", GetHandModeName(m_handMode).c_str());
@@ -445,7 +465,8 @@ void Arm::SetHatchState(HatchState state) {
 void Arm::SetIntakeMode(IntakeMode mode) {
   if (mode != m_intakeMode) {
     m_intakeMode = mode;
-    printf("Intake Mode=%d\n", GetIntakeMode());
+    sprintf(Robot::message, "Arm:      Intake Mode=%s\n", GetIntakeModeName(m_intakeMode).c_str());
+    Robot::m_robotLog.Write(Robot::message);
   }
 }
 

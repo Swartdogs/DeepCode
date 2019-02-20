@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 20, 1, 55);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 20, 1, 56);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -14,7 +14,7 @@ OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
   m_vision.InitVision();
-  StartDriverCamera();
+//  StartDriverCamera();
 }
 
 void Robot::RobotPeriodic() {
@@ -44,9 +44,10 @@ void Robot::AutonomousInit() {
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
+  m_arm.SetHatchState(Arm::hsGrab);
 
-  m_vision.SetCameraMode(Vision::cmVision);
-//  m_vision.SetCameraMode(Vision::cmFindTarget);
+ // m_vision.SetCameraMode(Vision::cmDriver);
+  m_vision.SetCameraMode(Vision::cmTarget);
 }
 
 void Robot::AutonomousPeriodic() { 
@@ -63,8 +64,8 @@ void Robot::TeleopInit() {
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
 
-//  m_vision.SetCameraMode(Vision::cmFindTarget);
-  m_vision.SetCameraMode(Vision::cmVision);
+  m_vision.SetCameraMode(Vision::cmTarget);
+//  m_vision.SetCameraMode(Vision::cmDriver);
 }
 
 void Robot::TeleopPeriodic() { 
