@@ -8,7 +8,7 @@
 
 GrpLoadHatch::GrpLoadHatch() {
   AddSequential (new CmdVisionFindTarget());
-  AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
+//  AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
   AddSequential (new CmdArmSetArmPosition(Arm::apLow));
   AddSequential (new CmdDriveToTarget(-70.0, 0.4, 3.0));
 }

@@ -24,6 +24,7 @@ OI::OI() {
   m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
+  m_buttonDrive7.WhenPressed        (new GrpEndHatch(Vision::tsLeft));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
   m_buttonBox12.WhenPressed         (new CmdArmSetIntakeMode(Arm::imIn));
