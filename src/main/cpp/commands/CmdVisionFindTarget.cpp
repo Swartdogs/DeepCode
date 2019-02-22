@@ -24,16 +24,24 @@ void CmdVisionFindTarget::Execute() {
       sprintf(m_message, "Vision:   Find Target CANCELED");
     } else {
       switch (Robot::m_vision.GetSearchState()) {
+        case Vision::ssNoImage:
+          m_status = csDone;
+          sprintf(m_message, "Vision:   No Camera Image");
+          if (this->IsParented()) this->GetGroup()->Cancel();
+         break;
+
         case Vision::ssNoTarget:
           m_status = csDone;
           sprintf(m_message, "Vision:   No Target Found");
           if (this->IsParented()) this->GetGroup()->Cancel();
           break;
+
         case Vision::ssTargetFound:
           m_status = csDone;
-          sprintf(m_message, "Vision:   Target Found at Heading=%5.1f  Distance=%5.1f", 
-                  Robot::m_vision.GetTargetAngle(), Robot::m_vision.GetTargetDistance());
+          sprintf(m_message, "Vision:   Target Found at Distance=%5.1f   Heading=%5.1f", 
+                  Robot::m_vision.GetTargetDistance(), Robot::m_vision.GetTargetAngle());
           break;
+          
         case Vision::ssDone:
           sprintf(m_message, "Vision:   Find Target DONE");
           m_status = csDone;

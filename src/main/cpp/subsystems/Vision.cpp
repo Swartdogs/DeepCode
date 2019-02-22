@@ -75,19 +75,11 @@ void Vision::InitVision() {
     m_server = cameraServer->GetServer();
 }
 
-void Vision::SearchResults(bool targetFound, double targetAngle, double targetDistance) {
+void Vision::SearchResults(SearchState state, double targetAngle, double targetDistance) {
     std::lock_guard<std::mutex> guard(myMutex);
-    if(targetFound) {                                                       // Post search results to Robot thread
-        m_targetAngle = targetAngle;
-        m_targetDistance = targetDistance;
-
-        // sprintf(m_buffer, "Vision:   Target Angle=%5.1f  Distance=%5.0f", m_targetAngle, m_targetDistance);
-        // Robot::m_robotLog.Write(m_buffer, false);
-        m_searchState = ssTargetFound;
-    } else {
-        // Robot::m_robotLog.Write("Vision:   No Target Found", false);
-        m_searchState = ssNoTarget;
-    }
+    m_searchState       = state;
+    m_targetAngle       = targetAngle;
+    m_targetDistance    = targetDistance;
 }
 
 void Vision::SetCameraMode(CameraMode mode) {
@@ -221,9 +213,13 @@ void Vision::SetCameraMode(CameraMode mode) {
 
     } else {                                                                // No image from Camera
         imageA.deallocate();
-        Robot::m_robotLog.Write("Vision:   No Image from Camera", false);
+        host->SearchResults(Vision::ssNoImage, 0, 0);
     }
 
-    host->SearchResults(targetFound, targetAngle, targetDistance);
+    if (targetFound) {
+        host->SearchResults(Vision::ssTargetFound, targetAngle, targetDistance);
+    } else {
+        host->SearchResults(Vision::ssNoTarget, 0, 0);
+    }
  }
 

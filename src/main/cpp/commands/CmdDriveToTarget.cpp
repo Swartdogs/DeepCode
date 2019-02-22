@@ -66,13 +66,13 @@ void CmdDriveToTarget::End() {
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:    To Target DONE       Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+      sprintf(Robot::message, "Drive:    To Target DONE  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
               Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
               Robot::m_drive.GetHeading());
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:    To Target CANCELED   Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+      sprintf(Robot::message, "Drive:    To Target CANCELED  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
               Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
               Robot::m_drive.GetHeading());
       break;
