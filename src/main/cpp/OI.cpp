@@ -12,6 +12,7 @@
 #include "commands/CmdDriveSetGear.h"
 #include "commands/CmdArmSetHatchState.h"
 #include "commands/CmdVisionFindTarget.h"
+#include "commands/CmdVisionToggleMode.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
@@ -24,6 +25,7 @@ OI::OI() {
   m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
+  m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
   m_buttonDrive7.WhenPressed        (new GrpEndHatch(Vision::tsLeft));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
@@ -90,14 +92,7 @@ bool OI::InHatchMode() {
 }
 
 void OI::Periodic() {
-  // static bool oldHandMode = (m_buttonBox.GetX() < -0.5);
 
-  // bool newHandMode = (m_buttonBox.GetX() < -0.5);
-  // if (oldHandMode != newHandMode) {
-  //   oldHandMode = newHandMode;
-  //   sprintf(Robot::message, "OI Change in Hand Mode to %d", newHandMode);
-  //   Robot::m_robotLog.Write(Robot::message);
-  // }
 
   m_InternalLevel2.SetPressed(m_buttonDrive9.Get() && m_buttonArm7.Get());
   m_InternalLevel3.SetPressed(m_buttonDrive9.Get() && m_buttonArm6.Get());

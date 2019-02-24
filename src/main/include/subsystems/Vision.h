@@ -19,12 +19,14 @@ class Vision {
   double        GetTargetDistance();
   TargetSelect  GetTargetSelect();
   void          InitVision();
+  bool          InTargetMode();
   void          SearchResults(SearchState state, double targetAngle, double targetDistance);
   void          SetCameraMode(CameraMode mode);
   static void   TargetSearch(Vision* host, Vision::TargetSelect targetSelect);
 
 private:
   char          m_buffer[100];
+  CameraMode    m_cameraMode;
   SearchState   m_searchState;
   cs::CvSink    m_sink;
   cs::UsbCamera m_camera;

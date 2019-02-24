@@ -17,4 +17,5 @@ private:
   Vision::TargetSelect  m_targetSelect;
   CommandStatus         m_status;
   char                  m_message[100];
+  int                   m_counter;
 };

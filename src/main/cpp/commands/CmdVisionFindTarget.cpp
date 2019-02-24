@@ -4,16 +4,27 @@
 CmdVisionFindTarget::CmdVisionFindTarget(Vision::TargetSelect targetSelect) {
   m_targetSelect = targetSelect;
   m_status = csRun;
+  m_counter = 0;
 }
 
 void CmdVisionFindTarget::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
     m_status = csSkip;
     sprintf(m_message, "Vision:   Find Target SKIP");
+  } else if (Robot::m_vision.GetSearchState() == Vision::ssLooking) {
+    m_status = csDone;
+    sprintf(m_message, "Vision:   Find Target Busy");
   } else {
     m_status = csRun;
+
+    if(Robot::m_vision.InTargetMode()) {
+      m_counter = 0;
+      Robot::m_vision.FindTarget(m_targetSelect);
+    } else {
+      m_counter = 6;
+      Robot::m_vision.SetCameraMode(Vision::cmTarget);
+    }
     Robot::m_robotLog.Write("Vision:   Find Target INIT");
-    Robot::m_vision.FindTarget(m_targetSelect);
   }
 }
 
@@ -22,6 +33,10 @@ void CmdVisionFindTarget::Execute() {
     if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
       m_status = csCancel;
       sprintf(m_message, "Vision:   Find Target CANCELED");
+    } else if (m_counter > 0) {
+      m_counter--;
+      if (m_counter == 0) Robot::m_vision.FindTarget(m_targetSelect);
+      
     } else {
       switch (Robot::m_vision.GetSearchState()) {
         case Vision::ssNoImage:

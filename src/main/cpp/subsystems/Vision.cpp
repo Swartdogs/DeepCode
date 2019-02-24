@@ -20,11 +20,12 @@
 std::mutex myMutex;
 
 Vision::Vision() {
-    m_task = nullptr;
+    m_cameraMode = cmTarget;
     m_searchState = ssDone;
     m_targetAngle = 0;
     m_targetDistance = 0;
     m_targetSelect = tsBest;
+    m_task = nullptr;
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
@@ -75,6 +76,10 @@ void Vision::InitVision() {
     m_server = cameraServer->GetServer();
 }
 
+bool Vision::InTargetMode() {
+    return(m_cameraMode == cmTarget);
+}
+
 void Vision::SearchResults(SearchState state, double targetAngle, double targetDistance) {
     std::lock_guard<std::mutex> guard(myMutex);
     m_searchState       = state;
@@ -83,10 +88,8 @@ void Vision::SearchResults(SearchState state, double targetAngle, double targetD
 }
 
 void Vision::SetCameraMode(CameraMode mode) {
-    static CameraMode modeNow = cmTarget;
-
-    if (modeNow != mode) {
-        modeNow = mode;
+    if (m_cameraMode != mode) {
+        m_cameraMode = mode;
 
         if (mode == cmTarget) {
             m_camera.SetBrightness(0);
