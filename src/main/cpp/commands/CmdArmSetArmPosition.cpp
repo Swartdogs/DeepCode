@@ -1,3 +1,6 @@
+// Sets the Arm Shoulder and Wrist setpoints to a specified Arm Position
+//   and optionally waits for the Shoulder and Arm to reach those setpoints
+
 #include "commands/CmdArmSetArmPosition.h"
 #include "Robot.h"
 

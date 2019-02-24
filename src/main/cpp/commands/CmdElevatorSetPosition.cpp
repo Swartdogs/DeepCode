@@ -1,3 +1,5 @@
+// Set Elevator to a specified position and wait until completed
+
 #include "Robot.h"
 #include "commands/CmdElevatorSetPosition.h"
 

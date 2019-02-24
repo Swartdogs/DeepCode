@@ -1,3 +1,6 @@
+// Set the Elevator to Extended or Retracted
+//   and optionally wait a specified period of time for action to complete
+
 #include "Robot.h"
 #include "commands/CmdElevatorSetFoot.h"
 

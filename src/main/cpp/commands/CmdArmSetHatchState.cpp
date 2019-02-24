@@ -1,3 +1,5 @@
+// Sets the state of the Hatch fingers to Grab or Release
+
 #include "Robot.h"
 #include "commands/CmdArmSetHatchState.h"
 

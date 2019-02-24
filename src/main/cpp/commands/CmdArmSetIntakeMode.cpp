@@ -1,3 +1,5 @@
+// Sets the Arm Cargo Intake to Off, In, Out, or Rotate
+
 #include "Robot.h"
 #include "commands/CmdArmSetIntakeMode.h"
 

@@ -1,3 +1,5 @@
+// Sets the Arm Hand Mode to Hatch or Cargo
+
 #include "Robot.h"
 #include "commands/CmdArmSetHandMode.h"
 

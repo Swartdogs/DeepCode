@@ -1,3 +1,5 @@
+// Drive Robot using the Joystick  (Default Drive subsystem command)
+
 #include "commands/CmdDriveJoystick.h"
 #include "Robot.h"
 #include "subsystems/Drive.h"
@@ -13,7 +15,6 @@ void CmdDriveJoystick::Initialize() {
 }
 
 void CmdDriveJoystick::Execute() {
-  //Robot::m_drive.ArcadeDrive(0, 0);
   Robot::m_drive.ArcadeDrive( Robot::m_oi.GetDriveJoystickY(), 
                                Robot::m_oi.GetDriveJoystickX());
 }

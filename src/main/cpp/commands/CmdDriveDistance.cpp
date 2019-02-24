@@ -1,9 +1,12 @@
+// Drive Robot using PID control to a specified Distance at a specified Heading
+//   and wait for completion or timeout
+
 #include "commands/CmdDriveDistance.h"
 #include "Robot.h"
 #include "subsystems/Drive.h"
 
 CmdDriveDistance::CmdDriveDistance(double distance, double heading, double maxSpeed, double minSpeed, bool resetEncoders, 
-                                   bool resetGyro, double timeout, bool useSonar, bool groupContinue) {
+                                   bool resetGyro, double timeout, bool groupContinue) {
   Requires(&Robot::m_drive);
 
   m_distance       = distance;
@@ -13,7 +16,6 @@ CmdDriveDistance::CmdDriveDistance(double distance, double heading, double maxSp
   m_resetEncoders  = resetEncoders;
   m_resetGyro      = resetGyro;
   m_timeout        = fabs(timeout);
-  m_useSonar       = useSonar;
   m_groupContinue  = groupContinue;
   m_status         = csRun;
 }
@@ -25,8 +27,6 @@ void CmdDriveDistance::Initialize() {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);
     Robot::m_drive.SetBrakeMode(true);
-
-    if (m_useSonar) m_distance = Robot::m_drive.GetSonarDistance() - fabs(m_distance);
 
     Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, m_minSpeed, m_resetEncoders, m_resetGyro, false);
 

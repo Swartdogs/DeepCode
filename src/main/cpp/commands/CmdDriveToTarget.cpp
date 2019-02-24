@@ -1,3 +1,6 @@
+// Drive Robot using PID control to Target determined by the Vision subsystem
+//   and wait for completion or timeout
+
 #include "commands/CmdDriveToTarget.h"
 #include "Robot.h"
 

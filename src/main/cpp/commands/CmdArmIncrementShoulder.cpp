@@ -1,3 +1,5 @@
+// Increments or Decrements the Arm Shoulder Setpoint by a specified number of degrees
+
 #include "commands/CmdArmIncrementShoulder.h"
 #include "Robot.h"
 

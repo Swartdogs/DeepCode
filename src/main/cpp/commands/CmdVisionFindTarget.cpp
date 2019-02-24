@@ -1,3 +1,5 @@
+// Initiate Target search using the Vision subsystem and wait for completion
+
 #include "commands/CmdVisionFindTarget.h"
 #include "Robot.h"
 

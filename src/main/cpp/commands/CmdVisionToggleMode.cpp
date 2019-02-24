@@ -1,3 +1,5 @@
+// Toggle the Camera mode between Target and Driver
+
 #include "commands/CmdVisionToggleMode.h"
 #include "Robot.h"
 

@@ -1,4 +1,7 @@
 
+// Rotate the Robot using PID control to a specified Heading
+//   and wait for completion or timeout
+
 #include <commands/CmdDriveRotate.h>
 #include "Robot.h"
 

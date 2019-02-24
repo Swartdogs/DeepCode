@@ -1,3 +1,6 @@
+// Drive the Elevator Foot at a specified speed until the specified Floor sensor
+//   detects floor or a timeout occurs.
+
 #include "commands/CmdElevatorDriveFoot.h"
 #include "Robot.h"
 

@@ -1,3 +1,6 @@
+// Sets the Arm Manual mode to True or False
+//   If true, the Arm Shoulder and Wrist are controlled by the Arm Joystick
+
 #include "commands/CmdArmSetManual.h"
 #include "Robot.h"
 

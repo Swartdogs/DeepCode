@@ -1,3 +1,5 @@
+// Robot Climb sequence for either Platform Level 2 or 3
+
 #include "Robot.h"
 #include "commands/GrpClimb.h"
 #include "commands/CmdElevatorSetFoot.h"
