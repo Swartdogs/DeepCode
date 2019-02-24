@@ -53,6 +53,7 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() { 
   m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
+  if (m_dashboard.GetDashButton(dbDataCapture)) m_robotLog.LogData();
   m_robotLog.EndPeriodic();
 }
 
@@ -71,6 +72,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() { 
   m_robotLog.StartPeriodic();
   frc::Scheduler::GetInstance()->Run(); 
+  if (m_dashboard.GetDashButton(dbDataCapture)) m_robotLog.LogData();
   m_robotLog.EndPeriodic();
 }
 

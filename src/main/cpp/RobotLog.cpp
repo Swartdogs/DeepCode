@@ -76,6 +76,11 @@ RobotMode RobotLog::GetMode() {
 void RobotLog::LogData() {
     std::string data;
 
+    data = DataString(Robot::m_drive.GetHeading());
+    data += DataString(Robot::m_drive.GetDistance(Drive::ueLeftEncoder));
+    data += DataString(Robot::m_drive.GetDistance(Drive::ueRightEncoder));
+    data += DataString((double) Robot::m_drive.GetShifterPosition());
+
 //  data = DataString(Robot::pdp.GetAmps(pdpDriveLeft1));
 }
 
