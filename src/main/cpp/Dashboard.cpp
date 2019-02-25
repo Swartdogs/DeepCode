@@ -239,8 +239,9 @@ void Dashboard::SetTimeStamp(std::string now) {					// Set the driver station ti
 void Dashboard::TcpLoop(Dashboard *host) {
 	struct sockaddr_in	addrHost, addrClient;
 	size_t				position;
+
 	std::string 		commandGET 		= host->GetCommandPrefix() + "GET";
-	std::string			commandPULL		= host->GetCommandPrefix() + "PULL:";
+	std::string			commandPULL		= host->GetCommandPrefix() + "PULL";
 	std::string 		commandPUT		= host->GetCommandPrefix() + "PUT";
 	std::string 		commandCOUNT 	= host->GetCommandPrefix() + "COUNT";
 	std::string			command;
