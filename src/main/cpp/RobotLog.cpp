@@ -80,8 +80,6 @@ void RobotLog::LogData() {
     data += DataString(Robot::m_drive.GetDistance(Drive::ueLeftEncoder));
     data += DataString(Robot::m_drive.GetDistance(Drive::ueRightEncoder));
     data += DataString((double) Robot::m_drive.GetShifterPosition());
-
-//  data = DataString(Robot::pdp.GetAmps(pdpDriveLeft1));
 }
 
 std::string RobotLog::ModeName(RobotMode mode) {
@@ -110,8 +108,7 @@ void RobotLog::SetMode(RobotMode mode) {
     m_periodicTotalTime = 0;
     
     Write("", false);
-    //sprintf(m_log, "%s: Start %s %s", m_robotName.c_str(), ModeName(mode).c_str(), Robot::dash.GetTimeStamp().c_str());
-    sprintf(m_log, "%s: Start %s", m_robotName.c_str(), ModeName(mode).c_str());
+    sprintf(m_log, "%s: Start %s %s", m_robotName.c_str(), ModeName(mode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
     Write(m_log, false);
 }
 
@@ -121,7 +118,6 @@ void RobotLog::StartPeriodic() {
 
     if((timeNow - m_periodicLastStart) > 100) {
         sprintf(m_log, "%s: Long Periodic Interval=%5.1f (Start-to-Start)", m_robotName.c_str(), timeNow - m_periodicLastStart);
-
         Write(m_log);
     }
     m_periodicLastStart = timeNow;
@@ -132,7 +128,6 @@ void RobotLog::StartPeriodic() {
         inBrownOut = brownOut;
         if (inBrownOut) {
             sprintf(m_log, "%s: System Brown Out", m_robotName.c_str());
-
             Write(m_log);
         }
     }
@@ -162,7 +157,7 @@ void RobotLog::WriteData(std::string data){
 
     if (m_dataFile == nullptr) {
         m_dataFile = fopen("/home/lvuser/Data525.txt", "a");
-        //fprintf(m_dataFile, "%s|%s\r\n", ModeName(m_robotMode).c_str(), Robot::dash.GetTimeStamp().c_str());
+        fprintf(m_dataFile, "%s|%s\r\n", ModeName(m_robotMode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
     }
 
     if (m_dataFile != nullptr) fprintf(m_dataFile, "%7.2f|%s\r\n", eventTime, cData);
@@ -176,7 +171,7 @@ void RobotLog::WritePid(std::string output) {
 
     if (m_pidFile == nullptr) {
         m_pidFile = fopen("/home/lvuser/Pid525.txt", "a");
-        //fprintf(m_pidFile, "%s %s \r\n", ModeName(m_robotMode).c_str(), Robot::dash.GetTimeStamp().c_str());
+        fprintf(m_pidFile, "%s %s \r\n", ModeName(m_robotMode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
     }
 
     if (m_pidFile != nullptr) fprintf(m_pidFile, "%7.2f: %s \r\n", eventTime, pid);

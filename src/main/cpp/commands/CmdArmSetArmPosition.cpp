@@ -1,5 +1,5 @@
 // Sets the Arm Shoulder and Wrist setpoints to a specified Arm Position
-//   and optionally waits for the Shoulder and Arm to reach those setpoints
+//   Optionally waits for the Shoulder and Arm to reach those setpoints
 
 #include "commands/CmdArmSetArmPosition.h"
 #include "Robot.h"
@@ -11,13 +11,13 @@ CmdArmSetArmPosition::CmdArmSetArmPosition(Arm::ArmPosition position, bool waitF
 }
 
 void CmdArmSetArmPosition::Initialize() {
-  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
+  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Skip command if in a Group that has been canceled
     m_status = csCancel;
     Robot::m_robotLog.Write("Arm:      Set Position SKIP");
-  } else {
-    if (m_waitForDone) {
+  } else {                                                                    
+    if (m_waitForDone) {                                                      // Set status to Run if waiting for completion
       m_status = csRun;
-    } else {
+    } else {                                                                  // Set status to Done if not waiting
       m_status = csDone;
     }
 
@@ -26,7 +26,7 @@ void CmdArmSetArmPosition::Initialize() {
 }
 
 void CmdArmSetArmPosition::Execute() {
-  if (m_status == csRun) {
+  if (m_status == csRun) {                                                    // Done if Shoulder and Wrist at setpoints
     if (Robot::m_arm.ShoulderAtSetpoint() && Robot::m_arm.WristAtSetpoint()) m_status = csDone;
   }
 }
