@@ -162,6 +162,17 @@ std::string Dashboard::GetTimeStamp() {							// Get driver station time stamp
 	return m_timeStamp;
 }
 
+std::string Dashboard::PullReply() {
+	std::string data = "PULL:" + DataString((double)m_dashboardValueCount, 2);
+
+	if (m_dashboardValueCount > 0) {
+		for (int i = 0; i < m_dashboardValueCount; i++) data += DataString(m_dashboardValue[i], 1);
+		data = data.substr(0, data.length() - 1);
+	}
+
+	return data += "\r\n";
+}
+
 void Dashboard::SaveDashValues() {								// Save dashboard values to settings file on RoboRio
 	std::ofstream dashFile("/home/lvuser/Dashboard.set", std::ios::binary);
 		if (dashFile.good()) {
@@ -229,6 +240,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 	struct sockaddr_in	addrHost, addrClient;
 	size_t				position;
 	std::string 		commandGET 		= host->GetCommandPrefix() + "GET";
+	std::string			commandPULL		= host->GetCommandPrefix() + "PULL:";
 	std::string 		commandPUT		= host->GetCommandPrefix() + "PUT";
 	std::string 		commandCOUNT 	= host->GetCommandPrefix() + "COUNT";
 	std::string			command;
@@ -285,17 +297,20 @@ void Dashboard::TcpLoop(Dashboard *host) {
 					clientMesg.erase(0, position + 1);										// Erase command from message
 					reply = "";
 
-					if (command == (commandCOUNT)) {										// COUNT command requesting data counts
+					if (command == commandCOUNT) {											// COUNT command requesting data counts
 						reply = host->CountReply();											// Reply from Host
 
-					} else if (command == (commandGET)) {									// GET command requesting Robot data
+					} else if (command == commandGET) {										// GET command requesting Robot data
 						if ((position = clientMesg.find("|")) != std::string::npos) {		// Look for pipe at end of Time Stamp
 							host->SetTimeStamp(clientMesg.substr(0, position));				// Parse and Set Time Stamp
 							clientMesg.erase(0, position + 1);
 							reply = host->GetReply();
 						}
 
-					} else if (command == (commandPUT)) {									// PUT command sending Dashboard data
+					} else if (command == commandPULL) {									// PULL command requesting Dashboard values
+						reply = host->PullReply();											// Reply from Host
+
+					} else if (command == commandPUT) {										// PUT command sending Dashboard data
 						reply = "PUT:";
 						bool saveFile = false;
 

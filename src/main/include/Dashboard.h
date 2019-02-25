@@ -19,6 +19,7 @@ public:
 	std::string GetReply();												// Returns GET reply for all Robot Values
 	bool		GetRobotStatus(RobotStatus statusIndex);				// Returns current Robot Status
 	std::string GetTimeStamp();											// Returns Time Stamp
+	std::string PullReply();											// Returns PULL reply for all Dashboard values
 
 	void        SaveDashValues();
 	bool		SetDashButton(int group, int32_t value);				// Sets Dashboard Button group at specified index
