@@ -6,7 +6,7 @@
 #include <thread>
 #include "Robot.h"
 
-#define BUFFER_LEN 512
+#define BUFFER_LEN 1024
 #define	TCP_PORT 5801
 
 // ************************* PUBLIC FUNCTIONS *************************
