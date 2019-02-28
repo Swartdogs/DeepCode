@@ -105,7 +105,7 @@ bool Dashboard::GetDashButton(DashButton buttonIndex) {			// Get current state o
 }
 
 bool Dashboard::GetDashButtonPress(DashButton buttonIndex) {	// Determine whether dashboard button was pressed
-	int  group = buttonIndex / 16;								// since previous call
+	int  group = buttonIndex / 16;															// since previous call
 	int  index = buttonIndex % 16;
 	bool vReturn = false;
 
@@ -124,12 +124,12 @@ bool Dashboard::GetDashButtonPress(DashButton buttonIndex) {	// Determine whethe
 	return vReturn;
 }
 
-double Dashboard::GetDashValue(DashValue valueIndex) {			// Get current value from dashboard data array
+double Dashboard::GetDashValue(DashValue valueIndex) {				// Get current value from dashboard data array
 	if (valueIndex < m_dashboardValueCount) return m_dashboardValue[valueIndex];
 	return 0;
 }
 
-std::string Dashboard::GetReply() {	// Format reply to GET robot data request
+std::string Dashboard::GetReply() {														// Format reply to GET robot data request
 	std::string data = "GET:" + DataString(m_robotMode, 2);
 
 	if (m_robotStatusCount > 0) {
@@ -158,7 +158,7 @@ bool Dashboard::GetRobotStatus(RobotStatus statusIndex) {
 	}
 }
 
-std::string Dashboard::GetTimeStamp() {							// Get driver station time stamp
+std::string Dashboard::GetTimeStamp() {												// Get driver station time stamp
 	return m_timeStamp;
 }
 
@@ -173,7 +173,7 @@ std::string Dashboard::PullReply() {
 	return data += "\r\n";
 }
 
-void Dashboard::SaveDashValues() {								// Save dashboard values to settings file on RoboRio
+void Dashboard::SaveDashValues() {														// Save dashboard values to settings file on RoboRio
 	std::ofstream dashFile("/home/lvuser/Dashboard.set", std::ios::binary);
 		if (dashFile.good()) {
 			for (int i = 0; i < m_dashboardValueCount; i++) dashFile.write((char*)&m_dashboardValue[i], sizeof(m_dashboardValue[i]));
@@ -182,8 +182,8 @@ void Dashboard::SaveDashValues() {								// Save dashboard values to settings f
 	dashFile.close();
 }
 
-bool Dashboard::SetDashButton(int group, int32_t value) {		// Set a dashboard button state
-	if (group < 0 || group >= m_dashboardButtonCount) {			// (Used by SET B command from dashboard)
+bool Dashboard::SetDashButton(int group, int32_t value) {			// Set a dashboard button state
+	if (group < 0 || group >= m_dashboardButtonCount) {					// (Used by SET B command from dashboard)
 		return false;
 	} else {
 		m_dashboardButton[group].state = value;
@@ -191,8 +191,8 @@ bool Dashboard::SetDashButton(int group, int32_t value) {		// Set a dashboard bu
 	}
 }
 
-bool Dashboard::SetDashValue(int index, double value) {			// Set a dashboard value
-	if (index < 0 || index >= m_dashboardValueCount) {			// (Used by SET V command from dashboard)
+bool Dashboard::SetDashValue(int index, double value) {				// Set a dashboard value
+	if (index < 0 || index >= m_dashboardValueCount) {					// (Used by SET V command from dashboard)
 		return false;
 	} else {
 		m_dashboardValue[index] = value;
@@ -228,12 +228,12 @@ bool Dashboard::SetRobotValue(RobotValue valueIndex, double value) {	// Set a va
 	}
 }
 
-void Dashboard::SetRobotMode(RobotMode mode) {					// Set the current robot mode
-	m_robotMode = (int) mode;									// (Sent in GET reply)
+void Dashboard::SetRobotMode(RobotMode mode) {								// Set the current robot mode
+	m_robotMode = (int) mode;																		// (Sent in GET reply)
 }
 
-void Dashboard::SetTimeStamp(std::string now) {					// Set the driver station time stamp
-	m_timeStamp = now;											// (Sent in GET reply)
+void Dashboard::SetTimeStamp(std::string now) {								// Set the driver station time stamp
+	m_timeStamp = now;																					// (Sent in GET reply)
 }
 
 void Dashboard::TcpLoop(Dashboard *host) {
@@ -261,24 +261,24 @@ void Dashboard::TcpLoop(Dashboard *host) {
 	}
 
 	index = 1;
-	setsockopt(hostSocket, SOL_SOCKET, SO_REUSEADDR, &index, sizeof(int));					// Allow socket to be reused
+	setsockopt(hostSocket, SOL_SOCKET, SO_REUSEADDR, &index, sizeof(int));				// Allow socket to be reused
 
-	struct timeval tv;																		// Set Timeout on socket recv function
+	struct timeval tv;																														// Set Timeout on socket recv function
 	tv.tv_sec = 10;
 	tv.tv_usec = 0;
 	setsockopt(hostSocket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(struct timeval));
 
-	memset(&addrHost, 0, sizeof(addrHost));													// Create and configure Socket address
+	memset(&addrHost, 0, sizeof(addrHost));																				// Create and configure Socket address
 	addrHost.sin_family = AF_INET;
 	addrHost.sin_addr.s_addr = htonl(INADDR_ANY);
 	addrHost.sin_port = htons(TCP_PORT);
 
-	if (bind(hostSocket, (struct sockaddr *) &addrHost, sizeof(addrHost)) < 0) {			// Bind address to Host Socket
+	if (bind(hostSocket, (struct sockaddr *) &addrHost, sizeof(addrHost)) < 0) {	// Bind address to Host Socket
 		host->WriteToLog("TCP Binding Error");
 		return;
 	}
 
-	if (listen(hostSocket, 5) < 0) {														// Open socket to listen for clients
+	if (listen(hostSocket, 5) < 0) {																							// Open socket to listen for clients
 		host->WriteToLog("TCP Listen Failed");
 		return;
 	}
@@ -289,59 +289,59 @@ void Dashboard::TcpLoop(Dashboard *host) {
 
 	while(true) {
 		clientLen = sizeof(addrClient);
-																							// Accept connection from Dashboard client
+																																								// Accept connection from Dashboard client
 		if ((clientSocket = accept(hostSocket, (struct sockaddr*) &addrClient, &clientLen)) >= 0) {
 			host->WriteToLog("Connection Accepted");
 
-			while(recv(clientSocket, recBuffer, BUFFER_LEN, 0) > 0) {						// Wait to receive message from client
-				recMesg += std::string(recBuffer);											// Add buffer to Receive Message
-				memset(recBuffer, 0, sizeof(recBuffer));									// Clear buffer
+			while(recv(clientSocket, recBuffer, BUFFER_LEN, 0) > 0) {									// Wait to receive message from client
+				recMesg += std::string(recBuffer);																			// Add buffer to Receive Message
+				memset(recBuffer, 0, sizeof(recBuffer));																// Clear buffer
 
 				while ((position = recMesg.find(commandEnd)) != std::string::npos) {		// Look for CRLF in Receive Message
-					clientMesg = recMesg.substr(0, position);								// New Client Message found
-					recMesg.erase(0, position + 2);											// Remove from Receive Message
+					clientMesg = recMesg.substr(0, position);															// New Client Message found
+					recMesg.erase(0, position + 2);																				// Erase from Receive Message
 
-					if ((position = clientMesg.find(":")) != std::string::npos) {			// Look for colon at end of command
-						command = clientMesg.substr(0, position);							// Parse command
-						clientMesg.erase(0, position + 1);									// Erase command from Client Message
+					if ((position = clientMesg.find(":")) != std::string::npos) {					// Look for colon at end of command
+						command = clientMesg.substr(0, position);														// Parse command
+						clientMesg.erase(0, position + 1);																	// Erase command from Client Message
 						reply = "";
 
-						if (command == commandCOUNT) {										// COUNT command requesting data counts
-							reply = host->CountReply();										// Reply from Host
+						if (command == commandCOUNT) {																			// COUNT command requesting data counts
+							reply = host->CountReply();																				// Reply from Host
 
-						} else if (command == commandGET) {									// GET command requesting Robot data
-							if ((position = clientMesg.find("|")) != std::string::npos) {	// Look for pipe at end of Time Stamp
-								host->SetTimeStamp(clientMesg.substr(0, position));			// Parse and Set Time Stamp
+						} else if (command == commandGET) {																	// GET command requesting Robot data
+							if ((position = clientMesg.find("|")) != std::string::npos) {			// Look for pipe at end of Time Stamp
+								host->SetTimeStamp(clientMesg.substr(0, position));							// Parse and Set Time Stamp
 								clientMesg.erase(0, position + 1);
 								reply = host->GetReply();
 							}
 
-						} else if (command == commandPULL) {								// PULL command requesting Dashboard values
-							reply = host->PullReply();										// Reply from Host
+						} else if (command == commandPULL) {																// PULL command requesting Dashboard values
+							reply = host->PullReply();																				// Reply from Host
 
-						} else if (command == commandPUT) {									// PUT command sending Dashboard data
+						} else if (command == commandPUT) {																	// PUT command sending Dashboard data
 							reply = "PUT:";
 							bool saveFile = false;
 
 							while ((position = clientMesg.find("|")) != std::string::npos) {	// Look for pipe at end of each data packet
-								command = clientMesg.substr(0, position);						// Parse data packet
-								clientMesg.erase(0, position + 1);								// Erase packet from message
+								command = clientMesg.substr(0, position);												// Parse data packet
+								clientMesg.erase(0, position + 1);															// Erase packet from message
 
-								if ((position = command.find(",")) != std::string::npos) {	// Look for comma after PUT Group (B or V)
-									std::string group = command.substr(0, position);		// Parse group
-									command.erase(0, position + 1);							// Erase group from packet
+								if ((position = command.find(",")) != std::string::npos) {			// Look for comma after PUT Group (B or V)
+									std::string group = command.substr(0, position);							// Parse group
+									command.erase(0, position + 1);																// Erase group from packet
 
-									if ((position = command.find(",")) != std::string::npos) {	// Look for comma after PUT Index
-										index = atoi(command.substr(0, position).c_str());		// Parse index
+									if ((position = command.find(",")) != std::string::npos) {		// Look for comma after PUT Index
+										index = atoi(command.substr(0, position).c_str());					// Parse index
 
-										if (group == "V") {									// Set Dashboard Value at index
+										if (group == "V") {																					// Set Dashboard Value at index
 											if (host->SetDashValue(index, atof(command.substr(position + 1).c_str()))) {
-												reply += "V," + host->DataString(index, 2);	// Acknowledge reply
+												reply += "V," + host->DataString(index, 2);							// Acknowledge reply
 												saveFile = true;
 											}
-										} else if (group == "B") {							// Set Dashboard Button at index
+										} else if (group == "B") {																	// Set Dashboard Button at index
 											if (host->SetDashButton(index, atoi(command.substr(position + 1).c_str()))) {
-												reply += "B," + host->DataString(index, 2);	// Acknowledge reply
+												reply += "B," + host->DataString(index, 2);							// Acknowledge reply
 											}
 										}
 									}
@@ -354,7 +354,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 
 						replySize = reply.length();
 
-						if (replySize > 0) {												// Send reply to Dashboard client
+						if (replySize > 0) {																								// Send reply to Dashboard client
 							memcpy(sendBuffer, reply.data(), replySize);
 							if (send(clientSocket, sendBuffer, replySize, 0) != replySize)
 								host->WriteToLog("TCP Send Error");
