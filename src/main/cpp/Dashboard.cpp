@@ -363,6 +363,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 				}
 			}
 
+			shutdown(clientSocket, 2);																								// Shutdown socket if no message										
 			host->WriteToLog("Connection Lost");
 		}
 	}
