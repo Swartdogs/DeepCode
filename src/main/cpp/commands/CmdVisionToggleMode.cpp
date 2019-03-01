@@ -7,7 +7,7 @@ CmdVisionToggleMode::CmdVisionToggleMode() {
 }
 
 void CmdVisionToggleMode::Initialize() {
-  if (Robot::m_vision.InTargetMode()) {
+  if (Robot::m_vision.InTargetMode()) {                                         // Toggle mode depending on current mode
     Robot::m_vision.SetCameraMode(Vision::cmDriver);
   } else {
     Robot::m_vision.SetCameraMode(Vision::cmTarget);

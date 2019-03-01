@@ -16,19 +16,19 @@ CmdDriveToTarget::CmdDriveToTarget(double addToDistance, double maxSpeed, double
 }
 
 void CmdDriveToTarget::Initialize() {
-  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
+  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {          // Skip command if in a Group that has been canceled
     m_status = csSkip;
   } else {
     m_status = csRun;
-    Robot::m_drive.SetDriveInUse(true);
-    Robot::m_drive.SetBrakeMode(true);
+    Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
+    Robot::m_drive.SetBrakeMode(true);                                          // Set motor controllers to Brake mode
 
-    m_distance  = Robot::m_vision.GetTargetDistance() + m_addToDistance;
-    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionAngleOffset);
-    
+    m_distance  = Robot::m_vision.GetTargetDistance() + m_addToDistance;        // Get Distance and Angle from Vision and add adjustments
+    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionAngleOffset);  
+                                                                                // Initialize drive and rotate PIDs
     Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true);
 
-    if (m_timeout > 0) SetTimeout(m_timeout);
+    if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
     
     sprintf(Robot::message, "Drive:    To Target INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
     Robot::m_robotLog.Write(Robot::message);
@@ -40,14 +40,14 @@ void CmdDriveToTarget::Execute() {
   double rotate = 0;
 
   if(m_status == csRun) {
-    if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {
+    if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Cancel if in Group that has been canceled
       m_status = csCancel;
-    } else if (IsTimedOut()) {
+    } else if (IsTimedOut()) {                                                  // End command and cancel Group if TimedOut
       m_status = csTimedOut;
       if (this->IsParented()) this->GetGroup()->Cancel();
-    } else if (Robot::m_drive.DriveIsFinished()) {
+    } else if (Robot::m_drive.DriveIsFinished()) {                              // Done if distance has been reached
       m_status = csDone;
-    } else {
+    } else {                                                                    // Get drive and rotate values from PIDs
        drive  = Robot::m_drive.DriveExec();
        rotate = Robot::m_drive.RotateExec();
     }
@@ -57,7 +57,7 @@ void CmdDriveToTarget::Execute() {
 }
 
 bool CmdDriveToTarget::IsFinished() { 
-  return (m_status != csRun); 
+  return (m_status != csRun);                                                   // Finished when status is not in Run state
 }
 
 void CmdDriveToTarget::End() {

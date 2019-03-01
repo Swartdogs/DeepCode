@@ -10,11 +10,11 @@ CmdDriveJoystick::CmdDriveJoystick() {
 }
 
 void CmdDriveJoystick::Initialize() {
-  Robot::m_drive.SetDriveInUse(true);
-  Robot::m_drive.SetBrakeMode(false);
+  Robot::m_drive.SetDriveInUse(true);                                           // Set Drive-in-Use flag
+  Robot::m_drive.SetBrakeMode(false);                                           // Set speed controllers to Coast Mode
 }
 
-void CmdDriveJoystick::Execute() {
+void CmdDriveJoystick::Execute() {                                              // Drive using joystick values
   Robot::m_drive.ArcadeDrive( Robot::m_oi.GetDriveJoystickY(), 
                                Robot::m_oi.GetDriveJoystickX());
 }

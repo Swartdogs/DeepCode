@@ -15,16 +15,16 @@ Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotV
                      int dashButtonCount, int dashValueCount) {
 	m_robotMode = 0;											// Initialize variables and arrays
 
-	m_commandPrefix 		= commandPrefix;
-	m_robotStatusCount		= robotStatusCount;
-	m_robotValueCount		= robotValueCount;
+	m_commandPrefix 				= commandPrefix;
+	m_robotStatusCount			= robotStatusCount;
+	m_robotValueCount				= robotValueCount;
 	m_dashboardButtonCount	= dashButtonCount;
-	m_dashboardValueCount	= dashValueCount;
+	m_dashboardValueCount		= dashValueCount;
 
-	m_robotStatus			= new int32_t[m_robotStatusCount];			// Robot status			(To dashboard)
-	m_robotValue 			= new double[m_robotValueCount];			// Robot values			(To dashboard)
-	m_dashboardButton		= new button[m_dashboardButtonCount];		// Dashboard buttons	(From dashboard)
-	m_dashboardValue		= new double[m_dashboardValueCount];		// Dashboard values  	(From dashboard)
+	m_robotStatus						= new int32_t[m_robotStatusCount];			// Robot status			(To dashboard)
+	m_robotValue 						= new double[m_robotValueCount];			// Robot values			(To dashboard)
+	m_dashboardButton				= new button[m_dashboardButtonCount];		// Dashboard buttons	(From dashboard)
+	m_dashboardValue				= new double[m_dashboardValueCount];		// Dashboard values  	(From dashboard)
 
 	for (int i = 0; i < m_robotStatusCount; i++) m_robotStatus[i] = 0;
 	for (int i = 0; i < m_robotValueCount; i++) m_robotValue[i] = 0;
@@ -238,7 +238,7 @@ void Dashboard::SetTimeStamp(std::string now) {								// Set the driver station
 
 void Dashboard::TcpLoop(Dashboard *host) {
 	struct sockaddr_in	addrHost, addrClient;
-	size_t				position;
+	size_t							position;
 
 	std::string			commandEnd		= "\r\n";
 	std::string 		commandGET 		= host->GetCommandPrefix() + "GET";
@@ -249,11 +249,11 @@ void Dashboard::TcpLoop(Dashboard *host) {
 	std::string			reply;
 	std::string			clientMesg;
 	unsigned int		clientLen;
-	int					clientSocket;
-	int					hostSocket;
-	int					index;
-	std::string			recMesg;
-	int					replySize;
+	int							clientSocket;
+	int							hostSocket;
+	int							index;
+	std::string			recMesg = "";
+	int							replySize;
 
 	if ((hostSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {						// Create Host TCP socket
 		host->WriteToLog("TCP Socket Error");
@@ -285,7 +285,6 @@ void Dashboard::TcpLoop(Dashboard *host) {
 
 	char recBuffer[BUFFER_LEN];
 	char sendBuffer[BUFFER_LEN];
-	recMesg = "";
 
 	while(true) {
 		clientLen = sizeof(addrClient);

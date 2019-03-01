@@ -20,15 +20,15 @@ GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
 }
 
 void GrpClimb::Initialize() {
-  Robot::m_elevator.SetCancelClimb(false);
+  Robot::m_elevator.SetCancelClimb(false);                                            // Set Cancel flag to false
 }
 
 void GrpClimb::Execute() {
-  if (Robot::m_elevator.GetCancelClimb()) {
+  if (Robot::m_elevator.GetCancelClimb()) {                                           // If Cancel flag is True, cancel Group
     this->Cancel(); 
-    if (Robot::m_elevator.SafeToRaise()) {
+    if (Robot::m_elevator.SafeToRaise()) {                                            // If safe to raise Elevator, move to Retracted
       Robot::m_elevator.SetElevatorPosition(Elevator::epRetracted);
-    } else {
+    } else {                                                                          // If not, keep Elevator at current location
       Robot::m_elevator.SetElevatorSetpoint(Robot::m_elevator.GetElevatorPosition());
     }
   }

@@ -18,16 +18,16 @@ CmdElevatorDriveFoot::CmdElevatorDriveFoot(Elevator::FloorSensor floorSensor, do
 }
 
 void CmdElevatorDriveFoot::Initialize() {
-  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){
+  if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){           // Skip command if in a Group that has been canceled
       m_status = csSkip;
   } else {
     m_status = csRun;
     m_stopCounter = 0;
-    Robot::m_elevator.SetFootInUse(true);
-    Robot::m_drive.SetDriveInUse(true);
-    Robot::m_drive.SetBrakeMode(true);
+    Robot::m_elevator.SetFootInUse(true);                                       // Set Foot-im-use flag
+    Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
+    Robot::m_drive.SetBrakeMode(true);                                          // Set motor controllers to Brake mode
 
-    if (m_timeout > 0) SetTimeout(m_timeout);
+    if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
 
     sprintf(Robot::message, "Elevator: Drive Foot at %3.1f for %4.1f seconds", m_footSpeed, m_timeout);
     Robot::m_robotLog.Write(Robot::message);
@@ -39,16 +39,16 @@ void CmdElevatorDriveFoot::Execute() {
   double footSpeed  = 0;
 
   if(m_status == csRun){
-      if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){
+      if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false){       // Cancel if in Group that has been canceled
         m_status = csCancel;
-      } else if (IsTimedOut()) {
+      } else if (IsTimedOut()) {                                                // End command and cancel Group if TimedOut
         m_status = csTimedOut;
         if (this->IsParented()) this->GetGroup()->Cancel();
-      } else if (Robot::m_elevator.FloorDetected(m_floorSensor)) {
+      } else if (Robot::m_elevator.FloorDetected(m_floorSensor)) {              // Increment stop counter if floor detected
         m_stopCounter++;
-        if (m_stopCounter >= m_addTime) m_status = csDone;
+        if (m_stopCounter >= m_addTime) m_status = csDone;                      // Set to Done when stop counter reaches target
       } else {
-        driveSpeed = m_driveSpeed;
+        driveSpeed = m_driveSpeed;                                              // Set drive and foot speed to specified valeus
         footSpeed = m_footSpeed;
       }
   }
@@ -58,12 +58,12 @@ void CmdElevatorDriveFoot::Execute() {
 }
 
 bool CmdElevatorDriveFoot::IsFinished() { 
-  return (m_status != csRun);
+  return (m_status != csRun);                                                   // Finished when status is not in Run state
 }
 
 void CmdElevatorDriveFoot::End() {
-  Robot::m_elevator.SetFootInUse(false);
-  Robot::m_drive.SetDriveInUse(false);
+  Robot::m_elevator.SetFootInUse(false);                                        // Clear Foot-in-use flag
+  Robot::m_drive.SetDriveInUse(false);                                          // Clear Drive-in-use flag
 
   switch (m_status) {
     case csSkip:
