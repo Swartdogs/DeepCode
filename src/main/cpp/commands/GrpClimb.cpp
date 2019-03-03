@@ -9,6 +9,8 @@
 #include "commands/CmdElevatorSetPosition.h"
 
 GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
+  m_position = position;
+
   AddSequential(new CmdElevatorSetFoot(Elevator::fpExtended, 1.0));                   // Make sure Foot is extended
   AddSequential(new CmdElevatorSetPosition(position, true));                          // Lift Robot to platform
   AddSequential(new CmdElevatorDriveFoot(Elevator::fsFront, 0.9, 0.1, 3.0, 5));       // Drive Foot until front sensor detects floor
@@ -20,7 +22,20 @@ GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
 }
 
 void GrpClimb::Initialize() {
-  Robot::m_elevator.SetCancelClimb(false);                                            // Set Cancel flag to false
+  double timeRemaining = frc::Timer::GetMatchTime();
+
+  if (timeRemaining <= 10) {
+    this->Cancel();
+    sprintf(Robot::message, "Climb:    %s climb blocked since only %4.1f seconds remain", 
+            Robot::m_elevator.GetElevatorPositionName(m_position).c_str(), timeRemaining);
+    Robot::m_robotLog.Write(Robot::message);
+  } else {
+    sprintf(Robot::message, "Climb:    %s climb initiated with %4.1f seconds remaining", 
+          Robot::m_elevator.GetElevatorPositionName(m_position).c_str(), timeRemaining);
+    Robot::m_robotLog.Write(Robot::message);
+  
+    Robot::m_elevator.SetCancelClimb(false); 
+  }                                           // Set Cancel flag to false
 }
 
 void GrpClimb::Execute() {

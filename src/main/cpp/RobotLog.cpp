@@ -80,6 +80,11 @@ void RobotLog::LogData() {
     data += DataString(Robot::m_drive.GetDistance(Drive::ueLeftEncoder));
     data += DataString(Robot::m_drive.GetDistance(Drive::ueRightEncoder));
     data += DataString((double) Robot::m_drive.GetShifterPosition());
+
+    data += DataString(Robot::m_arm.GetShoulderDegrees());
+    data += DataString(Robot::m_arm.GetShoulderSetpoint());
+    data += DataString(Robot::m_arm.GetWristDegrees());
+    data += DataString(Robot::m_arm.GetWristSetpoint());
 }
 
 std::string RobotLog::ModeName(RobotMode mode) {

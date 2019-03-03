@@ -9,4 +9,7 @@ class GrpClimb : public frc::CommandGroup {
   GrpClimb(Elevator::ElevatorPosition position);
   void Initialize() override;
   void Execute() override;
+
+private:
+  Elevator::ElevatorPosition m_position;
 };
