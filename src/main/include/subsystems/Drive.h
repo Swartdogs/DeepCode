@@ -8,9 +8,6 @@
 
 class Drive : public frc::Subsystem {
  public:
-  static constexpr double   SONAR_SEPARATION = 24;
-  static constexpr double   SONAR_THRESHOLD = 36;
-
   typedef enum {
     spLow,
     spHigh
@@ -39,8 +36,6 @@ class Drive : public frc::Subsystem {
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
   std::string       GetShifterPositionName(ShifterPosition position);
-  double            GetSonarAngle();
-  double            GetSonarDistance();
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();
@@ -72,7 +67,4 @@ private:
   WPI_VictorSPX       m_driveLeft2{canDriveLeft2};
   WPI_VictorSPX       m_driveRight1{canDriveRight1};
   WPI_VictorSPX       m_driveRight2{canDriveRight2};
-
-  // frc::Ultrasonic     m_sonarLeft{dioSonarLeftPing, dioSonarLeftEcho};
-  // frc::Ultrasonic     m_sonarRight{dioSonarRightPing, dioSonarRightEcho};
 };

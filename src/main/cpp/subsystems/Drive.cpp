@@ -30,9 +30,6 @@ Drive::Drive() : Subsystem("Drive") {
   m_drivePID.SetInputRange(-500, 500);
   m_drivePID.SetOutputRamp(0.1, 0.05);
   m_drivePID.SetSetpointDeadband(1.0); 
-
-  // m_sonarLeft.SetAutomaticMode(true);
-  // m_sonarRight.SetAutomaticMode(true);
 }
 
 Drive::~Drive() {}
@@ -126,15 +123,17 @@ double Drive::GetDistance(UseEncoder encoder){
 
     case ueLeftEncoder: 
       distance = left;
+      if (left < (right * 0.5)) distance = right;
       break;
       
     case ueRightEncoder:
       distance = right;
+      if (right < (left * 0.5)) distance = left;
       break;
 
     case ueBothEncoders:
-      if (left < (right * 0.9)) distance = right;
-      else if (right < (left * 0.9)) distance = left;
+      if (left < (right * 0.8)) distance = right;
+      else if (right < (left * 0.8)) distance = left;
       else distance = (left + right) / 2;
       break;
 
@@ -158,16 +157,6 @@ std::string Drive::GetShifterPositionName(ShifterPosition position) {
     case spHigh:  name = "High"; break;
   }
   return name;
-}
-
-double Drive::GetSonarAngle() {
-  return 0;
-//  return (atan2(m_sonarLeft.GetRangeInches() - m_sonarRight.GetRangeInches(), SONAR_SEPARATION) * 180 / 3.14159);
-}
-
-double Drive::GetSonarDistance() {
-  return 0;
-//  return ((m_sonarLeft.GetRangeInches() + m_sonarRight.GetRangeInches()) / 2);
 }
 
 double Drive::RotateExec() {

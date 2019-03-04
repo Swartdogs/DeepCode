@@ -63,7 +63,7 @@ void RobotLog::EndPeriodic() {
 
     m_periodicTotalTime += runTime;
 
-    if(runTime > 10.0) {
+    if(runTime > 14.0) {
         sprintf(m_log, "%s: Long Periodic Execution Time=%5.1f (Start-to-End)", m_robotName.c_str(), runTime);
         Write(m_log);
     }

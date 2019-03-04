@@ -10,4 +10,7 @@ class CmdDriveJoystick : public frc::Command {
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
+
+private:
+  bool m_brakesOn;
 };

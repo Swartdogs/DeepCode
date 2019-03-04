@@ -24,15 +24,14 @@ void CmdDriveToTarget::Initialize() {
 
     m_distance  = Robot::m_vision.GetTargetDistance();                          // Get Distance and Angle from Vision and add adjustments
     m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionAngleOffset);  
-                                                                                // Initialize drive and rotate PIDs
 
-    if (Robot::m_arm.GetHandMode() == Arm::hmHatch) {
+    if (Robot::m_arm.GetHandMode() == Arm::hmHatch) {                           // Adjust distance based on Hand Mode
       m_distance += Robot::m_dashboard.GetDashValue(dvVisionHatchOffset);
     } else {
       m_distance += Robot::m_dashboard.GetDashValue(dvVisionCargoOffset);
     }
 
-    Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true);
+    Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); // Initialize drive and rotate PIDs
 
     if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
     
