@@ -15,7 +15,8 @@ class Arm : public frc::Subsystem {
       apMid,
       apHigh,
       apCargoShip,
-      apWait
+      apWait,
+      apByHand
     } ArmPosition;
 
     typedef enum {

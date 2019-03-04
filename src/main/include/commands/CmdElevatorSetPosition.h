@@ -6,7 +6,7 @@
 
 class CmdElevatorSetPosition : public frc::Command {
  public:
-  CmdElevatorSetPosition(Elevator::ElevatorPosition position, bool WaitForDone = false, double footSpeed = 0,
+  CmdElevatorSetPosition(Elevator::ElevatorPosition position, bool WaitForDone = false, double timeout = 0, double footSpeed = 0,
                           double driveSpeed = 0);
   void Initialize() override;
   void Execute() override;
@@ -20,4 +20,5 @@ class CmdElevatorSetPosition : public frc::Command {
   double                     m_footSpeed;
   CommandStatus              m_status;
   bool                       m_waitForDone;
+  double                     m_timeout;
 };

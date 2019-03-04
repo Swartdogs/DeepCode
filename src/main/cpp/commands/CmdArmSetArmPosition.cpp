@@ -20,6 +20,13 @@ void CmdArmSetArmPosition::Initialize() {
     } else {                                                                  // Set status to Done if not waiting
       m_status = csDone;
     }
+    if (m_position == Arm::apByHand) {
+      if (Robot::m_arm.GetHandMode() == Arm::hmHatch) {
+        m_position = Arm::apLow;
+      } else {
+        m_position = Arm::apLoad;
+      }
+    }
 
     Robot::m_arm.SetArmPosition(m_position);
   }

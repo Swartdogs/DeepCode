@@ -1,4 +1,4 @@
-#include "commands/GrpLoadHatch.h"
+#include "commands/GrpLoad.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -6,9 +6,9 @@
 #include "commands/CmdDriveToTarget.h"
 #include "commands/CmdVisionFindTarget.h"
 
-GrpLoadHatch::GrpLoadHatch() {
+GrpLoad::GrpLoad() {
   AddSequential (new CmdVisionFindTarget());
 //  AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
-  AddSequential (new CmdArmSetArmPosition(Arm::apLow));
-  AddSequential (new CmdDriveToTarget(-70.0, 0.4, 3.0));
+  AddSequential (new CmdArmSetArmPosition(Arm::apByHand));
+  AddSequential (new CmdDriveToTarget(0.4, 3.0));
 }

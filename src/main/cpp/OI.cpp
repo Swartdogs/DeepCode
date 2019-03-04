@@ -2,7 +2,7 @@
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
 #include "commands/GrpEndHatch.h"
-#include "commands/GrpLoadHatch.h"
+#include "commands/GrpLoad.h"
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
@@ -22,7 +22,7 @@ OI::OI() {
   m_InternalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
   m_InternalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
 
-  m_buttonDrive1.WhenPressed        (new GrpLoadHatch());
+  m_buttonDrive1.WhenPressed        (new GrpLoad());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
@@ -51,7 +51,7 @@ OI::OI() {
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
   m_buttonArm1.WhenReleased         (new CmdArmSetManual(false));
 
-  // m_buttonArm8.WhenPressed          (new GrpLoadHatch());
+  // m_buttonArm8.WhenPressed          (new GrpLoad());
   // m_buttonArm9.WhenPressed          (new CmdVisionFindTarget(Vision::tsBest));
 
   m_buttonArm10.WhenPressed          (new CmdArmIncrementShoulder(-1.0));
@@ -94,7 +94,7 @@ bool OI::InHatchMode() {
 void OI::Periodic() {
 
 
-  m_InternalLevel2.SetPressed(m_buttonDrive9.Get() && m_buttonArm7.Get());
-  m_InternalLevel3.SetPressed(m_buttonDrive9.Get() && m_buttonArm6.Get());
+  m_InternalLevel2.SetPressed(m_buttonDrive8.Get() && m_buttonArm7.Get());
+  m_InternalLevel3.SetPressed(m_buttonDrive8.Get() && m_buttonArm6.Get());
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
 }

@@ -70,6 +70,10 @@ void Arm::Periodic() {
       if(m_cargoSensor.Get()) {
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
+      } else if (timer < 5) {
+        timer++;
+        topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
+        bottomPower = topPower;
       } else {
         SetIntakeMode(imOff);
         SetArmPosition(apTravel);        
