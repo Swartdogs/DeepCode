@@ -479,7 +479,7 @@ void Arm::SetHatchState(HatchState state) {
 void Arm::SetIntakeMode(IntakeMode mode) {
   if (mode != m_intakeMode) {
     m_intakeMode = mode;
-    sprintf(Robot::message, "Arm:      Intake Mode=%s\n", GetIntakeModeName(m_intakeMode).c_str());
+    sprintf(Robot::message, "Arm:      Intake Mode=%s", GetIntakeModeName(m_intakeMode).c_str());
     Robot::m_robotLog.Write(Robot::message);
   }
 }
