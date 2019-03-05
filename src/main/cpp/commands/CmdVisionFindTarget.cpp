@@ -2,6 +2,7 @@
 
 #include "commands/CmdVisionFindTarget.h"
 #include "Robot.h"
+#include "RobotMap.h"
 
 CmdVisionFindTarget::CmdVisionFindTarget(Vision::TargetSelect targetSelect) {
   m_targetSelect = targetSelect;
@@ -18,6 +19,7 @@ void CmdVisionFindTarget::Initialize() {
     sprintf(m_message, "Vision:   Find Target Busy");
   } else {
     m_status = csRun;
+    Robot::m_dashboard.SetRobotStatus(rsTargetFound, false);
 
     if(Robot::m_vision.InTargetMode()) {                                        // Camera already in Target mode
       m_counter = 0;
@@ -55,6 +57,7 @@ void CmdVisionFindTarget::Execute() {
 
         case Vision::ssTargetFound:
           m_status = csDone;                                                    // If Target found, set to Done
+          Robot::m_dashboard.SetRobotStatus(rsTargetFound, true);
           sprintf(m_message, "Vision:   Target Found at Distance=%5.1f   Heading=%5.1f", 
                   Robot::m_vision.GetTargetDistance(), Robot::m_vision.GetTargetAngle());
           break;

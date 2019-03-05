@@ -60,6 +60,8 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   m_robotLog.SetMode(rmTeleop);
   m_dashboard.SetRobotMode(rmTeleop);
+  m_dashboard.SetRobotStatus(rsClimb, false);
+  m_dashboard.SetRobotStatus(rsNoClimb, false);
 
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());

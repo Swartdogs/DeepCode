@@ -56,6 +56,7 @@ class Arm : public frc::Subsystem {
     double        GetWristSetpoint();
     bool          IsDrivenManually();
     void          SetArmPosition(ArmPosition position);
+    void          SetArmSpeed(bool slowSpeed);
     void          SetDrivenManually(bool isManual);
     void          SetHandMode(HandMode mode, bool fromSwitch = false);
     void          SetHatchState(HatchState state);

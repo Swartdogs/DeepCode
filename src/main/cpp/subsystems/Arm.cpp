@@ -70,10 +70,10 @@ void Arm::Periodic() {
       if(m_cargoSensor.Get()) {
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
-      } else if (timer < 5) {
-        timer++;
-        topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
-        bottomPower = topPower;
+      // } else if (timer < 5) {
+      //   timer++;
+      //   topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
+      //   bottomPower = topPower;
       } else {
         SetIntakeMode(imOff);
         SetArmPosition(apTravel);        
@@ -427,6 +427,16 @@ void Arm::SetArmPosition(ArmPosition position) {
     } else if (m_wristSetpoint != wristNew) {                                     // New Wrist Only
       SetWristPosition(wristNew, position);
     }
+  }
+}
+
+void Arm::SetArmSpeed(bool slowSpeed) {
+  if (slowSpeed) {
+    m_shoulderPID.SetOutputRange(-0.2, 0.5);
+    m_wristPID.SetOutputRange(-0.4, 0.4);
+  } else {
+    m_shoulderPID.SetOutputRange(-0.3, 0.7);
+    m_wristPID.SetOutputRange(-0.6, 0.6);
   }
 }
 

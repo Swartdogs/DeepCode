@@ -13,6 +13,7 @@
 #include "commands/CmdArmSetHatchState.h"
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdVisionToggleMode.h"
+#include "commands/CmdArmSetSpeed.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
@@ -31,7 +32,8 @@ OI::OI() {
 
   m_buttonBox12.WhenPressed         (new CmdArmSetIntakeMode(Arm::imIn));
   m_buttonBox4.WhenPressed          (new CmdArmSetIntakeMode(Arm::imOut));
-  m_buttonBox8.WhenPressed          (new CmdArmSetIntakeMode(Arm::imRotate));
+  m_buttonBox8.WhenPressed          (new CmdArmSetSpeed(true));
+  m_buttonBox8.WhenReleased         (new CmdArmSetSpeed(false));
 
   m_InternalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
   m_InternalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));

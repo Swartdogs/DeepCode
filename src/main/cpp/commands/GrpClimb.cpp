@@ -24,17 +24,20 @@ GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
 void GrpClimb::Initialize() {
   double timeRemaining = frc::Timer::GetMatchTime();
 
-  if (timeRemaining <= 10) {
+  if (timeRemaining < 8) {
     this->Cancel();
     sprintf(Robot::message, "Climb:    %s climb blocked since only %4.1f seconds remain", 
             Robot::m_elevator.GetElevatorPositionName(m_position).c_str(), timeRemaining);
     Robot::m_robotLog.Write(Robot::message);
+    Robot::m_dashboard.SetRobotStatus(rsNoClimb, true);
+
   } else {
     sprintf(Robot::message, "Climb:    %s climb initiated with %4.1f seconds remaining", 
           Robot::m_elevator.GetElevatorPositionName(m_position).c_str(), timeRemaining);
     Robot::m_robotLog.Write(Robot::message);
   
     Robot::m_elevator.SetCancelClimb(false); 
+    Robot::m_dashboard.SetRobotStatus(rsClimb, true);
   }                                           // Set Cancel flag to false
 }
 

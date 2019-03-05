@@ -78,7 +78,10 @@ typedef enum {              // Dashboard: Robot Status indexes
     rsFloorRear,
     rsCargo,
     rsHatchMode,
-    rsHatchGrab
+    rsHatchGrab,
+    rsClimb,
+    rsNoClimb,
+    rsTargetFound
 } RobotStatus;
 
 typedef enum {              // Dashboard: Robot Value indexes
