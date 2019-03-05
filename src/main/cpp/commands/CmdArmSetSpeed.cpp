@@ -1,3 +1,6 @@
+// Selects between two maximum speed settings for the Shoulder and Wrist PIDs
+//   Used to slow down Shoulder and Wrist movements if a Hatch is not fully captured
+
 #include "commands/CmdArmSetSpeed.h"
 #include "Robot.h"
 
