@@ -1,4 +1,5 @@
 #include "commands/GrpLoad.h"
+#include "Robot.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -10,4 +11,12 @@ GrpLoad::GrpLoad() {
   AddSequential (new CmdVisionFindTarget());
   AddSequential (new CmdArmSetArmPosition(Arm::apByHand));
   AddSequential (new CmdDriveToTarget(0.4, 3.0));
+}
+
+void GrpLoad::End() {
+  Robot::m_dashboard.SetRobotStatus(rsTargetFound, false);
+}
+
+void GrpLoad::Interrupted() {
+  End();
 }

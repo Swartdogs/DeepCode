@@ -19,7 +19,6 @@ void CmdVisionFindTarget::Initialize() {
     sprintf(m_message, "Vision:   Find Target Busy");
   } else {
     m_status = csRun;
-    Robot::m_dashboard.SetRobotStatus(rsTargetFound, false);
 
     if(Robot::m_vision.InTargetMode()) {                                        // Camera already in Target mode
       m_counter = 0;
@@ -77,6 +76,7 @@ bool CmdVisionFindTarget::IsFinished() {
 
 void CmdVisionFindTarget::End() {
   Robot::m_robotLog.Write(m_message);
+  if (Robot::m_dashboard.GetDashButton(dbVisionAuto)) Robot::m_vision.SetCameraMode(Vision::cmDriver);
 }
 
 void CmdVisionFindTarget::Interrupted() {
