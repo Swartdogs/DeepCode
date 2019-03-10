@@ -67,7 +67,7 @@ void Arm::Periodic() {
       break;
 
     case imIn:
-      if(m_cargoSensor.Get()) {
+      if(wristNow < 85|| m_cargoSensor.Get()) {             // Wrist position < 100 or No Cargo
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
       // } else if (timer < 5) {

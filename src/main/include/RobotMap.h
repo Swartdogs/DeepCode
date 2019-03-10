@@ -104,7 +104,7 @@ typedef enum {              // Dashboard: Robot Value indexes
     rvVisionStatus,
     rvVisionSelect,
     rvVisionAngle,
-    rvVisionDistance,
+    rvVisionDistance
 } RobotValue;
 
 typedef enum {              // Dashborad: Dash Button indexes
