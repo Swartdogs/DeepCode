@@ -3,6 +3,8 @@
 #include "Robot.h"
 
 Drive::Drive() : Subsystem("Drive") {
+  Robot::m_robotLog.Write("Drive:    INIT", false);
+
   m_driveEnable = true;
   m_driveInUse  = false;
 
@@ -203,7 +205,7 @@ void Drive::SetDriveInUse(bool inUse) {
 
 void Drive::SetShifter(ShifterPosition position) {
   if (position != m_shifterPosition) {
-    m_solShifter.Set(position == spLow);
+   m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
     Robot::m_dashboard.SetRobotStatus(rsShifterLow, position == spLow);
   }

@@ -20,6 +20,8 @@
 std::mutex myMutex;
 
 Vision::Vision() {
+    Robot::m_robotLog.Write("Vision:   INIT", false);
+
     m_cameraMode = cmTarget;
     m_searchState = ssDone;
     m_targetAngle = 0;

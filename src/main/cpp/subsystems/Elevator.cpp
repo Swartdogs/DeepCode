@@ -2,6 +2,8 @@
 #include "Robot.h"
 
 Elevator::Elevator() : Subsystem("Elevator") {
+  Robot::m_robotLog.Write("Elevator: INIT", false);
+
   m_elevatorPot.SetAverageBits(2);
   m_elevatorPot.SetOversampleBits(0);
 
@@ -24,7 +26,6 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_elevatorPosition = epUnknown;
   m_footPosition = fpExtended;
   m_footInUse = false;
-
 }
 
 void Elevator::InitDefaultCommand() {

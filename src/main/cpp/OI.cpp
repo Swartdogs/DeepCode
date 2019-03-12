@@ -20,6 +20,8 @@
 #include "Robot.h"
 
 OI::OI() {
+  Robot::m_robotLog.Write("OI:       INIT", false);
+
   m_buttonDrive1.WhenPressed        (new GrpLoad());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));

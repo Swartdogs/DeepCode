@@ -13,6 +13,8 @@
 
 Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotValueCount, 
                      int dashButtonCount, int dashValueCount) {
+	WriteToLog("INIT");
+
 	m_robotMode = 0;																								// Initialize variables and arrays
 
 	m_commandPrefix 				= commandPrefix;
@@ -42,11 +44,6 @@ Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotV
 			WriteToLog("Initialize Values to 0");
 		}
 	dashFile.close();
-
-	m_timeStamp = "";
-
-	std::thread m_task(Dashboard::TcpLoop, this);										// Start host thread
-	m_task.detach();
 }
 
 Dashboard::~Dashboard() {
@@ -158,10 +155,6 @@ bool Dashboard::GetRobotStatus(RobotStatus statusIndex) {
 	}
 }
 
-std::string Dashboard::GetTimeStamp() {														// Get driver station time stamp
-	return m_timeStamp;
-}
-
 std::string Dashboard::PullReply() {
 	std::string data = "PULL:" + DataString((double)m_dashboardValueCount, 2);
 
@@ -232,8 +225,10 @@ void Dashboard::SetRobotMode(RobotMode mode) {										// Set the current robot
 	m_robotMode = (int) mode;																				// (Sent in GET reply)
 }
 
-void Dashboard::SetTimeStamp(std::string now) {										// Set the driver station time stamp
-	m_timeStamp = now;																							// (Sent in GET reply)
+void Dashboard::StartHost() {
+	WriteToLog("Start Host Thread");
+	std::thread hostTask(Dashboard::TcpLoop, this);									// Start host thread
+	hostTask.detach();
 }
 
 void Dashboard::TcpLoop(Dashboard *host) {
@@ -241,10 +236,11 @@ void Dashboard::TcpLoop(Dashboard *host) {
 	size_t							position;
 
 	std::string			commandEnd		= "\r\n";
+	std::string 		commandCOUNT 	= host->GetCommandPrefix() + "COUNT";
 	std::string 		commandGET 		= host->GetCommandPrefix() + "GET";
 	std::string			commandPULL		= host->GetCommandPrefix() + "PULL";
 	std::string 		commandPUT		= host->GetCommandPrefix() + "PUT";
-	std::string 		commandCOUNT 	= host->GetCommandPrefix() + "COUNT";
+	std::string			commandSET    = host->GetCommandPrefix() + "SET";
 	std::string			command;
 	std::string			reply;
 	std::string			clientMesg;
@@ -309,11 +305,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 							reply = host->CountReply();																				// Reply from Host
 
 						} else if (command == commandGET) {																	// GET command requesting Robot data
-							if ((position = clientMesg.find("|")) != std::string::npos) {			// Look for pipe at end of Time Stamp
-								host->SetTimeStamp(clientMesg.substr(0, position));							// Parse and Set Time Stamp
-								clientMesg.erase(0, position + 1);
-								reply = host->GetReply();
-							}
+							reply = host->GetReply();
 
 						} else if (command == commandPULL) {																// PULL command requesting Dashboard values
 							reply = host->PullReply();																				// Reply from Host
@@ -349,6 +341,9 @@ void Dashboard::TcpLoop(Dashboard *host) {
 
 							reply += "\r\n";
 							if (saveFile) host->SaveDashValues();
+
+						} else if (command == commandSET) {																	// SET command sending new Robot Settings
+							host->WriteToLog("New Robot Setting(s) from Dashboard");
 						}
 
 						replySize = reply.length();
@@ -363,13 +358,16 @@ void Dashboard::TcpLoop(Dashboard *host) {
 			}
 
 			shutdown(clientSocket, 2);																								// Shutdown socket if no message										
+			memset(recBuffer, 0, sizeof(recBuffer));																	// Clear buffer
+			recMesg.clear();
+
 			host->WriteToLog("Connection Lost");
 		}
 	}
 }
 
 void Dashboard::WriteToLog(std::string entry) {
-	entry = "Dash:   " + entry;
-	Robot::m_robotLog.Write(entry, false);
+	entry = "Dash:     " + entry;
+	Robot::m_robotLog.Write(entry, false, true);
 }
 

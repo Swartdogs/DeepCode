@@ -15,7 +15,7 @@ class RobotLog {
   std::string ModeName(RobotMode mode);
   void        SetMode(RobotMode mode);
   void        StartPeriodic();
-  void        Write(std::string entry, bool includeTime = true);
+  void        Write(std::string entry, bool includeTime = true, bool forceClose = false);
   void        WriteData(std::string data);
   void        WritePid(std::string output);
 

@@ -2,6 +2,8 @@
 #include "Robot.h"
 
 Arm::Arm() : Subsystem("Arm") {
+  Robot::m_robotLog.Write("Arm:      INIT", false);
+
   m_shoulderPot.SetAverageBits(2);
   m_shoulderPot.SetOversampleBits(0);
   m_wristPot.SetAverageBits(2);
@@ -70,10 +72,6 @@ void Arm::Periodic() {
       if(wristNow < 85|| m_cargoSensor.Get()) {             // Wrist position < 100 or No Cargo
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
-      // } else if (timer < 5) {
-      //   timer++;
-      //   topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
-      //   bottomPower = topPower;
       } else {
         SetIntakeMode(imOff);
         SetArmPosition(apTravel);        
@@ -158,6 +156,7 @@ void Arm::Periodic() {
         SetWristPosition(wristNow);
       }
     } 
+    
   } else {
     if (inManualDrive) {
       inManualDrive = false;
@@ -304,130 +303,127 @@ void Arm::SetArmPosition(ArmPosition position) {
   double wristNew     = 0;
   double wristNow     = GetWristDegrees();
 
-  // if (m_armPosition != position) 
-  {
-    switch (position) {
-      case apTravel:    
-        
-        shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
-        wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
-        SetIntakeMode(imOff);
+  switch (position) {
+    case apTravel:    
+      
+      shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
+      wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
+      SetIntakeMode(imOff);
 
-        break;
+      break;
 
-      case apPickup:  
+    case apPickup:  
 
-        if (m_handMode == hmCargo) {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvShoulderClear);
-//          shoulderNew = Robot::m_dashboard.GetDashValue(dvSCPickup); 
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWCPickup);
-          SetIntakeMode(imIn);
-        } else {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSHPickup); 
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWHPickup);
-        }
-        
-        break;
-
-      case apLoad:
-
-        shoulderNew   = Robot::m_dashboard.GetDashValue(dvSCLoad);
-        wristNew      = Robot::m_dashboard.GetDashValue(dvWCLoad);
+      if (m_handMode == hmCargo) {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvShoulderClear);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWCPickup);
         SetIntakeMode(imIn);
+      } else {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSHPickup); 
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWHPickup);
+      }
+      
+      break;
 
-        break;
+    case apLoad:
 
-      case apLow:    
+      shoulderNew   = Robot::m_dashboard.GetDashValue(dvSCLoad);
+      wristNew      = Robot::m_dashboard.GetDashValue(dvWCLoad);
+      SetIntakeMode(imIn);
 
-        if (GetCargoDetected()) {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketLow);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketLow);
-        } else {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketLow);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketLow);
-        }
+      break;
 
-        break;
+    case apLow:    
 
-      case apMid:    
-
-        if (GetCargoDetected()) {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketMid);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketMid);
-        } else {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketMid);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketMid);
-        }
-
-        break;
-
-      case apHigh:    
-
-        if (GetCargoDetected()) {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketHigh);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketHigh);
-        } else {
-          shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketHigh);
-          wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketHigh);
-        }
-
-        break;
-
-      case apCargoShip: 
-
-        shoulderNew = Robot::m_dashboard.GetDashValue(dvSCCargoShip);
-        wristNew = Robot::m_dashboard.GetDashValue(dvWCCargoShip);
-
-        break;
-
-      default:
-        return; 
-    }
-
-    double shoulderClear = Robot::m_dashboard.GetDashValue(dvShoulderClear);
-    double wristClear    = Robot::m_dashboard.GetDashValue(dvWristClear);
-
-    m_armPosition   = position;
-    m_shoulderNext  = -1;
-    m_wristNext     = -1;
-
-    if (m_shoulderSetpoint != shoulderNew) {                                      // New Shoulder setpoint
-      if (shoulderNew > shoulderNow) {                                            // SHOULDER MOVING UP
-        SetShoulderPosition(shoulderNew, position);                               // Move Shoulder to New
-
-        if (wristNew < wristClear) {                                              // New Wrist above Clear
-          SetWristPosition(wristNew, position);                                   // Move Wrist to New
-        } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
-          SetWristPosition(wristNew, position);                                   // Move Wrist to New
-        } else {                                                                  // Shoulder Now or New below Clear
-          m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder
-          SetWristPosition(wristClear, apWait);
-        }
-
-      } else {                                                                    // SHOULDER MOVING DOWN
-        if (shoulderNew > shoulderClear) {                                        // Shoulder New above Clear
-          SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
-        } else if (wristNow < wristClear && wristNew < wristClear) {              // Wrist Now and New above Clear
-          SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
-        } else {                                                                  // Wrist Now or New below Clear
-          m_shoulderNext = shoulderNew;                                           // Move Shoulder to Clear and wait for Wrist
-          SetShoulderPosition(shoulderClear, apWait);
-        }  
-
-        if (wristNew < wristClear) {                                              // Wrist New above Clear
-          SetWristPosition(wristNew, position);                                   // Move Wrist to New
-        } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
-          SetWristPosition(wristNew, position);                                   // Move Wrist to New
-        } else {                                                                  // Wrist New and (Shoulder Now or New) below Clear
-          m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder
-          SetWristPosition(wristClear, apWait);       
-        }
+      if (GetCargoDetected()) {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketLow);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketLow);
+      } else {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketLow);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketLow);
       }
 
-    } else if (m_wristSetpoint != wristNew) {                                     // New Wrist Only
-      SetWristPosition(wristNew, position);
-    }
+      break;
+
+    case apMid:    
+
+      if (GetCargoDetected()) {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketMid);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketMid);
+      } else {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketMid);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketMid);
+      }
+
+      break;
+
+    case apHigh:    
+
+      if (GetCargoDetected()) {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketHigh);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketHigh);
+      } else {
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketHigh);
+        wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketHigh);
+      }
+
+      break;
+
+    case apCargoShip: 
+
+      shoulderNew = Robot::m_dashboard.GetDashValue(dvSCCargoShip);
+      wristNew = Robot::m_dashboard.GetDashValue(dvWCCargoShip);
+
+      break;
+
+    default:
+      return; 
   }
+
+  double shoulderClear = Robot::m_dashboard.GetDashValue(dvShoulderClear);
+  double wristClear    = Robot::m_dashboard.GetDashValue(dvWristClear);
+
+  m_armPosition   = position;
+  m_shoulderNext  = -1;
+  m_wristNext     = -1;
+
+  if (m_shoulderSetpoint != shoulderNew) {                                      // New Shoulder setpoint
+    if (shoulderNew > shoulderNow) {                                            // SHOULDER MOVING UP
+      SetShoulderPosition(shoulderNew, position);                               // Move Shoulder to New
+
+      if (wristNew < wristClear) {                                              // New Wrist above Clear
+        SetWristPosition(wristNew, position);                                   // Move Wrist to New
+      } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
+        SetWristPosition(wristNew, position);                                   // Move Wrist to New
+      } else {                                                                  // Shoulder Now or New below Clear
+        m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder
+        SetWristPosition(wristClear, apWait);
+      }
+
+    } else {                                                                    // SHOULDER MOVING DOWN
+      if (shoulderNew > shoulderClear) {                                        // Shoulder New above Clear
+        SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
+      } else if (wristNow < wristClear && wristNew < wristClear) {              // Wrist Now and New above Clear
+        SetShoulderPosition(shoulderNew, position);                             // Move Shoulder to New
+      } else {                                                                  // Wrist Now or New below Clear
+        m_shoulderNext = shoulderNew;                                           // Move Shoulder to Clear and wait for Wrist
+        SetShoulderPosition(shoulderClear, apWait);
+      }  
+
+      if (wristNew < wristClear) {                                              // Wrist New above Clear
+        SetWristPosition(wristNew, position);                                   // Move Wrist to New
+      } else if (shoulderNow > shoulderClear && shoulderNew > shoulderClear) {  // Shoulder Now and New above Clear
+        SetWristPosition(wristNew, position);                                   // Move Wrist to New
+      } else {                                                                  // Wrist New and (Shoulder Now or New) below Clear
+        m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder
+        SetWristPosition(wristClear, apWait);       
+      }
+    }
+
+  } else if (m_wristSetpoint != wristNew) {                                     // New Wrist Only
+    SetWristPosition(wristNew, position);
+  }
+
 }
 
 void Arm::SetArmSpeed(bool slowSpeed) {

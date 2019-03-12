@@ -13,8 +13,9 @@ Elevator  Robot::m_elevator;
 OI        Robot::m_oi;
 
 void Robot::RobotInit() { 
+  m_robotLog.SetMode(rmInit);
   m_vision.InitVision();
-//  StartDriverCamera();
+  m_dashboard.StartHost();
 }
 
 void Robot::RobotPeriodic() {
@@ -24,13 +25,14 @@ void Robot::RobotPeriodic() {
 
 void Robot::DisabledInit() {
   m_robotLog.SetMode(rmDisabled);
-  m_robotLog.Close(); 
   m_dashboard.SetRobotMode(rmDisabled);
 
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_elevator.SetFootPosition(Elevator::fpExtended);
+
+  m_robotLog.Close(); 
 }
 
 void Robot::DisabledPeriodic() { 
@@ -46,7 +48,6 @@ void Robot::AutonomousInit() {
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_arm.SetHatchState(Arm::hsGrab);
 
- // m_vision.SetCameraMode(Vision::cmDriver);
   m_vision.SetCameraMode(Vision::cmTarget);
 }
 
@@ -68,7 +69,6 @@ void Robot::TeleopInit() {
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
 
   m_vision.SetCameraMode(Vision::cmTarget);
-//  m_vision.SetCameraMode(Vision::cmDriver);
 }
 
 void Robot::TeleopPeriodic() { 
@@ -186,15 +186,18 @@ void Robot::SetDashRobotValues() {
   m_dashboard.SetRobotValue(rvDriveAmpsLeft2, m_pdp.GetCurrent(pdpDriveLeft2));
   m_dashboard.SetRobotValue(rvDriveAmpsRight1, m_pdp.GetCurrent(pdpDriveRight1));
   m_dashboard.SetRobotValue(rvDriveAmpsRight2, m_pdp.GetCurrent(pdpDriveRight2));
+
   m_dashboard.SetRobotValue(rvElevatorPosition, m_elevator.GetElevatorPosition());
   m_dashboard.SetRobotValue(rvElevatorSetpoint, m_elevator.GetElevatorSetpoint());
   m_dashboard.SetRobotValue(rvElevatorAmps, m_pdp.GetCurrent(pdpElevator));
+
   m_dashboard.SetRobotValue(rvShoulderPosition, m_arm.GetShoulderDegrees());
   m_dashboard.SetRobotValue(rvShoulderSetpoint, m_arm.GetShoulderSetpoint());
   m_dashboard.SetRobotValue(rvShoulderAmps, m_pdp.GetCurrent(pdpShoulder));
   m_dashboard.SetRobotValue(rvWristPosition, m_arm.GetWristDegrees());
   m_dashboard.SetRobotValue(rvWristSetpoint, m_arm.GetWristSetpoint());
   m_dashboard.SetRobotValue(rvWristAmps, m_pdp.GetCurrent(pdpWrist));
+  
   m_dashboard.SetRobotValue(rvVisionStatus, (double)m_vision.GetSearchState());
   m_dashboard.SetRobotValue(rvVisionSelect, (double)m_vision.GetTargetSelect());
   m_dashboard.SetRobotValue(rvVisionAngle, m_vision.GetTargetAngle());

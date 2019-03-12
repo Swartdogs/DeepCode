@@ -18,6 +18,9 @@ RobotLog::RobotLog(std::string name) {
     m_periodicTotalTime = 0;
     m_robotMode         = rmInit;
     m_robotName         = name;
+
+    Write("", false);
+    Write("*************** START 525 CODE ***************", false);
 }
 
 RobotLog::~RobotLog(){
@@ -89,11 +92,11 @@ void RobotLog::LogData() {
 
 std::string RobotLog::ModeName(RobotMode mode) {
     switch (mode) {
-        case rmInit:        return "Init";
-        case rmDisabled:    return "Disabled";
-        case rmAutonomous:  return "Auto";
-        case rmTeleop:      return "Teleop";
-        case rmTest:        return "Test";
+        case rmInit:        return "INIT";
+        case rmDisabled:    return "DISABLED";
+        case rmAutonomous:  return "AUTO";
+        case rmTeleop:      return "TELEOP";
+        case rmTest:        return "TEST";
         default:            return "?";
     }
 }
@@ -102,7 +105,7 @@ void RobotLog::SetMode(RobotMode mode) {
     m_periodicCount = 0;
 
     if(m_robotMode == rmAutonomous || m_robotMode == rmTeleop) {
-        sprintf(m_log, "%s: Periodic Usage=%5.1f %%", m_robotName.c_str(),
+        sprintf(m_log, "%s: Periodic CPU Usage=%5.1f %%", m_robotName.c_str(),
                (m_periodicTotalTime / ((double)frc::RobotController::GetFPGATime() / 1000 - m_periodicBeginTime)) * 100);
         Write(m_log, false);
     }
@@ -111,9 +114,9 @@ void RobotLog::SetMode(RobotMode mode) {
     m_periodicLastEnd = m_periodicLastStart;
     m_periodicBeginTime = m_periodicLastStart;
     m_periodicTotalTime = 0;
-    
+
     Write("", false);
-    sprintf(m_log, "%s: Start %s %s", m_robotName.c_str(), ModeName(mode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
+    sprintf(m_log, "%s: %s", m_robotName.c_str(), ModeName(mode).c_str());
     Write(m_log, false);
 }
 
@@ -138,8 +141,13 @@ void RobotLog::StartPeriodic() {
     }
 }
 
-void RobotLog::Write(std::string entry, bool includeTime) {
-    const char* cEntry=entry.c_str();
+void RobotLog::Write(std::string entry, bool includeTime, bool forceClose) {
+    const char* cEntry = entry.c_str();
+    char        timeNow[24];
+    std::time_t rioClock = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::tm*    localTime = std::localtime(&rioClock);
+
+    std::strftime(timeNow, 24, "%D %H:%M:%S", localTime);
 
     if (m_logFile == nullptr) m_logFile = fopen("/home/lvuser/Log525.txt", "a");
  
@@ -147,12 +155,19 @@ void RobotLog::Write(std::string entry, bool includeTime) {
         float eventTime = (float)(m_periodicCount * 20) / 1000;
         int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
 
-        printf("%7.2f %+3d: %s \n", eventTime, timeDiff, cEntry);
-        if (m_logFile != nullptr) fprintf(m_logFile, "%7.2f %+3d: %s \r\n", eventTime, timeDiff, cEntry);
+        printf("%s  %7.2f %+3d: %s \n", timeNow, eventTime, timeDiff, cEntry);
+        if (m_logFile != nullptr) fprintf(m_logFile, "%s  %7.2f %+3d: %s \r\n", timeNow, eventTime, timeDiff, cEntry);
 
     } else {
-        printf("%s \n", cEntry);        
-        if (m_logFile != nullptr) fprintf(m_logFile, "%s \r\n", cEntry);
+        printf("%s  %s \n", timeNow, cEntry);        
+        if (m_logFile != nullptr) fprintf(m_logFile, "%s  %s \r\n", timeNow, cEntry);
+    }
+
+    if (forceClose){
+        if (m_logFile != nullptr) {
+            fclose(m_logFile);
+            m_logFile = nullptr;
+        }
     }
 }
 
@@ -162,7 +177,7 @@ void RobotLog::WriteData(std::string data){
 
     if (m_dataFile == nullptr) {
         m_dataFile = fopen("/home/lvuser/Data525.txt", "a");
-        fprintf(m_dataFile, "%s|%s\r\n", ModeName(m_robotMode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
+        fprintf(m_dataFile, "%s\r\n", ModeName(m_robotMode).c_str());
     }
 
     if (m_dataFile != nullptr) fprintf(m_dataFile, "%7.2f|%s\r\n", eventTime, cData);
@@ -176,7 +191,7 @@ void RobotLog::WritePid(std::string output) {
 
     if (m_pidFile == nullptr) {
         m_pidFile = fopen("/home/lvuser/Pid525.txt", "a");
-        fprintf(m_pidFile, "%s %s \r\n", ModeName(m_robotMode).c_str(), Robot::m_dashboard.GetTimeStamp().c_str());
+        fprintf(m_pidFile, "%s\r\n", ModeName(m_robotMode).c_str());
     }
 
     if (m_pidFile != nullptr) fprintf(m_pidFile, "%7.2f: %s \r\n", eventTime, pid);
