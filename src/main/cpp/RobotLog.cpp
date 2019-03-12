@@ -143,11 +143,14 @@ void RobotLog::StartPeriodic() {
 
 void RobotLog::Write(std::string entry, bool includeTime, bool forceClose) {
     const char* cEntry = entry.c_str();
-    char        timeNow[24];
-    std::time_t rioClock = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::tm*    localTime = std::localtime(&rioClock);
+    char        timeNow[20];
+    memset(timeNow, 0, sizeof timeNow);
 
-    std::strftime(timeNow, 24, "%D %H:%M:%S", localTime);
+    if (entry.length() > 0) {
+        std::time_t rioClock = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        std::tm*    localTime = std::localtime(&rioClock);
+        std::strftime(timeNow, 20, "%D %H:%M:%S", localTime);
+    }
 
     if (m_logFile == nullptr) m_logFile = fopen("/home/lvuser/Log525.txt", "a");
  
