@@ -484,14 +484,20 @@ void Arm::SetShoulderMotor(double speed) {
   m_shoulderMotor.Set(speed);
 }
 
-void Arm::SetShoulderPosition(double degrees, ArmPosition position) {
+void Arm::SetShoulderPosition(double degrees, ArmPosition position, bool resetPID) {
+  if (degrees < Robot::m_dashboard.GetDashValue(dvShoulderTravel)) {
+    degrees = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
+  } else if (degrees > Robot::m_dashboard.GetDashValue(dvShoulderMax)) {
+    degrees = Robot::m_dashboard.GetDashValue(dvShoulderMax);
+  }
+
   m_shoulderSetpoint = degrees;
   m_shoulderPosition = position;
 
-  m_shoulderPID.SetSetpoint(degrees, GetShoulderPosition());
+  m_shoulderPID.SetSetpoint(degrees, GetShoulderPosition(), resetPID);
  
   if(position != apUnknown){
-    sprintf(Robot::message,"Arm:      Set Shoulder Position=%s (%4.1f)", 
+    sprintf(Robot::message,"Arm:      Set Shoulder Position=%s (%5.1f)", 
             GetArmPositionName(position).c_str(), degrees);
     Robot::m_robotLog.Write(Robot::message);
   }
@@ -508,7 +514,7 @@ void Arm::SetWristPosition(double degrees, ArmPosition position) {
   m_wristPID.SetSetpoint(degrees, GetWristPosition());
 
   if(position != apUnknown){
-    sprintf(Robot::message,"Arm:      Set Wrist Position=%s (%4.1f)", 
+    sprintf(Robot::message,"Arm:      Set Wrist Position=%s (%5.1f)", 
             GetArmPositionName(position).c_str(), degrees);
     Robot::m_robotLog.Write(Robot::message);
   }

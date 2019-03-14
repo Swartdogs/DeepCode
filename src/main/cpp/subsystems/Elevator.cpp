@@ -16,11 +16,12 @@ Elevator::Elevator() : Subsystem("Elevator") {
   m_elevatorPID.SetCoefficient('I', 1, 0, 0.06);
   m_elevatorPID.SetCoefficient('D', 0, 0, 0);
   m_elevatorPID.SetInputRange(-20, 1.3);
+  m_elevatorPID.SetOutputRange(-1.0, 1.0);
   m_elevatorPID.SetOutputRamp(0.10, 0.05);
   m_elevatorPID.SetSetpointDeadband(0.5); 
   m_elevatorPID.SetSetpoint(m_elevatorSetpoint, m_elevatorSetpoint);
 
-  m_footSol.Set(false);
+  m_solFoot.Set(false);
 
   m_cancelClimb = false;
   m_elevatorPosition = epUnknown;
@@ -65,8 +66,8 @@ std::string Elevator::GetElevatorPositionName(ElevatorPosition position)  {
 
   switch (position) {
     case epRetracted:       name = "Retracted";       break;
-    case epLevel2:          name = "Level2";          break;
-    case epLevel3:          name = "Level3";          break;
+    case epLevel2:          name = "Level 2";          break;
+    case epLevel3:          name = "Level 3";          break;
     case epMinHeight:       name = "MinHeight";       break;
     case epMaxHeight:       name = "MaxHeight";       break;
     case epUnknown:         name = "Unknown";         break;
@@ -167,7 +168,7 @@ void Elevator::SetElevatorSetpoint(double setpoint) {
 
 void Elevator::SetFootPosition(FootPosition position) {
   if (position != m_footPosition) {
-    m_footSol.Set(position == fpRetracted);
+    m_solFoot.Set(position == fpRetracted);
     m_footPosition = position;
     Robot::m_dashboard.SetRobotStatus(rsFootRetracted, position == fpRetracted);
 

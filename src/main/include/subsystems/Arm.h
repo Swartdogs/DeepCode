@@ -62,7 +62,7 @@ class Arm : public frc::Subsystem {
     void          SetHatchState(HatchState state);
     void          SetIntakeMode(IntakeMode mode);
     void          SetShoulderMotor(double speed);
-    void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown);
+    void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown, bool resetPID = true);
     void          SetWristMotor(double speed);
     void          SetWristPosition(double degrees, ArmPosition position = apUnknown);
     bool          ShoulderAtSetpoint();

@@ -149,7 +149,7 @@ void RobotLog::Write(std::string entry, bool includeTime, bool forceClose) {
     if (entry.length() > 0) {
         std::time_t rioClock = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         std::tm*    localTime = std::localtime(&rioClock);
-        std::strftime(timeNow, 20, "%D %H:%M:%S", localTime);
+        std::strftime(timeNow, 20, "%D %T", localTime);
     }
 
     if (m_logFile == nullptr) m_logFile = fopen("/home/lvuser/Log525.txt", "a");

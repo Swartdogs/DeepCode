@@ -35,9 +35,7 @@ void Robot::DisabledInit() {
   m_robotLog.Close(); 
 }
 
-void Robot::DisabledPeriodic() { 
-  frc::Scheduler::GetInstance()->Run(); 
-  }
+void Robot::DisabledPeriodic() {}
 
 void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);

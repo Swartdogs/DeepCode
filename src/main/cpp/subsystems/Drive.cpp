@@ -205,7 +205,7 @@ void Drive::SetDriveInUse(bool inUse) {
 
 void Drive::SetShifter(ShifterPosition position) {
   if (position != m_shifterPosition) {
-   m_solShifter.Set(position == spLow);
+    m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
     Robot::m_dashboard.SetRobotStatus(rsShifterLow, position == spLow);
   }

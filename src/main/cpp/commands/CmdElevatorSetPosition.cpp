@@ -57,7 +57,7 @@ void CmdElevatorSetPosition::End() {
     Robot::m_elevator.SetFootInUse(false);                                      // Clear Foot-in-use flag
     Robot::m_drive.SetDriveInUse(false);                                        // Clear Drive-in-use flag
 
-    if (m_status == csTimedOut) Robot::m_robotLog.Write("Elevator:  Set Position TIMED OUT");
+    if (m_status == csTimedOut) Robot::m_robotLog.Write("Elevator: Set Position TIMED OUT");
   }
 }
 
