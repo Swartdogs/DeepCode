@@ -13,6 +13,7 @@ Arm::Arm() : Subsystem("Arm") {
   m_handMode          = hmCargo;
   m_hatchState        = hsGrab;
   m_manualDrive       = false;
+  m_ignoreCargo       = false;
   m_shoulderNext      = -1;
   m_shoulderSetpoint  = GetShoulderDegrees();
   m_wristNext         = -1;
@@ -63,13 +64,16 @@ void Arm::Periodic() {
   double      topPower        = 0;
   double      bottomPower     = 0;
 
+  if (m_wristPID.AtSetpoint()) m_ignoreCargo = false;
+
   switch(m_intakeMode) {
     case imOff:
       timer = 0;
       break;
 
     case imIn:
-      if(wristNow < 85|| m_cargoSensor.Get()) {             // Wrist position < 100 or No Cargo
+      if(m_ignoreCargo || m_cargoSensor.Get()) {                // Wrist position not at setpoint or No Cargo
+      //if(wristNow < 85|| m_cargoSensor.Get()) {               // Wrist position < 85 or No Cargo
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
       } else {
@@ -424,6 +428,7 @@ void Arm::SetArmPosition(ArmPosition position) {
     SetWristPosition(wristNew, position);
   }
 
+  m_ignoreCargo = true;
 }
 
 void Arm::SetArmSpeed(bool slowSpeed) {

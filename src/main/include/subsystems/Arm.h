@@ -75,6 +75,7 @@ class Arm : public frc::Subsystem {
     double            PowerLimit(double value);
 
     bool              m_manualDrive;
+    bool              m_ignoreCargo;
     double            m_shoulderNext;
     double            m_shoulderSetpoint;
     double            m_wristNext;
