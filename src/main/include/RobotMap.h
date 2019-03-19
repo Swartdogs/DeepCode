@@ -81,7 +81,8 @@ typedef enum {              // Dashboard: Robot Status indexes
     rsHatchGrab,
     rsClimb,
     rsNoClimb,
-    rsTargetFound
+    rsTargetFound, 
+    rsCargoLoaded
 } RobotStatus;
 
 typedef enum {              // Dashboard: Robot Value indexes
@@ -146,7 +147,7 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvSCRocketLow,
     dvSCRocketMid,
     dvSCRocketHigh,
-    dvSHPickup,
+    dvSCCatch,
     dvSHRocketLow,
     dvSHRocketMid,
     dvSHRocketHigh,
@@ -161,7 +162,7 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvWCRocketLow,
     dvWCRocketMid,
     dvWCRocketHigh,
-    dvWHPickup,
+    dvWCCatch,
     dvWHRocketLow,
     dvWHRocketMid,
     dvWHRocketHigh,

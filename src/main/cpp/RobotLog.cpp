@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <sys/time.h>
 
 #include "RobotLog.h"
 #include "Robot.h"
@@ -142,28 +143,33 @@ void RobotLog::StartPeriodic() {
 }
 
 void RobotLog::Write(std::string entry, bool includeTime, bool forceClose) {
-    const char* cEntry = entry.c_str();
-    char        timeNow[20];
-    memset(timeNow, 0, sizeof timeNow);
-
-    if (entry.length() > 0) {
-        std::time_t rioClock = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        std::tm*    localTime = std::localtime(&rioClock);
-        std::strftime(timeNow, 20, "%D %T", localTime);
-    }
-
     if (m_logFile == nullptr) m_logFile = fopen("/home/lvuser/Log525.txt", "a");
  
-    if (includeTime) {
-        float eventTime = (float)(m_periodicCount * 20) / 1000;
-        int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
+    if (entry.length() == 0) {
+        printf("\n");
+        if (m_logFile != nullptr) fprintf(m_logFile, "\r\n");
 
-        printf("%s  %7.2f %+3d: %s \n", timeNow, eventTime, timeDiff, cEntry);
-        if (m_logFile != nullptr) fprintf(m_logFile, "%s  %7.2f %+3d: %s \r\n", timeNow, eventTime, timeDiff, cEntry);
+    } else { 
+        const char* cEntry = entry.c_str();
+        char        timeNow[20];
+        struct      timeval tv;
 
-    } else {
-        printf("%s  %s \n", timeNow, cEntry);        
-        if (m_logFile != nullptr) fprintf(m_logFile, "%s  %s \r\n", timeNow, cEntry);
+        gettimeofday(&tv, NULL);
+        int         millisec = (int)round(tv.tv_usec / 1000);
+        std::time_t tod = tv.tv_sec;
+        std::strftime(timeNow, 20, "%D %T.", std::localtime(&tod));
+
+        if (includeTime) {
+            float eventTime = (float)(m_periodicCount * 20) / 1000;
+            int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
+
+            printf("%s%03d  %7.2f %+3d: %s \n", timeNow, millisec, eventTime, timeDiff, cEntry);
+            if (m_logFile != nullptr) fprintf(m_logFile, "%s%03d  %7.2f %+3d: %s \r\n", timeNow, millisec, eventTime, timeDiff, cEntry);
+
+        } else {
+            printf("%s%03d  %s \n", timeNow, millisec, cEntry);        
+            if (m_logFile != nullptr) fprintf(m_logFile, "%s%03d  %s \r\n", timeNow, millisec, cEntry);
+        }
     }
 
     if (forceClose){

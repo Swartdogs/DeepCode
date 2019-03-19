@@ -46,7 +46,7 @@ void Robot::AutonomousInit() {
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_arm.SetHatchState(Arm::hsGrab);
 
-  m_vision.SetCameraMode(Vision::cmTarget);
+  m_vision.SetCameraMode(Vision::cmDriver);
 }
 
 void Robot::AutonomousPeriodic() { 
@@ -66,7 +66,7 @@ void Robot::TeleopInit() {
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
 
-  m_vision.SetCameraMode(Vision::cmTarget);
+  m_vision.SetCameraMode(Vision::cmDriver);
 }
 
 void Robot::TeleopPeriodic() { 

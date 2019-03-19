@@ -31,12 +31,17 @@ void CmdDriveToTarget::Initialize() {
       m_distance += Robot::m_dashboard.GetDashValue(dvVisionCargoOffset);
     }
 
-    Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); // Initialize drive and rotate PIDs
+    if (m_distance <= 0) {
+      Robot::m_drive.RotateInit(m_heading, 0.6, true);
+      sprintf(Robot::message, "Drive:    Target Rotate INIT  Heading=%5.1f", m_heading);
+    } else {
+      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); // Initialize drive and rotate PIDs
+      sprintf(Robot::message, "Drive:    Target Drive INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
+    }
+
+    Robot::m_robotLog.Write(Robot::message);
 
     if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
-    
-    sprintf(Robot::message, "Drive:    To Target INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
-    Robot::m_robotLog.Write(Robot::message);
   }
 }
 
@@ -50,6 +55,13 @@ void CmdDriveToTarget::Execute() {
     } else if (IsTimedOut()) {                                                  // End command and cancel Group if TimedOut
       m_status = csTimedOut;
       if (this->IsParented()) this->GetGroup()->Cancel();
+    } else if (m_distance <= 0) {
+      if (Robot::m_drive.RotateIsFinished()) {
+        m_status = csDone;
+      } else {
+        drive = 0;
+        rotate = Robot::m_drive.RotateExec();
+      }
     } else if (Robot::m_drive.DriveIsFinished()) {                              // Done if distance has been reached
       m_status = csDone;
     } else {                                                                    // Get drive and rotate values from PIDs
@@ -74,21 +86,33 @@ void CmdDriveToTarget::End() {
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:    To Target DONE  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-              Robot::m_drive.GetHeading());
+      if (m_distance <= 0) {
+        sprintf(Robot::message, "Drive:    Target Rotate DONE  Heading=%5.1f", Robot::m_drive.GetHeading()); 
+      } else {
+        sprintf(Robot::message, "Drive:    Target Drive DONE  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+                Robot::m_drive.GetHeading());
+      }
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:    To Target CANCELED  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-              Robot::m_drive.GetHeading());
+      if (m_distance <= 0) {
+        sprintf(Robot::message, "Drive:    Target Rotate CANCELED  Heading=%5.1f", Robot::m_drive.GetHeading()); 
+      } else {
+        sprintf(Robot::message, "Drive:    Target Drive CANCELED  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+                Robot::m_drive.GetHeading());
+      }
       break;
 
     case csTimedOut:
-      sprintf(Robot::message, "Drive:    To Target TIMED OUT  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-              Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-              Robot::m_drive.GetHeading());
+      if (m_distance <= 0) {
+        sprintf(Robot::message, "Drive:    Target Rotate TIMED OUT  Heading=%5.1f", Robot::m_drive.GetHeading()); 
+      } else {
+        sprintf(Robot::message, "Drive:    Target Drive TIMED OUT  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+                Robot::m_drive.GetHeading());
+      }
       break;
       
     default:;

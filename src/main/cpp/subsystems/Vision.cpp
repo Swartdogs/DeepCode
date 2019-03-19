@@ -69,8 +69,8 @@ void Vision::InitVision() {
     m_camera = cameraServer->StartAutomaticCapture("Vision", 0);            // Start Aim camera image capture
     m_camera.SetResolution(320, 240);                                       // Configure camera
     m_camera.SetFPS(20);
-    m_camera.SetBrightness(0);
-    m_camera.SetExposureManual(10);
+    m_camera.SetBrightness(30);
+    m_camera.SetExposureAuto();
 
     m_sink = cameraServer->GetVideo("Vision");                              // Create sink to get images for Target Search
     

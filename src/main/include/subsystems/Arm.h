@@ -15,11 +15,13 @@ class Arm : public frc::Subsystem {
       apMid,
       apHigh,
       apCargoShip,
+      apCargoCatch,
       apWait,
       apByHand
     } ArmPosition;
 
     typedef enum {
+      hmNone,
       hmCargo,
       hmHatch
     } HandMode;

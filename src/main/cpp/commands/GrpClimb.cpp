@@ -24,7 +24,7 @@ GrpClimb::GrpClimb(Elevator::ElevatorPosition position) {
 void GrpClimb::Initialize() {
   double timeRemaining = frc::Timer::GetMatchTime();
 
-  if (timeRemaining < 8) {
+  if (timeRemaining < 7.0 && m_position == Elevator::epLevel3) {
     this->Cancel();
     sprintf(Robot::message, "Climb:    %s climb blocked since only %4.1f seconds remain", 
             Robot::m_elevator.GetElevatorPositionName(m_position).c_str(), timeRemaining);
