@@ -64,6 +64,9 @@ void CmdDriveToTarget::Execute() {
       }
     } else if (Robot::m_drive.DriveIsFinished()) {                              // Done if distance has been reached
       m_status = csDone;
+    } else if (fabs(Robot::m_oi.GetArmJoystickY()) > 0.1 || fabs(Robot::m_oi.GetArmJoystickX()) > 0.1) {
+      m_status = csDone;
+      if (this->IsParented()) this->GetGroup()->Cancel();
     } else {                                                                    // Get drive and rotate values from PIDs
        drive  = Robot::m_drive.DriveExec();
        rotate = Robot::m_drive.RotateExec();

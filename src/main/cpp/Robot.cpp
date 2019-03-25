@@ -29,13 +29,15 @@ void Robot::DisabledInit() {
 
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
-  m_elevator.SetElevatorPosition(Elevator::epRetracted);
+  m_elevator.SetElevatorSetpoint(m_elevator.GetElevatorPosition());
   m_elevator.SetFootPosition(Elevator::fpExtended);
 
   m_robotLog.Close(); 
 }
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+  frc::Scheduler::GetInstance()->Run(); 
+}
 
 void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
@@ -45,7 +47,9 @@ void Robot::AutonomousInit() {
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
   m_arm.SetHatchState(Arm::hsGrab);
-
+  
+  m_elevator.SetElevatorPosition(Elevator::epRetracted);
+  
   m_vision.SetCameraMode(Vision::cmDriver);
 }
 
@@ -65,7 +69,9 @@ void Robot::TeleopInit() {
   m_arm.SetHandMode(m_arm.GetHandMode(), true);
   m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
   m_arm.SetWristPosition(m_arm.GetWristDegrees());
-
+  
+  m_elevator.SetElevatorPosition(Elevator::epRetracted);
+  
   m_vision.SetCameraMode(Vision::cmDriver);
 }
 
