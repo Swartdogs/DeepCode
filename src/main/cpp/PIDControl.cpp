@@ -49,23 +49,23 @@ bool PIDControl::AtSetpoint() {
 }
 
 double PIDControl::Calculate(double input) {									// Calculate output based on input
-	double 		error = m_setpoint - input;												// Current Error
-	double 		errorDiff = error - m_errorPrev;									// Difference between current error and previous error
+	double 			error = m_setpoint - input;											// Current Error
+	double 			errorDiff = error - m_errorPrev;								// Difference between current error and previous error
 	std::string	limit = "";
 
 	if (m_P.threshold > 0) {																		// Threshold > 0 indicates use of 2 coefficients
 		(fabs(error) < m_P.threshold) ?	m_P.kNow = m_P.kBelow :		// 'P' coefficient below threshold
-										m_P.kNow = m_P.kAbove;										//				   above threshold
+									 m_P.kNow = m_P.kAbove;										//				   above threshold
 	}
 
 	if (m_I.threshold > 0) {																		// Same for 'I' coefficient
 		(fabs(error) < m_I.threshold) ? m_I.kNow = m_I.kBelow :
-					  				    m_I.kNow = m_I.kAbove;
+					  			 m_I.kNow = m_I.kAbove;
 	}
 
 	if (m_D.threshold > 0) {																		// Same for 'D' coefficient
 		(fabs(error) < m_D.threshold) ?	m_D.kNow = m_D.kBelow :
-										m_D.kNow = m_D.kAbove;
+									 m_D.kNow = m_D.kAbove;
 	}
 
 	if (m_I.kNow == 0) {																				// Update Total Error accumulation
