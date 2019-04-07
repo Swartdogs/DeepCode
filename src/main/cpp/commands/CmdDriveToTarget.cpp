@@ -22,14 +22,8 @@ void CmdDriveToTarget::Initialize() {
     Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
     Robot::m_drive.SetBrakeMode(true);                                          // Set motor controllers to Brake mode
 
-    m_distance  = Robot::m_vision.GetTargetDistance();                          // Get Distance and Angle from Vision and add adjustments
-    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionAngleOffset);  
-
-    if (Robot::m_arm.GetHandMode() == Arm::hmHatch) {                           // Adjust distance based on Hand Mode
-      m_distance += Robot::m_dashboard.GetDashValue(dvVisionHatchOffset);
-    } else {
-      m_distance += Robot::m_dashboard.GetDashValue(dvVisionCargoOffset);
-    }
+    m_distance  = Robot::m_vision.GetTargetDistance();
+    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionTargetAngle);  
 
     if (m_distance <= 0) {
       Robot::m_drive.RotateInit(m_heading, 0.6, true);

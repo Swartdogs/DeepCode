@@ -12,12 +12,14 @@ class Vision {
    typedef enum{tsBest, tsLeft, tsRight} TargetSelect;
 
   Vision();
+  void          AddDistanceOffset(double offset);
   void          FindTarget(Vision::TargetSelect targetSelect = tsBest);
   bool          GetCameraImage(cv::Mat& image);
   SearchState   GetSearchState();
   double        GetTargetAngle();
   double        GetTargetDistance();
   TargetSelect  GetTargetSelect();
+  double        GetTravelDistance();
   void          InitVision();
   bool          InTargetMode();
   void          SearchResults(SearchState state, double targetAngle, double targetDistance);
@@ -35,4 +37,5 @@ private:
   double        m_targetDistance;
   TargetSelect  m_targetSelect;
   std::thread*  m_task;
+  double        m_travelDistance;
 };

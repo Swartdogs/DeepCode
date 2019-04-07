@@ -41,6 +41,7 @@ class Robot : public frc::TimedRobot {
   cs::UsbCamera               m_cameraDriver{};
   cs::VideoSink               m_cameraServer{};
 
+  void InitializeArm();
   void SetDashRobotValues();
   void StartDriverCamera();
 };

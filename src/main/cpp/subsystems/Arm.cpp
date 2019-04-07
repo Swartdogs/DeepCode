@@ -10,12 +10,15 @@ Arm::Arm() : Subsystem("Arm") {
   m_wristPot.SetOversampleBits(0);
 
   m_intakeMode        = imOff;
-  m_handMode          = hmNone;
+  m_handModeSwitch    = hmNone;
+  m_handModeRobot     = hmNone;
   m_hatchState        = hsGrab;
   m_manualDrive       = false;
   m_ignoreCargo       = false;
+  m_presetPosition    = apUnknown;
   m_shoulderNext      = -1;
   m_shoulderSetpoint  = GetShoulderDegrees();
+  m_usePreset         = false;
   m_wristNext         = -1;
   m_wristSetpoint     = GetWristDegrees();
 
@@ -194,7 +197,7 @@ void Arm::Periodic() {
       }
     }
 
-    if (m_armPosition == apPickup && m_handMode == hmCargo) {
+    if (m_armPosition == apPickup && m_handModeRobot == hmCargo) {
       if (m_wristSetpoint == Robot::m_dashboard.GetDashValue(dvWCPickup) && WristAtSetpoint()) {
         if (m_shoulderSetpoint != Robot::m_dashboard.GetDashValue(dvSCPickup)) {
           SetShoulderPosition(Robot::m_dashboard.GetDashValue(dvSCPickup), m_armPosition);
@@ -223,6 +226,7 @@ std::string Arm::GetArmPositionName(ArmPosition position) {
       case apCargoShip:   name = "Cargo Ship";      break;
       case apCargoCatch:  name = "Cargo Catch";     break;
       case apWait:        name = "Wait for Clear";  break;
+      case apPreset:      name = "Preset";          break;
   }
 
   return name;
@@ -232,8 +236,8 @@ bool Arm::GetCargoDetected() {
   return !m_cargoSensor.Get();
 }
 
-Arm::HandMode Arm::GetHandMode() {
-  return m_handMode;
+Arm::HandMode Arm::GetHandModeSwitch() {
+  return m_handModeSwitch;
 }
 
 std::string Arm::GetHandModeName(HandMode mode) {
@@ -279,6 +283,10 @@ std::string Arm::GetIntakeModeName(IntakeMode mode) {
   return name;
 }
 
+Arm::ArmPosition Arm::GetPresetPosition() {
+  return m_presetPosition;
+}
+
 double Arm::GetShoulderDegrees() {
   return (m_shoulderPot.GetAverageValue() / SHOULDER_COUNTS_PER_DEGREE) - Robot::m_dashboard.GetDashValue(dvShoulderOffset);
 }
@@ -314,6 +322,23 @@ double Arm::PowerLimit(double value) {
 }
 
 void Arm::SetArmPosition(ArmPosition position) {
+  if (m_usePreset) {
+    m_presetPosition = apUnknown;
+
+    if (m_handModeSwitch == hmHatch) {
+      switch (position) {
+        case apLow: 
+        case apMid:
+        case apHigh:
+          m_presetPosition = position;
+          break;
+        default:;
+      }
+    }
+    return;
+  }
+
+  m_presetPosition    = apUnknown;
   double shoulderNew  = 0;
   double shoulderNow  = GetShoulderDegrees();
   double wristNew     = 0;
@@ -324,15 +349,17 @@ void Arm::SetArmPosition(ArmPosition position) {
       
       shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
       wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
+      SetHandModeRobot(hmCargo);
       SetIntakeMode(imOff);
 
       break;
 
     case apPickup:  
 
-      if (m_handMode == hmCargo) {
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvShoulderClear);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCPickup);
+        SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
       
@@ -340,9 +367,10 @@ void Arm::SetArmPosition(ArmPosition position) {
 
     case apLoad:
 
-      if (m_handMode == hmCargo) {
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew   = Robot::m_dashboard.GetDashValue(dvSCLoad);
         wristNew      = Robot::m_dashboard.GetDashValue(dvWCLoad);
+        SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
 
@@ -350,7 +378,9 @@ void Arm::SetArmPosition(ArmPosition position) {
 
     case apLow:    
 
-      if (m_handMode == hmCargo) {
+      SetHandModeRobot(m_handModeSwitch);
+    
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketLow);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketLow);
       } else {
@@ -360,9 +390,11 @@ void Arm::SetArmPosition(ArmPosition position) {
 
       break;
 
-    case apMid:    
+    case apMid:   
 
-      if (m_handMode == hmCargo) {
+      SetHandModeRobot(m_handModeSwitch);
+    
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketMid);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketMid);
       } else {
@@ -374,7 +406,9 @@ void Arm::SetArmPosition(ArmPosition position) {
 
     case apHigh:    
 
-      if (m_handMode == hmCargo) {
+      SetHandModeRobot(m_handModeSwitch);
+    
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSCRocketHigh);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCRocketHigh);
       } else {
@@ -386,18 +420,20 @@ void Arm::SetArmPosition(ArmPosition position) {
 
     case apCargoShip: 
 
-      if (m_handMode == hmCargo) {
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSCCargoShip);
         wristNew = Robot::m_dashboard.GetDashValue(dvWCCargoShip);
+        SetHandModeRobot(hmCargo);
       }
       
       break;
 
     case apCargoCatch:
 
-      if (m_handMode == hmCargo) {
+      if (m_handModeSwitch == hmCargo) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSCCatch);
         wristNew = Robot::m_dashboard.GetDashValue(dvWCCatch);
+        SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
       
@@ -481,13 +517,16 @@ void Arm::SetDrivenManually(bool isManual) {
   m_manualDrive = isManual;
 }
 
-void Arm::SetHandMode(HandMode mode, bool fromSwitch) {
-  if (fromSwitch) mode = Robot::m_oi.InHatchMode() ? hmHatch : hmCargo;
+void Arm::SetHandModeSwitch(HandMode mode) {
+  m_handModeSwitch = mode;
+  if (m_armPosition != apTravel) SetHandModeRobot(mode);
+}
 
-  if(mode != m_handMode) {
-    m_handMode = mode;
+void Arm::SetHandModeRobot(HandMode mode) {
+  if(mode != m_handModeRobot) {
+    m_handModeRobot = mode;
 
-    if (m_handMode == hmHatch) {
+    if (m_handModeRobot == hmHatch) {
       m_solHandHatch.Set(true);
       m_solHandCargo.Set(false);
     } else {
@@ -497,7 +536,7 @@ void Arm::SetHandMode(HandMode mode, bool fromSwitch) {
 
     Robot::m_dashboard.SetRobotStatus(rsHatchMode, mode == hmHatch);
 
-    sprintf(Robot::message, "Arm:      Hand Mode=%s", GetHandModeName(m_handMode).c_str());
+    sprintf(Robot::message, "Arm:      Hand Mode=%s", GetHandModeName(m_handModeRobot).c_str());
     Robot::m_robotLog.Write(Robot::message);
   }
 }
@@ -520,6 +559,10 @@ void Arm::SetIntakeMode(IntakeMode mode) {
     sprintf(Robot::message, "Arm:      Intake Mode=%s", GetIntakeModeName(m_intakeMode).c_str());
     Robot::m_robotLog.Write(Robot::message);
   }
+}
+
+void Arm::SetPresetMode(bool usePreset) {
+  m_usePreset = usePreset;
 }
 
 void Arm::SetShoulderMotor(double speed) {

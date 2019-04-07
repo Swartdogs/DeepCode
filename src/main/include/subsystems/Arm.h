@@ -17,7 +17,7 @@ class Arm : public frc::Subsystem {
       apCargoShip,
       apCargoCatch,
       apWait,
-      apByHand
+      apPreset
     } ArmPosition;
 
     typedef enum {
@@ -44,12 +44,13 @@ class Arm : public frc::Subsystem {
     
     std::string   GetArmPositionName(ArmPosition position);
     bool          GetCargoDetected(); 
-    HandMode      GetHandMode();
+    HandMode      GetHandModeSwitch();
     std::string   GetHandModeName(HandMode mode);
     HatchState    GetHatchState();
     std::string   GetHatchStateName(HatchState state);
     IntakeMode    GetIntakeMode();
     std::string   GetIntakeModeName(IntakeMode mode);
+    ArmPosition   GetPresetPosition();
     double        GetShoulderDegrees();
     ArmPosition   GetShoulderPosition();
     double        GetShoulderSetpoint();
@@ -60,9 +61,11 @@ class Arm : public frc::Subsystem {
     void          SetArmPosition(ArmPosition position);
     void          SetArmSpeed(bool slowSpeed);
     void          SetDrivenManually(bool isManual);
-    void          SetHandMode(HandMode mode, bool fromSwitch = false);
+    void          SetHandModeSwitch(HandMode mode);
+    void          SetHandModeRobot(HandMode mode);
     void          SetHatchState(HatchState state);
     void          SetIntakeMode(IntakeMode mode);
+    void          SetPresetMode(bool usePreset);
     void          SetShoulderMotor(double speed);
     void          SetShoulderPosition(double degrees, ArmPosition position = apUnknown, bool resetPID = true);
     void          SetWristMotor(double speed);
@@ -80,14 +83,17 @@ class Arm : public frc::Subsystem {
     bool              m_ignoreCargo;
     double            m_shoulderNext;
     double            m_shoulderSetpoint;
+    bool              m_usePreset;
     double            m_wristNext;
     double            m_wristSetpoint;
 
     ArmPosition       m_armPosition;
+    ArmPosition       m_presetPosition;
     ArmPosition       m_shoulderPosition;
     ArmPosition       m_wristPosition;
   
-    HandMode          m_handMode;
+    HandMode          m_handModeSwitch;
+    HandMode          m_handModeRobot;
 
     HatchState        m_hatchState;
 

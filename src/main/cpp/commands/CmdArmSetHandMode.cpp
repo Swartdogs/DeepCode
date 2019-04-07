@@ -8,7 +8,7 @@ CmdArmSetHandMode::CmdArmSetHandMode(Arm::HandMode mode) {
 }
 
 void CmdArmSetHandMode::Initialize() {
-  Robot::m_arm.SetHandMode(m_mode);
+  Robot::m_arm.SetHandModeSwitch(m_mode);
 }
 
 void CmdArmSetHandMode::Execute() {}

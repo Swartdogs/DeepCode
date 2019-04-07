@@ -28,6 +28,11 @@ Vision::Vision() {
     m_targetDistance = 0;
     m_targetSelect = tsBest;
     m_task = nullptr;
+    m_travelDistance = 0;
+}
+
+void Vision::AddDistanceOffset(double offset) {
+    m_targetDistance += offset;
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
@@ -35,6 +40,7 @@ void Vision::FindTarget(TargetSelect targetSelect) {
     m_targetDistance = 0;
     m_targetSelect = targetSelect;
     m_searchState = ssLooking;
+    m_travelDistance = Robot::m_drive.GetDistance(Drive::ueLeftEncoder);
 
     m_task = new std::thread(TargetSearch, this, targetSelect);             // Start TargetSearch thread
     m_task->detach();
@@ -64,6 +70,10 @@ Vision::TargetSelect Vision::GetTargetSelect() {
     return m_targetSelect;
 }
 
+double Vision::GetTravelDistance() {
+    return m_travelDistance;
+}
+
 void Vision::InitVision() {
     frc::CameraServer* cameraServer = frc::CameraServer::GetInstance();     // Get instance of Camera Server
     m_camera = cameraServer->StartAutomaticCapture("Vision", 0);            // Start Aim camera image capture
@@ -87,6 +97,9 @@ void Vision::SearchResults(SearchState state, double targetAngle, double targetD
     m_searchState       = state;
     m_targetAngle       = targetAngle;
     m_targetDistance    = targetDistance;
+
+    (state == ssTargetFound) ? m_travelDistance = Robot::m_drive.GetDistance(Drive::ueLeftEncoder) - m_travelDistance :
+                               m_travelDistance = 0;
 }
 
 void Vision::SetCameraMode(CameraMode mode) {

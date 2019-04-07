@@ -172,7 +172,10 @@ typedef enum{               // Dashboard: Dash Value indexes
     dvCargoRotateRatio,
     dvCargoEjectTime,
     dvCargoRotateTime,
-    dvVisionAngleOffset,
-    dvVisionCargoOffset,
-    dvVisionHatchOffset
+    dvVisionTargetAngle,
+    dvVisionCargoLoad,
+    dvVisionHatchLoad,
+    dvVisionHatchLow,
+    dvVisionHatchMid,
+    dvVisionHatchHigh
 } DashValue;

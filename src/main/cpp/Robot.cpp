@@ -5,7 +5,7 @@
 char      Robot::message[100];
 
 RobotLog  Robot::m_robotLog("Yeti");
-Dashboard Robot::m_dashboard("2019", 1, 20, 1, 60);       //Dashboard and Log should be created first
+Dashboard Robot::m_dashboard("2019", 1, 20, 1, 63);       //Dashboard and Log should be created first
 Arm       Robot::m_arm; 
 Drive     Robot::m_drive;
 Vision    Robot::m_vision;
@@ -32,6 +32,9 @@ void Robot::DisabledInit() {
   m_elevator.SetElevatorSetpoint(m_elevator.GetElevatorPosition());
   m_elevator.SetFootPosition(Elevator::fpExtended);
 
+  if (m_oi.InHatchMode()) m_arm.SetHandModeSwitch(Arm::hmHatch);
+  else                    m_arm.SetHandModeSwitch(Arm::hmCargo);
+
   m_robotLog.Close(); 
 }
 
@@ -43,13 +46,9 @@ void Robot::AutonomousInit() {
   m_robotLog.SetMode(rmAutonomous);
   m_dashboard.SetRobotMode(rmAutonomous);
 
-  m_arm.SetHandMode(m_arm.GetHandMode(), true);
-  m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
-  m_arm.SetWristPosition(m_arm.GetWristDegrees());
-  m_arm.SetHatchState(Arm::hsGrab);
+  InitializeArm();
   
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
-  
   m_vision.SetCameraMode(Vision::cmDriver);
 }
 
@@ -66,12 +65,9 @@ void Robot::TeleopInit() {
   m_dashboard.SetRobotStatus(rsClimb, false);
   m_dashboard.SetRobotStatus(rsNoClimb, false);
 
-  m_arm.SetHandMode(m_arm.GetHandMode(), true);
-  m_arm.SetShoulderPosition(m_arm.GetShoulderDegrees());
-  m_arm.SetWristPosition(m_arm.GetWristDegrees());
+  InitializeArm();
   
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
-  
   m_vision.SetCameraMode(Vision::cmDriver);
 }
 
@@ -179,6 +175,27 @@ void Robot::TestPeriodic() {
     m_elevator.SetElevatorMotor(0);
     m_arm.SetShoulderMotor(0);
     m_arm.SetWristMotor(0);
+  }
+}
+
+void Robot::InitializeArm() {
+  static bool handInitialized = false;
+
+  double shoulder = m_arm.GetShoulderDegrees();
+  double wrist    = m_arm.GetWristDegrees();
+
+  if (!handInitialized) {
+    handInitialized = true;
+    m_arm.SetHandModeRobot(Arm::hmCargo);
+    m_arm.SetHatchState(Arm::hsGrab);
+  }
+
+  if ((shoulder <= m_dashboard.GetDashValue(dvShoulderTravel)) &&
+      (wrist    <= m_dashboard.GetDashValue(dvWristTravel))) {
+    m_arm.SetArmPosition(Arm::apTravel);
+  } else {
+    m_arm.SetShoulderPosition(shoulder);
+    m_arm.SetWristPosition(wrist);
   }
 }
 

@@ -23,12 +23,25 @@ void CmdArmSetArmPosition::Initialize() {
 
     Arm::ArmPosition newPosition = m_position;
     
-    if (newPosition == Arm::apByHand) {                                        // Determine Position based on Hand Mode
-      if (Robot::m_arm.GetHandMode() == Arm::hmHatch) {
-        newPosition = Arm::apLow;
-      } else {
-        newPosition = Arm::apLoad;
+    if (newPosition == Arm::apPreset) {                                       // Use Preset Position
+      newPosition = Robot::m_arm.GetPresetPosition();                         // Get Preset Position
+      double distanceOffset = 0;                                                
+
+      switch (newPosition) {
+        case Arm::apLow:    distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchLow);   break;
+        case Arm::apMid:    distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchMid);   break;
+        case Arm::apHigh:   distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchHigh);  break;
+        default:
+          if (Robot::m_arm.GetHandModeSwitch() == Arm::hmHatch) {
+            newPosition = Arm::apTravel;
+            distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchLoad);
+          } else {
+            newPosition = Arm::apLoad;
+            distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionCargoLoad);
+          }
       }
+
+      Robot::m_vision.AddDistanceOffset(distanceOffset);
     }
 
     Robot::m_arm.SetArmPosition(newPosition);

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <frc/commands/CommandGroup.h>
+#include "subsystems/Arm.h"
 
-class GrpLoad : public frc::CommandGroup {
+class GrpGoToTarget : public frc::CommandGroup {
  public:
-  GrpLoad();
+  GrpGoToTarget();
   void End() override;
   void Interrupted() override;
 };

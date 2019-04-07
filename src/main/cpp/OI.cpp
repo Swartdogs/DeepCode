@@ -2,7 +2,7 @@
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
 #include "commands/GrpEndHatch.h"
-#include "commands/GrpLoad.h"
+#include "commands/GrpGoToTarget.h"
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -10,6 +10,7 @@
 #include "commands/CmdArmSetHandMode.h"
 #include "commands/CmdArmSetIntakeMode.h"
 #include "commands/CmdArmSetManual.h"
+#include "commands/CmdArmSetPresetMode.h"
 #include "commands/CmdCancelClimb.h"
 #include "commands/CmdDriveSetGear.h"
 #include "commands/CmdVisionFindTarget.h"
@@ -22,7 +23,7 @@
 OI::OI() {
   Robot::m_robotLog.Write("OI:       INIT", false);
 
-  m_buttonDrive1.WhenPressed        (new GrpLoad());
+  m_buttonDrive1.WhenPressed        (new GrpGoToTarget());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
@@ -45,7 +46,8 @@ OI::OI() {
 
   m_buttonBox3.WhenPressed          (new CmdArmSetHatchState(Arm::hsGrab));
   m_buttonBox7.WhenPressed          (new CmdArmSetHatchState(Arm::hsRelease));
-  m_buttonBox11.WhenPressed         (new CmdArmSetArmPosition(Arm::apLoad));
+  m_buttonBox11.WhenPressed         (new CmdArmSetPresetMode(true));
+  m_buttonBox11.WhenReleased        (new CmdArmSetPresetMode(false));
 
   m_buttonBox4.WhenPressed          (new CmdArmSetIntakeMode(Arm::imOut));
   m_buttonBox8.WhenPressed          (new CmdArmSetSpeed(true));
