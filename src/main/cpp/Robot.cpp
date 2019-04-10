@@ -32,9 +32,6 @@ void Robot::DisabledInit() {
   m_elevator.SetElevatorSetpoint(m_elevator.GetElevatorPosition());
   m_elevator.SetFootPosition(Elevator::fpExtended);
 
-  if (m_oi.InHatchMode()) m_arm.SetHandModeSwitch(Arm::hmHatch);
-  else                    m_arm.SetHandModeSwitch(Arm::hmCargo);
-
   m_robotLog.Close(); 
 }
 
@@ -183,6 +180,9 @@ void Robot::InitializeArm() {
 
   double shoulder = m_arm.GetShoulderDegrees();
   double wrist    = m_arm.GetWristDegrees();
+
+  if (m_oi.InHatchMode()) m_arm.SetHandModeSwitch(Arm::hmHatch);
+  else                    m_arm.SetHandModeSwitch(Arm::hmCargo);
 
   if (!handInitialized) {
     handInitialized = true;

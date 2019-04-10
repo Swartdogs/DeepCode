@@ -7,7 +7,7 @@
 GrpGoToTarget::GrpGoToTarget() {
   AddSequential (new CmdVisionFindTarget());
   AddSequential (new CmdArmSetArmPosition(Arm::apPreset));
-  AddSequential (new CmdDriveToTarget(0.4, 3.0));
+  AddSequential (new CmdDriveToTarget(0.4, 3.5));
 }
 
 void GrpGoToTarget::End() {

@@ -87,9 +87,11 @@ double PIDControl::Calculate(double input) {									// Calculate output based o
 	if (output > m_outputMax) {																	// Limit output to within Minimum-Maximum range
 		output = m_outputMax;
 		limit += "OutMax ";
+
 	} else if (output < m_outputMin) {
 		output = m_outputMin;
 		limit += "OutMin ";
+
 	} else if (!m_useRamp) {																		// Ramping disabled or completed
 		if (fabs(output) < m_outputLowErrorMin) {									// Keep output >= Low Error minimum
 			output = m_errorIsPositive ? m_outputLowErrorMin : -m_outputLowErrorMin;

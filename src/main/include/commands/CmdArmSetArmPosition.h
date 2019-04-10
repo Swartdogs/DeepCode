@@ -14,6 +14,8 @@ class CmdArmSetArmPosition : public frc::Command {
   void Interrupted() override;
 
  private: 
+  int               m_doneDelay;
+  int               m_handDelay;
   Arm::ArmPosition  m_position;
   CommandStatus     m_status;
   bool              m_waitForDone;

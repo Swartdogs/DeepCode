@@ -4,12 +4,15 @@
 #include "commands/CmdDriveToTarget.h"
 #include "Robot.h"
 
-CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout) {
+CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget) {
   Requires(&Robot::m_drive);
 
   m_maxSpeed      = maxSpeed;
   m_distance      = 0;
+  m_distanceLast  = 0;
+  m_driveFinished = false;
   m_heading       = 0;
+  m_hitTarget     = hitTarget;
   m_timeout       = timeout;
   m_status        = csRun;
 }
@@ -17,6 +20,7 @@ CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout) {
 void CmdDriveToTarget::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {          // Skip command if in a Group that has been canceled
     m_status = csSkip;
+
   } else {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
@@ -29,7 +33,10 @@ void CmdDriveToTarget::Initialize() {
       Robot::m_drive.RotateInit(m_heading, 0.6, true);
       sprintf(Robot::message, "Drive:    Target Rotate INIT  Heading=%5.1f", m_heading);
     } else {
-      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); // Initialize drive and rotate PIDs
+      m_distanceLast  = 0;                                                       // Initialize drive and rotate PIDs
+      m_driveFinished = false;
+      
+      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); 
       sprintf(Robot::message, "Drive:    Target Drive INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
     }
 
@@ -46,24 +53,46 @@ void CmdDriveToTarget::Execute() {
   if(m_status == csRun) {
     if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Cancel if in Group that has been canceled
       m_status = csCancel;
+
     } else if (IsTimedOut()) {                                                  // End command and cancel Group if TimedOut
       m_status = csTimedOut;
       if (this->IsParented()) this->GetGroup()->Cancel();
-    } else if (m_distance <= 0) {
+
+    } else if (fabs(Robot::m_oi.GetDriveJoystickX()) > 0.25 || fabs(Robot::m_oi.GetDriveJoystickY()) > 0.25) {
+      m_status = csCancel;
+      if (this->IsParented()) this->GetGroup()->Cancel();
+
+    } else if (m_distance <= 0) {                                               // Rotate Only
       if (Robot::m_drive.RotateIsFinished()) {
         m_status = csDone;
       } else {
         drive = 0;
         rotate = Robot::m_drive.RotateExec();
       }
-    } else if (Robot::m_drive.DriveIsFinished()) {                              // Done if distance has been reached
-      m_status = csDone;
-    } else if (fabs(Robot::m_oi.GetArmJoystickY()) > 0.1 || fabs(Robot::m_oi.GetArmJoystickX()) > 0.1) {
-      m_status = csDone;
-      if (this->IsParented()) this->GetGroup()->Cancel();
-    } else {                                                                    // Get drive and rotate values from PIDs
-       drive  = Robot::m_drive.DriveExec();
-       rotate = Robot::m_drive.RotateExec();
+
+    } else {                                                                    
+      if (Robot::m_drive.DriveIsFinished()) {                                   // Drive has reached target Distance
+        m_driveFinished = true;
+                                                                                
+        if (!m_hitTarget || Robot::m_arm.GetShoulderPosition() == Arm::apLoad) {  // Done if not hitting Target or loading Cargo
+          m_status = csDone;
+          Robot::m_drive.ArcadeDrive(0, 0);
+          return;
+        } 
+      }
+
+      double distanceNow = Robot::m_drive.GetDistance(Drive::ueCurrentEncoder);
+
+      if (distanceNow > 1 && (distanceNow - m_distanceLast) < 0.05) {           // Done if hit something
+        m_status = csStalled;
+      } else if (m_driveFinished) {                                             // Continue forward if distance has been reached
+        drive = 0.1;
+      } else {                                                                  // Determine drive speed from PID
+        drive  = Robot::m_drive.DriveExec();
+      }
+
+      rotate = Robot::m_drive.RotateExec();
+      m_distanceLast = distanceNow;
     }
   }
 
@@ -75,44 +104,26 @@ bool CmdDriveToTarget::IsFinished() {
 }
 
 void CmdDriveToTarget::End() {
+  std::string action = "";
   Robot::m_drive.SetDriveInUse(false);
 
   switch (m_status) {
-    case csSkip:
-      sprintf(Robot::message, "Drive:    To Target SKIP");
-      break;
-
-    case csDone:
-      if (m_distance <= 0) {
-        sprintf(Robot::message, "Drive:    Target Rotate DONE  Heading=%5.1f", Robot::m_drive.GetHeading()); 
-      } else {
-        sprintf(Robot::message, "Drive:    Target Drive DONE  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-                Robot::m_drive.GetHeading());
-      }
-      break;
-
-    case csCancel:
-      if (m_distance <= 0) {
-        sprintf(Robot::message, "Drive:    Target Rotate CANCELED  Heading=%5.1f", Robot::m_drive.GetHeading()); 
-      } else {
-        sprintf(Robot::message, "Drive:    Target Drive CANCELED  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-                Robot::m_drive.GetHeading());
-      }
-      break;
-
-    case csTimedOut:
-      if (m_distance <= 0) {
-        sprintf(Robot::message, "Drive:    Target Rotate TIMED OUT  Heading=%5.1f", Robot::m_drive.GetHeading()); 
-      } else {
-        sprintf(Robot::message, "Drive:    Target Drive TIMED OUT  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
-                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
-                Robot::m_drive.GetHeading());
-      }
-      break;
-      
+    case csSkip:      sprintf(Robot::message, "Drive:    To Target SKIP");  break;
+    case csDone:      action = "DONE";        break;
+    case csCancel:    action = "CANCELED";    break;
+    case csTimedOut:  action = "TIMED OUT";   break;
+    case csStalled:   action = "STALLED";     break;
     default:;
+  }
+
+  if (action.length() > 0) {
+      if (m_distance <= 0) {
+        sprintf(Robot::message, "Drive:    Target Rotate %s  Heading=%5.1f", action.c_str(), Robot::m_drive.GetHeading()); 
+      } else {
+        sprintf(Robot::message, "Drive:    Target Drive %s  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", action.c_str(),
+                Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
+                Robot::m_drive.GetHeading());
+      }
   }
 
   Robot::m_robotLog.Write(Robot::message);

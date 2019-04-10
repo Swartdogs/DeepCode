@@ -93,7 +93,6 @@ void Drive::DriveInit(double distance, double heading, double maxSpeed, double m
     m_encoderLeft.Reset();
     m_encoderRight.Reset();
   }
-
   m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
   m_drivePID.SetOutputRange(-maxSpeed, maxSpeed, minSpeed); 
 
@@ -134,9 +133,9 @@ double Drive::GetDistance(UseEncoder encoder){
       break;
 
     case ueBothEncoders:
-      if (left < (right * 0.8)) distance = right;
-      else if (right < (left * 0.8)) distance = left;
-      else distance = (left + right) / 2;
+      if (left < (right * 0.8))       distance = right;
+      else if (right < (left * 0.8))  distance = left;
+      else                            distance = (left + right) / 2;
       break;
 
     default:;

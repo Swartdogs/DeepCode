@@ -6,6 +6,7 @@ typedef enum {              // Command Status   (Commands)
     csDone,
     csCancel,
     csTimedOut, 
+    csStalled,
     csContinue
 } CommandStatus;
 

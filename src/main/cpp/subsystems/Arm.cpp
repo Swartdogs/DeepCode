@@ -311,6 +311,10 @@ double Arm::GetWristSetpoint() {
   return m_wristSetpoint;
 }
 
+bool Arm::InPresetMode() {
+  return m_usePreset;
+}
+
 bool Arm::IsDrivenManually() {
   return m_manualDrive;
 }

@@ -161,10 +161,9 @@ void RobotLog::Write(std::string entry, bool includeTime, bool forceClose) {
 
         if (includeTime) {
             float eventTime = (float)(m_periodicCount * 20) / 1000;
-            int timeDiff = m_periodicCount - (int)((((double) frc::RobotController::GetFPGATime() / 1000)- m_periodicBeginTime) / 20);
 
-            printf("%s%03d  %7.2f %+3d: %s \n", timeNow, millisec, eventTime, timeDiff, cEntry);
-            if (m_logFile != nullptr) fprintf(m_logFile, "%s%03d  %7.2f %+3d: %s \r\n", timeNow, millisec, eventTime, timeDiff, cEntry);
+            printf("%s%03d  %7.2f: %s \n", timeNow, millisec, eventTime, cEntry);
+            if (m_logFile != nullptr) fprintf(m_logFile, "%s%03d  %7.2f: %s \r\n", timeNow, millisec, eventTime, cEntry);
 
         } else {
             printf("%s%03d  %s \n", timeNow, millisec, cEntry);        
