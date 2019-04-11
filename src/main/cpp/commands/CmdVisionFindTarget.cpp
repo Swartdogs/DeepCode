@@ -5,9 +5,9 @@
 #include "RobotMap.h"
 
 CmdVisionFindTarget::CmdVisionFindTarget(Vision::TargetSelect targetSelect) {
-  m_targetSelect = targetSelect;
-  m_status = csRun;
-  m_counter = 0;
+  m_targetSelect  = targetSelect;
+  m_status        = csRun;
+  m_cameraWait    = 0;
 }
 
 void CmdVisionFindTarget::Initialize() {
@@ -21,10 +21,10 @@ void CmdVisionFindTarget::Initialize() {
     m_status = csRun;
 
     if(Robot::m_vision.InTargetMode()) {                                        // Camera already in Target mode
-      m_counter = 0;
+      m_cameraWait = 0;
       Robot::m_vision.FindTarget(m_targetSelect);                               // Initiate target search
     } else {
-      m_counter = 6;                                                            // Set change-in-mode wait counter
+      m_cameraWait = 5;                                                         // Set change-in-mode wait counter
       Robot::m_vision.SetCameraMode(Vision::cmTarget);                          // Switch camera to Target mode
     }
     Robot::m_robotLog.Write("Vision:   Find Target INIT");
@@ -36,10 +36,13 @@ void CmdVisionFindTarget::Execute() {
     if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Cancel if in Group that has been canceled
       m_status = csCancel;
       sprintf(m_message, "Vision:   Find Target CANCELED");
-    } else if (m_counter > 0) {                                                 // Waiting for change in Camera mode
-      m_counter--;
-      if (m_counter == 0) Robot::m_vision.FindTarget(m_targetSelect);           // Wait completed, initiate target search
-      
+    
+    } else if (m_cameraWait > 0) {                                              // Waiting for change in Camera mode
+      if (Robot::m_vision.InTargetMode()) {
+        m_cameraWait--;
+        if (m_cameraWait == 0) Robot::m_vision.FindTarget(m_targetSelect);      // Wait completed, initiate target search
+      }
+
     } else {
       switch (Robot::m_vision.GetSearchState()) {                               // Action dependent on Target Search state
         case Vision::ssNoImage:                                                 
@@ -50,15 +53,17 @@ void CmdVisionFindTarget::Execute() {
 
         case Vision::ssNoTarget:
           m_status = csDone;                                                    // if No Target found, set to Done
-          sprintf(m_message, "Vision:   No Target Found");
+          sprintf(m_message, "Vision:   No Target Found  Contours=%d", 
+                  Robot::m_vision.GetContoursFound());
           if (this->IsParented()) this->GetGroup()->Cancel();                   // If a Group command, cancel Group
           break;
 
         case Vision::ssTargetFound:
           m_status = csDone;                                                    // If Target found, set to Done
           Robot::m_dashboard.SetRobotStatus(rsTargetFound, true);
-          sprintf(m_message, "Vision:   Target Found at Distance=%5.1f   Heading=%5.1f", 
-                  Robot::m_vision.GetTargetDistance(), Robot::m_vision.GetTargetAngle());
+          sprintf(m_message, "Vision:   Target Found at Distance=%5.1f  Heading=%5.1f  Contours=%d", 
+                  Robot::m_vision.GetTargetDistance(), Robot::m_vision.GetTargetAngle(), 
+                  Robot::m_vision.GetContoursFound());
           break;
           
         case Vision::ssDone:

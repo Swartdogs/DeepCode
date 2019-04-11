@@ -22,13 +22,15 @@ std::mutex myMutex;
 Vision::Vision() {
     Robot::m_robotLog.Write("Vision:   INIT", false);
 
-    m_cameraMode = cmTarget;
-    m_searchState = ssDone;
-    m_targetAngle = 0;
-    m_targetDistance = 0;
-    m_targetSelect = tsBest;
-    m_task = nullptr;
-    m_travelDistance = 0;
+    m_cameraMode        = cmTarget;
+    m_cameraThread      = nullptr;
+    m_contoursFound     = 0;
+    m_searchState       = ssDone;
+    m_searchThread      = nullptr;
+    m_targetAngle       = 0;
+    m_targetDistance    = 0;
+    m_targetSelect      = tsBest;
+    m_travelDistance    = 0;
 }
 
 void Vision::AddDistanceOffset(double offset) {
@@ -36,19 +38,24 @@ void Vision::AddDistanceOffset(double offset) {
 }
 
 void Vision::FindTarget(TargetSelect targetSelect) {
-    m_targetAngle = 0;                                                      // Initialize variables
-    m_targetDistance = 0;
-    m_targetSelect = targetSelect;
-    m_searchState = ssLooking;
-    m_travelDistance = Robot::m_drive.GetDistance(Drive::ueLeftEncoder);
+    m_contoursFound     = 0;                                                // Initialize variables
+    m_targetAngle       = 0;                                                      
+    m_targetDistance    = 0;
+    m_targetSelect      = targetSelect;
+    m_searchState       = ssLooking;
+    m_travelDistance    = Robot::m_drive.GetDistance(Drive::ueLeftEncoder);
 
-    m_task = new std::thread(TargetSearch, this, targetSelect);             // Start TargetSearch thread
-    m_task->detach();
+    m_searchThread = new std::thread(TargetSearch, this, targetSelect);     // Start TargetSearch thread
+    m_searchThread->detach();
 }
 
 bool Vision::GetCameraImage(cv::Mat& image) {
     if(m_sink.GrabFrame(image) == 0) return false;                          // Get image from camera
     return true;
+}
+
+int Vision::GetContoursFound() {
+    return m_contoursFound;
 }
 
 Vision::SearchState Vision::GetSearchState() {
@@ -57,12 +64,12 @@ Vision::SearchState Vision::GetSearchState() {
 }
 
 double Vision::GetTargetAngle() {
-    std::lock_guard<std::mutex> guard(myMutex);
+//    std::lock_guard<std::mutex> guard(myMutex);
     return m_targetAngle;
 }
 
 double Vision::GetTargetDistance() {
-    std::lock_guard<std::mutex> guard(myMutex);
+//    std::lock_guard<std::mutex> guard(myMutex);
     return m_targetDistance;
 }
 
@@ -92,11 +99,16 @@ bool Vision::InTargetMode() {
     return(m_cameraMode == cmTarget);
 }
 
-void Vision::SearchResults(SearchState state, double targetAngle, double targetDistance) {
+void Vision::NewCameraMode(CameraMode mode) {
+    m_cameraMode = mode;
+}
+
+void Vision::SearchResults(SearchState state, double targetAngle, double targetDistance, int contoursFound) {
     std::lock_guard<std::mutex> guard(myMutex);
     m_searchState       = state;
     m_targetAngle       = targetAngle;
     m_targetDistance    = targetDistance;
+    m_contoursFound     = contoursFound;
 
     (state == ssTargetFound) ? m_travelDistance = Robot::m_drive.GetDistance(Drive::ueLeftEncoder) - m_travelDistance :
                                m_travelDistance = 0;
@@ -104,19 +116,26 @@ void Vision::SearchResults(SearchState state, double targetAngle, double targetD
 
 void Vision::SetCameraMode(CameraMode mode) {
     if (m_cameraMode != mode) {
-        m_cameraMode = mode;
-
-        if (mode == cmTarget) {
-            m_camera.SetBrightness(0);
-            m_camera.SetExposureManual(10);
-        } else {
-            m_camera.SetBrightness(30);
-            m_camera.SetExposureAuto();
-        }
+        m_cameraThread = new std::thread(ConfigureCamera, this, &m_camera, mode);
+        m_cameraThread->detach();    
     }
 }
 
- void Vision::TargetSearch(Vision* host, Vision::TargetSelect targetSelect) {     
+//  Functions execute in seperate Threads
+
+void Vision::ConfigureCamera(Vision* host, cs::UsbCamera* myCamera, Vision::CameraMode mode) {
+    if (mode == cmTarget) {
+        myCamera->SetBrightness(0);
+        myCamera->SetExposureManual(10);
+    } else {
+        myCamera->SetBrightness(30);
+        myCamera->SetExposureAuto();
+    }
+
+    host->NewCameraMode(mode);
+}
+
+void Vision::TargetSearch(Vision* host, Vision::TargetSelect targetSelect) {     
     struct visionTape {                                                     // Structure containing Vision Tape info
          float  angle;                                                      // Angle of rotated rectangle
          int    x;                                                          // X coordinate of bounding rectangle
@@ -127,6 +146,7 @@ void Vision::SetCameraMode(CameraMode mode) {
          double distance;                                                   // Distance from target
      };
 
+     int        contoursFound = 0;
      double     targetAngle = 0;                                            // Initialize results
      double     targetDistance = 0;    
      bool       targetFound = false;                                
@@ -147,9 +167,10 @@ void Vision::SetCameraMode(CameraMode mode) {
         imageA.deallocate();                                                // Free memory used by images
         imageB.deallocate();
 
-        printf("    Contours Found=%i\n", contours.size());
+        contoursFound = contours.size();
+        printf("    Contours Found=%i\n", contoursFound);
     
-        if (contours.size() > 0) {                                          // Contours found
+        if (contoursFound > 0) {                                            // Contours found
             std::vector<visionTape> tapes;                                  // Create vector of Vision Tapes
             tapes.clear();
 
@@ -214,7 +235,7 @@ void Vision::SetCameraMode(CameraMode mode) {
                     if(targetSelect == Vision::tsBest){                     // Search for Target closest to center of Image
                         for (int i = 1; i < targets.size(); i++) {
                             if (fabs(targets[i].angle) < fabs(targets[targetIndex].angle)) targetIndex = i;
-                            printf("    Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
+//                            printf("    Vision Target %i: Angle=%f Distance=%f\n", i, targets[i].angle, targets[i].distance);
                         }
 
                     } else if (targetSelect == Vision::tsRight){
@@ -229,15 +250,15 @@ void Vision::SetCameraMode(CameraMode mode) {
             }
         }
 
+        if (targetFound) {
+            host->SearchResults(Vision::ssTargetFound, targetAngle, targetDistance, contoursFound);
+        } else {
+            host->SearchResults(Vision::ssNoTarget, 0, 0, contoursFound);
+        }
+
     } else {                                                                // No image from Camera
         imageA.deallocate();
-        host->SearchResults(Vision::ssNoImage, 0, 0);
+        host->SearchResults(Vision::ssNoImage, 0, 0, 0);
     }
-
-    if (targetFound) {
-        host->SearchResults(Vision::ssTargetFound, targetAngle, targetDistance);
-    } else {
-        host->SearchResults(Vision::ssNoTarget, 0, 0);
-    }
- }
+}
 

@@ -78,16 +78,16 @@ void CmdArmSetArmPosition::Initialize() {
 
 void CmdArmSetArmPosition::Execute() {
   if (m_status == csRun) {    
-    if (m_handDelay > 0) {
+    if (m_handDelay > 0) {                          // Hand Delay
       m_handDelay--;
-      if (m_handDelay <= 0) {                       // Hand delay expired
+      if (m_handDelay <= 0) {                       // Hand Delay expired
         Robot::m_arm.SetArmPosition(m_position);    // Move Arm to new position
         if (!m_waitForDone) m_status = csDone;
       }
 
-    } else if (m_doneDelay > 0) {
+    } else if (m_doneDelay > 0) {                   // Dibe Delay while Arm moves
       m_doneDelay--;
-      if (m_doneDelay <= 0) {
+      if (m_doneDelay <= 0) {                       // Done Delay expired
         if (!m_waitForDone) m_status = csDone;
       }
 

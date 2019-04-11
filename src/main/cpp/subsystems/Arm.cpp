@@ -28,7 +28,7 @@ Arm::Arm() : Subsystem("Arm") {
 
   m_shoulderPID.SetCoefficient('P', 0, 0.04, 0);
   m_shoulderPID.SetCoefficient('I', 15, 0, 0.001);
-  m_shoulderPID.SetCoefficient('D', 0, 0, 0);
+  m_shoulderPID.SetCoefficient('D', 5, 0.1, 0);
   m_shoulderPID.SetInputRange(0, 125);
   m_shoulderPID.SetOutputRange(-0.4, 0.7);
   m_shoulderPID.SetOutputRamp(0.10, 0.05);
@@ -76,13 +76,11 @@ void Arm::Periodic() {
 
     case imIn:
       if(m_ignoreCargo || m_cargoSensor.Get()) {                // Wrist position not at setpoint or No Cargo
-      //if(wristNow < 85|| m_cargoSensor.Get()) {               // Wrist position < 85 or No Cargo
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
       } else {
         SetIntakeMode(imOff);
         Robot::m_dashboard.SetRobotStatus(rsCargoLoaded, true);
-        //SetArmPosition(apTravel);        
       }
       break; 
 
@@ -185,13 +183,13 @@ void Arm::Periodic() {
         SetWristPosition(m_wristNext, m_armPosition);
         m_wristNext = -1;
       } else {
-        double newSepoint = m_wristSetpoint + 5.0;
+        double newSetpoint = m_wristSetpoint + 5.0;
         
-        if (newSepoint >= m_wristNext) {
+        if (newSetpoint >= m_wristNext) {
           SetWristPosition(m_wristNext, m_armPosition);
           m_wristNext = -1;
         } else {
-          m_wristSetpoint = newSepoint;
+          m_wristSetpoint = newSetpoint;
           m_wristPID.SetSetpoint(m_wristSetpoint, GetWristPosition(), false);
         }
       }
@@ -469,7 +467,7 @@ void Arm::SetArmPosition(ArmPosition position) {
         SetWristPosition(wristClear, apWait);
       } else if (shoulderNow > shoulderClear) {                                 // Shoulder already above Clear
         SetWristPosition(wristNew, position);                                   // Move Wrist to New
-      } else if (wristNew < 170) {                                              // Wrist will clear due to Shoulder movement
+      } else if (wristNew < 120) {                                              // Wrist will clear due to Shoulder movement
         SetWristPosition(wristNew, position);                                   // Move Wrist to New
       } else {
         m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder

@@ -83,7 +83,7 @@ void CmdDriveToTarget::Execute() {
 
       double distanceNow = Robot::m_drive.GetDistance(Drive::ueCurrentEncoder);
 
-      if (distanceNow > 1 && (distanceNow - m_distanceLast) < 0.05) {           // Done if hit something
+      if (distanceNow > (m_distance / 2) && (distanceNow - m_distanceLast) < 0.05) {  // Done if hit something
         m_status = csStalled;
       } else if (m_driveFinished) {                                             // Continue forward if distance has been reached
         drive = 0.1;

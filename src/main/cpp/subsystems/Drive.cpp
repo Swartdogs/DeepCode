@@ -5,6 +5,7 @@
 Drive::Drive() : Subsystem("Drive") {
   Robot::m_robotLog.Write("Drive:    INIT", false);
 
+  m_brakeThread = nullptr;
   m_driveEnable = true;
   m_driveInUse  = false;
 
@@ -181,17 +182,8 @@ void Drive::RotatePidTune() {
 }
 
 void Drive::SetBrakeMode(bool brakesOn) {
-  if (brakesOn) {
-    m_driveLeft1.SetNeutralMode(NeutralMode::Brake);
-    m_driveLeft2.SetNeutralMode(NeutralMode::Brake);
-    m_driveRight1.SetNeutralMode(NeutralMode::Brake);
-    m_driveRight2.SetNeutralMode(NeutralMode::Brake);
-  } else {
-    m_driveLeft1.SetNeutralMode(NeutralMode::Coast);
-    m_driveLeft2.SetNeutralMode(NeutralMode::Coast);
-    m_driveRight1.SetNeutralMode(NeutralMode::Coast);
-    m_driveRight2.SetNeutralMode(NeutralMode::Coast);
-  }
+  m_brakeThread = new std::thread(ConfigureBrakeMode, this, brakesOn);
+  m_brakeThread->detach();
 }
 
 void Drive::SetDriveEnable(bool enable) {
@@ -207,5 +199,21 @@ void Drive::SetShifter(ShifterPosition position) {
     m_solShifter.Set(position == spLow);
     m_shifterPosition = position;
     Robot::m_dashboard.SetRobotStatus(rsShifterLow, position == spLow);
+  }
+}
+
+// Function executed in seperate Thread
+
+void Drive::ConfigureBrakeMode(Drive* host, bool brakesOn) {
+  if (brakesOn) {
+    host->m_driveLeft1.SetNeutralMode(NeutralMode::Brake);
+    host->m_driveLeft2.SetNeutralMode(NeutralMode::Brake);
+    host->m_driveRight1.SetNeutralMode(NeutralMode::Brake);
+    host->m_driveRight2.SetNeutralMode(NeutralMode::Brake);
+  } else {
+    host->m_driveLeft1.SetNeutralMode(NeutralMode::Coast);
+    host->m_driveLeft2.SetNeutralMode(NeutralMode::Coast);
+    host->m_driveRight1.SetNeutralMode(NeutralMode::Coast);
+    host->m_driveRight2.SetNeutralMode(NeutralMode::Coast);
   }
 }

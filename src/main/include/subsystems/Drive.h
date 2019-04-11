@@ -45,7 +45,17 @@ class Drive : public frc::Subsystem {
   void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);
 
+  // Function executed in seperate Thread
+
+  static void       ConfigureBrakeMode(Drive* host, bool brakesOn);
+
+  WPI_VictorSPX       m_driveLeft1{canDriveLeft1};
+  WPI_VictorSPX       m_driveLeft2{canDriveLeft2};
+  WPI_VictorSPX       m_driveRight1{canDriveRight1};
+  WPI_VictorSPX       m_driveRight2{canDriveRight2};
+
 private:
+  std::thread*        m_brakeThread;
   bool                m_driveEnable;
   bool                m_driveInUse; 
 
@@ -59,12 +69,7 @@ private:
 
   ShifterPosition     m_shifterPosition;
 
- frc::Solenoid       m_solShifter{solShifter};
+  frc::Solenoid       m_solShifter{solShifter};
 
   UseEncoder          m_useEncoder;
-
-  WPI_VictorSPX       m_driveLeft1{canDriveLeft1};
-  WPI_VictorSPX       m_driveLeft2{canDriveLeft2};
-  WPI_VictorSPX       m_driveRight1{canDriveRight1};
-  WPI_VictorSPX       m_driveRight2{canDriveRight2};
 };
