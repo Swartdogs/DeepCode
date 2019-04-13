@@ -45,6 +45,7 @@ void Robot::AutonomousInit() {
 
   InitializeArm();
   
+  m_drive.ResetGyro();
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_vision.SetCameraMode(Vision::cmDriver);
 }

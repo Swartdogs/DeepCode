@@ -58,7 +58,7 @@ void CmdDriveToTarget::Execute() {
       m_status = csTimedOut;
       if (this->IsParented()) this->GetGroup()->Cancel();
 
-    } else if (fabs(Robot::m_oi.GetDriveJoystickX()) > 0.25 || fabs(Robot::m_oi.GetDriveJoystickY()) > 0.25) {
+    } else if (Robot::m_oi.DriverCancel()) {                                    // Canceled by Driver with Drive Joystick
       m_status = csCancel;
       if (this->IsParented()) this->GetGroup()->Cancel();
 

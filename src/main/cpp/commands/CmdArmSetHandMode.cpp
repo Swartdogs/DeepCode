@@ -8,7 +8,9 @@ CmdArmSetHandMode::CmdArmSetHandMode(Arm::HandMode mode) {
 }
 
 void CmdArmSetHandMode::Initialize() {
-  Robot::m_arm.SetHandModeSwitch(m_mode);
+  if ((this->IsParented()) ? !this->GetGroup()->IsCanceled() : true) {    // Execute if not in canceled Group
+    Robot::m_arm.SetHandModeSwitch(m_mode);
+  }
 }
 
 void CmdArmSetHandMode::Execute() {}

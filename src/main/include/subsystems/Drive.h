@@ -36,6 +36,7 @@ class Drive : public frc::Subsystem {
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
   std::string       GetShifterPositionName(ShifterPosition position);
+  void              ResetGyro();
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
   bool              RotateIsFinished();

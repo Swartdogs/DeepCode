@@ -8,12 +8,15 @@ class OI {
   OI();
   
   double  ApplyDeadband(double joystickValue, double deadband);
+  bool    DriverCancel();
   double  GetArmJoystickX();
   double  GetArmJoystickY();
   double  GetDriveJoystickX();
   double  GetDriveJoystickY();
   bool    InHatchMode();
   void    Periodic(); 
+  void    SandStormAutoInit();
+  bool    SandStormAutoRunning();
   
  private:
   frc::Joystick  m_driveJoystick{0};
@@ -22,6 +25,7 @@ class OI {
 
   frc::JoystickButton m_buttonDrive1{&m_driveJoystick, 1};
   frc::JoystickButton m_buttonDrive2{&m_driveJoystick, 2};
+  frc::JoystickButton m_buttonDrive3{&m_driveJoystick, 3};
   frc::JoystickButton m_buttonDrive6{&m_driveJoystick, 6};
   frc::JoystickButton m_buttonDrive7{&m_driveJoystick, 7};
   frc::JoystickButton m_buttonDrive8{&m_driveJoystick, 8};
@@ -52,4 +56,6 @@ class OI {
   frc::InternalButton m_InternalLevel2;
   frc::InternalButton m_InternalLevel3;
   frc::InternalButton m_InternalHandMode;
+
+  frc::CommandGroup*  m_autoGroup;
 };

@@ -13,6 +13,7 @@
 #include "commands/CmdArmSetPresetMode.h"
 #include "commands/CmdCancelClimb.h"
 #include "commands/CmdDriveSetGear.h"
+#include "commands/CmdSandStormAuto.h"
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdVisionToggleMode.h"
 #include "subsystems/Elevator.h"
@@ -26,6 +27,7 @@ OI::OI() {
   m_buttonDrive1.WhenPressed        (new GrpGoToTarget());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
+  m_buttonDrive3.WhenPressed        (new CmdSandStormAuto());
   m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
   m_buttonDrive7.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
@@ -58,6 +60,8 @@ OI::OI() {
   m_InternalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
   m_InternalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
   m_InternalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));
+
+  m_autoGroup = nullptr;
 }
 
 double OI::ApplyDeadband(double joystickValue, double deadband) {
@@ -70,6 +74,10 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
   }
   
   return 0;
+}
+
+bool OI::DriverCancel() {
+  return (fabs(m_driveJoystick.GetY()) > 0.3 || fabs(m_driveJoystick.GetX()) > 0.3);
 }
 
 double OI::GetArmJoystickX() {
@@ -96,4 +104,20 @@ void OI::Periodic() {
   m_InternalLevel2.SetPressed(m_buttonDrive8.Get() && m_buttonArm7.Get());
   m_InternalLevel3.SetPressed(m_buttonDrive8.Get() && m_buttonArm6.Get());
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
+}
+
+void OI::SandStormAutoInit() {
+  switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
+    default:  m_autoGroup = nullptr;
+  }
+
+  if (m_autoGroup != nullptr) m_autoGroup->Start();
+}
+
+bool OI::SandStormAutoRunning() {
+  if (m_autoGroup == nullptr) {
+    return false;
+  } else {
+    return m_autoGroup->IsRunning();
+  }
 }

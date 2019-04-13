@@ -161,6 +161,10 @@ std::string Drive::GetShifterPositionName(ShifterPosition position) {
   return name;
 }
 
+void Drive::ResetGyro() {
+  m_gyro.Reset();
+}
+
 double Drive::RotateExec() {
   return m_rotatePID.Calculate(GetHeading());
 }

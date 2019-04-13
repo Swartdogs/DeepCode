@@ -23,6 +23,7 @@ CmdDriveDistance::CmdDriveDistance(double distance, double heading, double maxSp
 void CmdDriveDistance::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {          // Skip command if in a Group that has been canceled
     m_status = csSkip;
+    
   } else {
     m_status = csRun;
     Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
@@ -46,11 +47,18 @@ void CmdDriveDistance::Execute() {
   if(m_status == csRun) {
     if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Cancel if in Group that has been canceled
       m_status = csCancel;
+
     } else if (IsTimedOut()) {                                                  // End command and cancel Group if TimedOut
       m_status = csTimedOut;
       if (this->IsParented()) this->GetGroup()->Cancel();
+
+    } else if (Robot::m_oi.DriverCancel()) {                                    // Canceled by Driver with Drive Joystick
+      m_status = csCancel;
+      if (this->IsParented()) this->GetGroup()->Cancel();
+
     } else if (Robot::m_drive.DriveIsFinished()) {                              // Done if distance has been reached
       m_status = csDone;
+
     } else {
        drive  = Robot::m_drive.DriveExec();                                     // Get drive and rotate values from PIDs
        rotate = Robot::m_drive.RotateExec();

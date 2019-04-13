@@ -116,8 +116,8 @@ typedef enum {              // Dashborad: Dash Button indexes
 } DashButton;
 
 typedef enum{               // Dashboard: Dash Value indexes
-    dvAutoSelect,
-    dvAutoDelay,
+    dvAutoHatchPlace,
+    dvAutoHatchLoad,
     dvPidSelect,
     dvPidSetpoint,
     dvPidMaxOut,

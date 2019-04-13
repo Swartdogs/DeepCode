@@ -14,9 +14,11 @@ void CmdVisionFindTarget::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {          // Skip command if in a Group that has been canceled
     m_status = csSkip;
     sprintf(m_message, "Vision:   Find Target SKIP");
+  
   } else if (Robot::m_vision.GetSearchState() == Vision::ssLooking) {           // Set to Done if Vision is already looking
     m_status = csDone;
     sprintf(m_message, "Vision:   Find Target Busy");
+  
   } else {
     m_status = csRun;
 

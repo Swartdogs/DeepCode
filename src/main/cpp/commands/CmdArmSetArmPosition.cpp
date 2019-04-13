@@ -16,6 +16,7 @@ void CmdArmSetArmPosition::Initialize() {
   if ((this->IsParented()) ? this->GetGroup()->IsCanceled() : false) {        // Skip command if in a Group that has been canceled
     m_status = csCancel;
     Robot::m_robotLog.Write("Arm:      Set Position SKIP");
+  
   } else {                                                                    
     if (m_waitForDone) {                                                      // Set status to Run if waiting for completion
       m_status = csRun;
@@ -85,7 +86,7 @@ void CmdArmSetArmPosition::Execute() {
         if (!m_waitForDone) m_status = csDone;
       }
 
-    } else if (m_doneDelay > 0) {                   // Dibe Delay while Arm moves
+    } else if (m_doneDelay > 0) {                   // Delay while Arm moves
       m_doneDelay--;
       if (m_doneDelay <= 0) {                       // Done Delay expired
         if (!m_waitForDone) m_status = csDone;

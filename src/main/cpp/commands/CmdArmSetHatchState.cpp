@@ -8,7 +8,9 @@ CmdArmSetHatchState::CmdArmSetHatchState(Arm::HatchState state) {
 }
 
 void CmdArmSetHatchState::Initialize() {
-  Robot::m_arm.SetHatchState(m_state);
+  if ((this->IsParented()) ? !this->GetGroup()->IsCanceled() : true) {    // Execute if not in canceled Group
+    Robot::m_arm.SetHatchState(m_state);
+  }
 }
 
 void CmdArmSetHatchState::Execute() {}
