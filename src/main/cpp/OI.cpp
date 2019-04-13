@@ -2,6 +2,9 @@
 #include <frc/WPILib.h>
 #include "commands/GrpClimb.h"
 #include "commands/GrpEndHatch.h"
+#include "commands/GrpEndHatchRight.h"
+#include "commands/GrpEndHatchLeft.h"
+#include "commands/GrpSideLeftHatch1.h"
 #include "commands/GrpGoToTarget.h"
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
@@ -27,9 +30,9 @@ OI::OI() {
   m_buttonDrive1.WhenPressed        (new GrpGoToTarget());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
-  m_buttonDrive3.WhenPressed        (new CmdSandStormAuto());
   m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
   m_buttonDrive7.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
+  m_buttonDrive8.WhenPressed        (new CmdSandStormAuto());
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
@@ -108,13 +111,19 @@ void OI::Periodic() {
 
 void OI::SandStormAutoInit() {
   switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
+    case 1:   m_autoGroup = new GrpEndHatchLeft();    break; 
+    case 2:   m_autoGroup = new GrpEndHatchRight();   break;
+    case 3:   m_autoGroup = new GrpSideLeftHatch1();  break;
     default:  m_autoGroup = nullptr;
   }
 
   if (m_autoGroup != nullptr) m_autoGroup->Start();
+
 }
 
 bool OI::SandStormAutoRunning() {
+  return false;
+
   if (m_autoGroup == nullptr) {
     return false;
   } else {

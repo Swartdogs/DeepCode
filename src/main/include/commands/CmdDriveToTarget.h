@@ -5,7 +5,7 @@
 
 class CmdDriveToTarget : public frc::Command {
  public:
-  CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget = false);
+  CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget = false, double distanceOffset = 0);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -15,6 +15,7 @@ class CmdDriveToTarget : public frc::Command {
 private:
   double          m_distance;
   double          m_distanceLast;
+  double          m_distanceOffset;
   bool            m_driveFinished;
   double          m_heading;
   bool            m_hitTarget;

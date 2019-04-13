@@ -44,6 +44,7 @@ void Robot::AutonomousInit() {
   m_dashboard.SetRobotMode(rmAutonomous);
 
   InitializeArm();
+  m_arm.SetHatchState(Arm::hsGrab);
   
   m_drive.ResetGyro();
   m_elevator.SetElevatorPosition(Elevator::epRetracted);

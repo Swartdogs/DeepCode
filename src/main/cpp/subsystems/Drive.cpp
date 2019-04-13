@@ -24,8 +24,8 @@ Drive::Drive() : Subsystem("Drive") {
   m_rotatePID.SetCoefficient('I', 10, 0, 0.0025);
   m_rotatePID.SetCoefficient('D', 0, 0.25, 0);
   m_rotatePID.SetInputRange(-360, 360);
-  m_rotatePID.SetOutputRamp(0.1, 0.05);
-  m_rotatePID.SetSetpointDeadband(1.0); 
+  m_rotatePID.SetOutputRamp(0.1, 0.1);
+  m_rotatePID.SetSetpointDeadband(2.0); 
 
   m_drivePID.SetCoefficient('P', 0, 0.04, 0);
   m_drivePID.SetCoefficient('I', 10, 0, 0.0025);

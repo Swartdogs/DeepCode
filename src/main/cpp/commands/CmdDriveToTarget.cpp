@@ -4,17 +4,18 @@
 #include "commands/CmdDriveToTarget.h"
 #include "Robot.h"
 
-CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget) {
+CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget, double distanceOffset) {
   Requires(&Robot::m_drive);
 
-  m_maxSpeed      = maxSpeed;
-  m_distance      = 0;
-  m_distanceLast  = 0;
-  m_driveFinished = false;
-  m_heading       = 0;
-  m_hitTarget     = hitTarget;
-  m_timeout       = timeout;
-  m_status        = csRun;
+  m_maxSpeed        = maxSpeed;
+  m_distance        = 0;
+  m_distanceLast    = 0;
+  m_distanceOffset  = distanceOffset;
+  m_driveFinished   = false;
+  m_heading         = 0;
+  m_hitTarget       = hitTarget;
+  m_timeout         = timeout;
+  m_status          = csRun;
 }
 
 void CmdDriveToTarget::Initialize() {
@@ -26,7 +27,8 @@ void CmdDriveToTarget::Initialize() {
     Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
     Robot::m_drive.SetBrakeMode(true);                                          // Set motor controllers to Brake mode
 
-    m_distance  = Robot::m_vision.GetTargetDistance();
+    m_distance  = Robot::m_vision.GetTargetDistance() + m_distanceOffset 
+                  - Robot::m_vision.GetTravelDistance();
     m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionTargetAngle);  
 
     if (m_distance <= 0) {
