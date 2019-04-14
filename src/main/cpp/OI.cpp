@@ -110,15 +110,27 @@ void OI::Periodic() {
 }
 
 void OI::SandStormAutoInit() {
+  std::string name = "";
+
   switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
-    case 1:   m_autoGroup = new GrpEndHatchLeft();    break; 
-    case 2:   m_autoGroup = new GrpEndHatchRight();   break;
-    case 3:   m_autoGroup = new GrpSideLeftHatch1();  break;
+    case 1:   m_autoGroup = new GrpEndHatchLeft();
+              name = "Cargo Ship End Hatch Left";
+              break; 
+    case 2:   m_autoGroup = new GrpEndHatchRight();
+              name = "Cargo Ship End Hatch Right";
+              break;
+    case 3:   m_autoGroup = new GrpSideLeftHatch1();
+              name = "Cargo Ship Left Side Hatch 1";
+              break;
     default:  m_autoGroup = nullptr;
   }
 
-  if (m_autoGroup != nullptr) m_autoGroup->Start();
+  if (m_autoGroup != nullptr) {
+    sprintf(Robot::message, "SS Auto:  INIT  %s", name.c_str());
+    Robot::m_robotLog.Write(Robot::message);
 
+    m_autoGroup->Start();
+  }
 }
 
 bool OI::SandStormAutoRunning() {

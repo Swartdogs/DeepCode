@@ -28,7 +28,7 @@ void CmdDriveRotate::Initialize() {
     
     if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
 
-    sprintf(Robot::message, "Drive:  Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
+    sprintf(Robot::message, "Drive:    Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
             Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
 
     Robot::m_robotLog.Write(Robot::message);
@@ -70,19 +70,19 @@ void CmdDriveRotate::End() {
 
   switch (m_status) {
     case csSkip:
-      sprintf(Robot::message, "Drive:   Rotate SKIP");
+      sprintf(Robot::message, "Drive:    Rotate SKIP");
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:   Rotate DONE       Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Rotate DONE       Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:   Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
 
     case csTimedOut:
-      sprintf(Robot::message, "Drive:   Rotate TIMED OUT  Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Rotate TIMED OUT  Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
       
     default:;

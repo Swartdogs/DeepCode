@@ -10,6 +10,13 @@ typedef enum {              // Command Status   (Commands)
     csContinue
 } CommandStatus;
 
+typedef enum{               // Autonomous Stop
+    asHatchPlace,
+    asDriveToLoad,
+    asHatchLoad,
+    asCompleted
+} AutoStop;
+
 typedef enum {              // Robot Mode       (Dashboard, RobotLog)
     rmInit,					
 	rmDisabled,
@@ -117,7 +124,7 @@ typedef enum {              // Dashborad: Dash Button indexes
 
 typedef enum{               // Dashboard: Dash Value indexes
     dvAutoHatchPlace,
-    dvAutoHatchLoad,
+    dvAutoStop,
     dvPidSelect,
     dvPidSetpoint,
     dvPidMaxOut,

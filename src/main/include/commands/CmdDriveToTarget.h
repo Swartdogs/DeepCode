@@ -5,7 +5,8 @@
 
 class CmdDriveToTarget : public frc::Command {
  public:
-  CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget = false, double distanceOffset = 0);
+  CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarget = false, 
+                   double distanceOffset = 0, int postDriveWait = 0);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
@@ -20,7 +21,8 @@ private:
   double          m_heading;
   bool            m_hitTarget;
   double          m_maxSpeed;
+  int             m_postDriveWait;
   CommandStatus   m_status;
   double          m_timeout;
-
+  int             m_waitCount;
 };

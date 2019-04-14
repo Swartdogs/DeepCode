@@ -4,6 +4,7 @@
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdDriveToTarget.h"
 #include "commands/CmdArmSetHatchState.h"
+#include "commands/CmdAutoStop.h"
 #include "Robot.h"
 
 GrpSideLeftHatch1::GrpSideLeftHatch1() {
@@ -13,11 +14,13 @@ GrpSideLeftHatch1::GrpSideLeftHatch1() {
   AddSequential (new CmdDriveToTarget(0.5, 5.0, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad)));
   AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
   AddSequential (new CmdDriveDistance(-36, 0, 0.6, 0, true, true, 3.0));
+  AddSequential (new CmdAutoStop(asHatchPlace));
   AddSequential (new CmdDriveRotate(100, 0.8, true, 4.0));
   AddSequential (new CmdDriveDistance(116, 100, 0.8, 0, true, false, 4.0));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));
-  AddSequential (new CmdDriveToTarget(0.5, 5.0, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad)));
-  AddSequential (new frc::WaitCommand(0.8));
+  AddSequential (new CmdDriveToTarget(0.5, 5.0, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad), 40));
+//  AddSequential (new frc::WaitCommand(0.8));
+  AddSequential (new CmdAutoStop(asDriveToLoad));
   AddSequential (new CmdArmSetHatchState(Arm::hsGrab));
   AddSequential (new frc::WaitCommand(0.1));
   AddSequential (new CmdDriveDistance(-90, 8, 0.7, 0, true, true, 3.0));

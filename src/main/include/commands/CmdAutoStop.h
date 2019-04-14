@@ -1,13 +1,17 @@
 #pragma once
 
 #include <frc/commands/Command.h>
+#include "RobotMap.h"
 
-class CmdAutoHatchLoad : public frc::Command {
+class CmdAutoStop : public frc::Command {
  public:
-  CmdAutoHatchLoad();
+  CmdAutoStop(AutoStop condition);
   void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
+
+private:
+  AutoStop  m_condition;
 };
