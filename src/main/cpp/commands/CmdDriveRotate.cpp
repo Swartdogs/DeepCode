@@ -74,11 +74,11 @@ void CmdDriveRotate::End() {
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:    Rotate DONE       Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Rotate DONE  Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:    Rotate CANCELED   Heading=%5.1f", Robot::m_drive.GetHeading());
+      sprintf(Robot::message, "Drive:    Rotate CANCELED  Heading=%5.1f", Robot::m_drive.GetHeading());
       break;
 
     case csTimedOut:

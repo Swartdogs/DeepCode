@@ -15,6 +15,7 @@ class OI {
   double  GetDriveJoystickY();
   bool    InHatchMode();
   void    Periodic(); 
+  void    SandStormAutoCancel();
   void    SandStormAutoInit();
   bool    SandStormAutoRunning();
   

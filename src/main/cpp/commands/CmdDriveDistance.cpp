@@ -81,19 +81,19 @@ void CmdDriveDistance::End() {
       break;
 
     case csDone:
-      sprintf(Robot::message, "Drive:    Distance DONE       Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+      sprintf(Robot::message, "Drive:    Distance DONE  Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
               Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
               Robot::m_drive.GetHeading());
       break;
 
     case csCancel:
-      sprintf(Robot::message, "Drive:    Distance CANCELED   Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+      sprintf(Robot::message, "Drive:    Distance CANCELED  Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
               Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
               Robot::m_drive.GetHeading());
       break;
 
     case csTimedOut:
-      sprintf(Robot::message, "Drive:    Distance TIMED OUT  Distance Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
+      sprintf(Robot::message, "Drive:    Distance TIMED OUT  Left=%5.1f  Right = %5.1f  Heading=%5.1f", 
               Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
               Robot::m_drive.GetHeading());
       break;

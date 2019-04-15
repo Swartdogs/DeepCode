@@ -1,11 +1,5 @@
 #include "OI.h"
 #include <frc/WPILib.h>
-#include "commands/GrpClimb.h"
-#include "commands/GrpEndHatch.h"
-#include "commands/GrpEndHatchRight.h"
-#include "commands/GrpEndHatchLeft.h"
-#include "commands/GrpSideLeftHatch1.h"
-#include "commands/GrpGoToTarget.h"
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -19,6 +13,13 @@
 #include "commands/CmdSandStormAuto.h"
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdVisionToggleMode.h"
+#include "commands/GrpClimb.h"
+#include "commands/GrpEndHatch.h"
+#include "commands/GrpEndHatchRight.h"
+#include "commands/GrpEndHatchLeft.h"
+#include "commands/GrpSideHatchLeft1.h"
+#include "commands/GrpGoToTarget.h"
+
 #include "subsystems/Elevator.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Vision.h"
@@ -109,6 +110,10 @@ void OI::Periodic() {
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
 }
 
+void OI::SandStormAutoCancel() {
+  if (m_autoGroup != nullptr) m_autoGroup->Cancel();
+}
+
 void OI::SandStormAutoInit() {
   std::string name = "";
 
@@ -119,8 +124,11 @@ void OI::SandStormAutoInit() {
     case 2:   m_autoGroup = new GrpEndHatchRight();
               name = "Cargo Ship End Hatch Right";
               break;
-    case 3:   m_autoGroup = new GrpSideLeftHatch1();
-              name = "Cargo Ship Left Side Hatch 1";
+    case 3:   m_autoGroup = new GrpSideHatchLeft1();
+              name = "Cargo Ship Side Hatch Left 1";
+              break;
+    case 4:   //m_autoGroup = new GrpSideLeftHatch1();
+              name = "Cargo Ship Side Hatch Right 1";
               break;
     default:  m_autoGroup = nullptr;
   }

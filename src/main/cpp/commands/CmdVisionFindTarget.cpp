@@ -26,7 +26,7 @@ void CmdVisionFindTarget::Initialize() {
       m_cameraWait = 0;
       Robot::m_vision.FindTarget(m_targetSelect);                               // Initiate target search
     } else {
-      m_cameraWait = 8;                                                         // Set change-in-mode wait counter (used to be 5)
+      m_cameraWait = 6;                                                         // Set change-in-mode wait counter (used to be 5)
       Robot::m_vision.SetCameraMode(Vision::cmTarget);                          // Switch camera to Target mode
     }
     Robot::m_robotLog.Write("Vision:   Find Target INIT");
