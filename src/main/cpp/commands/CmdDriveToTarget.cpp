@@ -36,13 +36,13 @@ void CmdDriveToTarget::Initialize() {
     
     if (m_distance <= 0) {
       Robot::m_drive.RotateInit(m_heading, 0.6, true);
-      sprintf(Robot::message, "Vision:   Target Rotate INIT  Heading=%5.1f", m_heading);
+      sprintf(Robot::message, "Vision:   Rotate INIT  Heading=%5.1f", m_heading);
     } else {
       m_distanceLast  = 0;                                                       // Initialize drive and rotate PIDs
       m_driveFinished = false;
       
       Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); 
-      sprintf(Robot::message, "Vision:   Target Drive INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
+      sprintf(Robot::message, "Vision:   Distance INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
     }
 
     Robot::m_robotLog.Write(Robot::message);
@@ -77,7 +77,7 @@ void CmdDriveToTarget::Execute() {
 
     } else {                                                                    
       if (Robot::m_drive.DriveIsFinished()) {                                     // Drive has reached target Distance
-        m_driveFinished = true;
+        m_driveFinished = true;                                                   // Set Done Flag
                                                                                 
         if (!m_hitTarget || Robot::m_arm.GetShoulderPosition() == Arm::apLoad) {  // Done if not hitting Target or loading Cargo
           m_status = csDone;
@@ -86,20 +86,20 @@ void CmdDriveToTarget::Execute() {
         } 
       }
 
-      if (m_waitCount > 0) {
+      if (m_waitCount > 0) {                                                      // After Stall Wait
           m_waitCount--;
-          if (m_waitCount <= 0) m_status = csStalled;
+          if (m_waitCount <= 0) m_status = csStalled;                             // Wait completed
           
       } else {
         double distanceNow  = Robot::m_drive.GetDistance(Drive::ueCurrentEncoder);
         double driveRate    = distanceNow - m_distanceLast;
 
         if (distanceNow > (m_distance / 2) && driveRate < 0.05) {                 // Done if hit something
-          m_waitCount = m_postDriveWait;
-          if (m_waitCount == 0) m_status = csStalled;
+          m_waitCount = m_postDriveWait;                                          // Set Wait Counter
+          if (m_waitCount == 0) m_status = csStalled;                             // Completed if no Wait
 
-        } else if (m_driveFinished) {                                             // Continue forward if distance has been reached
-          if (driveRate < 0.5) drive = 0.15;
+        } else if (m_driveFinished) {                                             // Drive finished but waiting for hit
+          if (driveRate < 0.5) drive = 0.15;                                      // Apply output if Drive Rate is too low
 
         } else {                                                                  // Determine drive speed from PID
           drive  = Robot::m_drive.DriveExec();
@@ -115,7 +115,7 @@ void CmdDriveToTarget::Execute() {
 }
 
 bool CmdDriveToTarget::IsFinished() { 
-  return (m_status != csRun);                                                   // Finished when status is not in Run state
+  return (m_status != csRun);                                                     // Finished when status is not Run
 }
 
 void CmdDriveToTarget::End() {
@@ -138,12 +138,12 @@ void CmdDriveToTarget::End() {
         sprintf(Robot::message, "Vision:   Rotate %s  Heading=%5.1f", action.c_str(), Robot::m_drive.GetHeading()); 
       
       } else if (m_postDriveWait > 0 && m_status == csStalled) {
-        sprintf(Robot::message, "Vision:   Drive %s  Left=%5.1f  Right = %5.1f  Heading=%5.1f  Wait=%d msec", 
+        sprintf(Robot::message, "Vision:   Distance %s  Left=%5.1f  Right = %5.1f  Heading=%5.1f  Wait=%d msec", 
                 action.c_str(), Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
                 Robot::m_drive.GetHeading(), m_postDriveWait * 20);
       
       } else {
-        sprintf(Robot::message, "Vision:   Drive %s  Left=%5.1f  Right = %5.1f  Heading=%5.1f", action.c_str(),
+        sprintf(Robot::message, "Vision:   Distance %s  Left=%5.1f  Right = %5.1f  Heading=%5.1f", action.c_str(),
                 Robot::m_drive.GetDistance(Drive::ueLeftEncoder), Robot::m_drive.GetDistance(Drive::ueRightEncoder), 
                 Robot::m_drive.GetHeading());
       }

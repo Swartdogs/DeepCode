@@ -1,16 +1,16 @@
-#include "commands/GrpEndHatchRight.h"
-#include "commands/CmdVisionFindTarget.h"
-#include "commands/CmdDriveToTarget.h"
-#include "commands/CmdArmSetHatchState.h"
-#include "commands/CmdDriveDistance.h"
-#include "commands/CmdDriveRotate.h"
-#include "commands/CmdArmSetArmPosition.h"
-#include "commands/CmdAutoStop.h"
+#include "commands/GrpEndHatchLeft.h"
 #include "Robot.h"
 
-#include "commands/GrpEndHatchLeft.h"
+#include "commands/CmdArmSetArmPosition.h"
+#include "commands/CmdArmSetHatchState.h"
+#include "commands/CmdAutoStop.h"
+#include "commands/CmdDriveDistance.h"
+#include "commands/CmdDriveRotate.h"
+#include "commands/CmdDriveToTarget.h"
+#include "commands/CmdVisionFindTarget.h"
 
 GrpEndHatchLeft::GrpEndHatchLeft() {
+  AddParallel   (new CmdArmSetArmPosition(Arm::apTravel));
   AddSequential (new CmdVisionFindTarget(Vision::tsLeft));
   AddSequential (new CmdDriveToTarget(0.6, 5.0, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad)));
   AddSequential (new CmdArmSetHatchState(Arm::hsRelease));

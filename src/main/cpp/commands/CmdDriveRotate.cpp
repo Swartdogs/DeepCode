@@ -28,7 +28,7 @@ void CmdDriveRotate::Initialize() {
     
     if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
 
-    sprintf(Robot::message, "Drive:    Rotate INIT   Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
+    sprintf(Robot::message, "Drive:    Rotate INIT  Heading=%5.1f to %5.1f  MaxSpeed=%3.1f", 
             Robot::m_drive.GetHeading(), m_heading, m_maxSpeed);
 
     Robot::m_robotLog.Write(Robot::message);

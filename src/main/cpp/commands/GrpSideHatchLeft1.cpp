@@ -1,13 +1,16 @@
 #include "commands/GrpSideHatchLeft1.h"
-#include "commands/CmdDriveDistance.h"
-#include "commands/CmdDriveRotate.h"
-#include "commands/CmdVisionFindTarget.h"
-#include "commands/CmdDriveToTarget.h"
-#include "commands/CmdArmSetHatchState.h"
-#include "commands/CmdAutoStop.h"
 #include "Robot.h"
 
+#include "commands/CmdArmSetArmPosition.h"
+#include "commands/CmdArmSetHatchState.h"
+#include "commands/CmdAutoStop.h"
+#include "commands/CmdDriveDistance.h"
+#include "commands/CmdDriveRotate.h"
+#include "commands/CmdDriveToTarget.h"
+#include "commands/CmdVisionFindTarget.h"
+
 GrpSideHatchLeft1::GrpSideHatchLeft1() {
+  AddParallel   (new CmdArmSetArmPosition(Arm::apTravel));
   AddSequential (new CmdDriveDistance(150, -15, 0.6, 0, true, false, 6.0));
   AddSequential (new CmdDriveRotate(90, 0.8, false, 4.0));
   AddSequential (new CmdVisionFindTarget(Vision::tsRight));
