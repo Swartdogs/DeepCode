@@ -1,5 +1,11 @@
 #include "OI.h"
 #include <frc/WPILib.h>
+
+#include "Robot.h"
+#include "subsystems/Elevator.h"
+#include "subsystems/Drive.h"
+#include "subsystems/Vision.h"
+
 #include "commands/CmdArmIncrementShoulder.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHatchState.h"
@@ -19,11 +25,6 @@
 #include "commands/GrpEndHatchLeft.h"
 #include "commands/GrpSideHatchLeft1.h"
 #include "commands/GrpGoToTarget.h"
-
-#include "subsystems/Elevator.h"
-#include "subsystems/Drive.h"
-#include "subsystems/Vision.h"
-#include "Robot.h"
 
 OI::OI() {
   Robot::m_robotLog.Write("OI:       INIT", false);
@@ -68,7 +69,7 @@ OI::OI() {
   m_autoGroup = nullptr;
 }
 
-double OI::ApplyDeadband(double joystickValue, double deadband) {
+double OI::ApplyDeadband(double joystickValue, double deadband) {     // Return Value with Deadband applied
   deadband = fabs(deadband);
 
   if (joystickValue > deadband) {
@@ -80,41 +81,41 @@ double OI::ApplyDeadband(double joystickValue, double deadband) {
   return 0;
 }
 
-bool OI::DriverCancel() {
+bool OI::DriverCancel() {                                             // Used to Cancel Command Group based on Driver input 
   return (fabs(m_driveJoystick.GetY()) > 0.3 || fabs(m_driveJoystick.GetX()) > 0.3);
 }
 
-double OI::GetArmJoystickX() {
+double OI::GetArmJoystickX() {                                        // Return Arm X with Deadband applied
   return ApplyDeadband(m_armJoystick.GetX(), 0.15);
 }
 
-double OI::GetArmJoystickY() {
+double OI::GetArmJoystickY() {                                        // Return Arm Y with Deadbanc applied
   return ApplyDeadband(m_armJoystick.GetY(), 0.15);
 }
 
-double OI::GetDriveJoystickX() {
+double OI::GetDriveJoystickX() {                                      // Return Drive X with Deadband applied
   return ApplyDeadband(m_driveJoystick.GetX(), 0.05);
 }
 
-double OI::GetDriveJoystickY() {
+double OI::GetDriveJoystickY() {                                      // Return Drive Y with Deadband applied
   return -ApplyDeadband(m_driveJoystick.GetY(), 0.05);
 }
 
-bool OI::InHatchMode() {
+bool OI::InHatchMode() {                                              // Return TRUE if Hand Switch in Hatch position
   return (m_buttonBox.GetX() < -0.5);
 }
 
-void OI::Periodic() {
+void OI::Periodic() {                                                 // Determine state of Internal Buttons (Called every 20ms)
   m_InternalLevel2.SetPressed(m_buttonDrive8.Get() && m_buttonArm7.Get());
   m_InternalLevel3.SetPressed(m_buttonDrive8.Get() && m_buttonArm6.Get());
   m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
 }
 
-void OI::SandStormAutoCancel() {
+void OI::SandStormAutoCancel() {                                      // Cancel the Auto Command Group
   if (m_autoGroup != nullptr) m_autoGroup->Cancel();
 }
 
-void OI::SandStormAutoInit() {
+void OI::SandStormAutoInit() {                                        // Start an Auto Command Group
   std::string name = "";
 
   switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
@@ -141,9 +142,7 @@ void OI::SandStormAutoInit() {
   }
 }
 
-bool OI::SandStormAutoRunning() {
-  return false;
-
+bool OI::SandStormAutoRunning() {                                     // Return TRUE if an Auto Command Group is running
   if (m_autoGroup == nullptr) {
     return false;
   } else {

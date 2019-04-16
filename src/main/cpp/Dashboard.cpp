@@ -23,10 +23,10 @@ Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotV
 	m_dashboardButtonCount	= dashButtonCount;
 	m_dashboardValueCount		= dashValueCount;
 
-	m_robotStatus						= new int32_t[m_robotStatusCount];			// Robot status			(To dashboard)
-	m_robotValue 						= new double[m_robotValueCount];				// Robot values			(To dashboard)
-	m_dashboardButton				= new button[m_dashboardButtonCount];		// Dashboard buttons	(From dashboard)
-	m_dashboardValue				= new double[m_dashboardValueCount];		// Dashboard values  	(From dashboard)
+	m_robotStatus						= new int32_t[m_robotStatusCount];			  // Robot status			  (To dashboard)
+	m_robotValue 						= new double[m_robotValueCount];				  // Robot values			  (To dashboard)
+	m_dashboardButton				= new button[m_dashboardButtonCount];		  // Dashboard buttons	(From dashboard)
+	m_dashboardValue				= new double[m_dashboardValueCount];		  // Dashboard values  	(From dashboard)
 
 	for (int i = 0; i < m_robotStatusCount; i++) m_robotStatus[i] = 0;
 	for (int i = 0; i < m_robotValueCount; i++) m_robotValue[i] = 0;
@@ -34,7 +34,7 @@ Dashboard::Dashboard(std::string commandPrefix, int robotStatusCount, int robotV
 		m_dashboardButton[i].state = 0;
 		m_dashboardButton[i].pressed = 0;
 	}
-																																	// Initialize robot settings from file on RoboRio
+																																	  // Initialize robot settings from file on RoboRio
 	std::ifstream dashFile("/home/lvuser/Dashboard.set", std::ios::binary);
 		if (dashFile.good()) {
 			for (int i = 0; i < m_dashboardValueCount; i++) dashFile.read((char*)&m_dashboardValue[i], sizeof(m_dashboardValue[i]));
@@ -52,12 +52,12 @@ Dashboard::~Dashboard() {
 	delete [] m_dashboardButton;
 }
 
-std::string Dashboard::CountReply() {															// Format reply to COUNT request
+std::string Dashboard::CountReply() {															  // Return reply to COUNT request
 	return "COUNT:" + DataString(m_robotMode, 1) + DataString(m_robotStatusCount, 1) + DataString(m_robotValueCount, 1)
 					+ DataString(m_dashboardButtonCount, 1) + DataString(m_dashboardValueCount, 0) + "\r\n";
 }
 
-std::string Dashboard::DataString(int32_t number, int delimiter) {	// Create string with delimiter for integer value
+std::string Dashboard::DataString(int32_t number, int delimiter) {	// Return string with INTEGER + delimiter
 	std::stringstream ss;
 	ss << number;
 
@@ -68,15 +68,14 @@ std::string Dashboard::DataString(int32_t number, int delimiter) {	// Create str
 	}
 }
 
-std::string Dashboard::DataString(double number, int delimiter) {
-																																	// Create string with delimiter for floating value
-	std::stringstream ss;																						// Output number to stream with fixed precision 0.000000
+std::string Dashboard::DataString(double number, int delimiter) {   // Return string with FLOAT + delimiter
+	std::stringstream ss;																						  // Write number to stream with fixed precision 0.000000
 	ss << std::fixed << std::setprecision(6) << number;
 
-	std::string ds = ss.str();																			// Convert stream to string and trim trailing 0's
+	std::string ds = ss.str();																			  // Convert stream to string and trim trailing 0's
 	ds.erase(ds.find_last_not_of('0') + 1, std::string::npos);
 
-	std::string::iterator it = ds.end() - 1;												// Remove '.' if it is the last character
+	std::string::iterator it = ds.end() - 1;												  // Remove '.' if it is the last character
 	if (*it == '.') ds.erase(it);
 
 	switch (delimiter) {
@@ -86,11 +85,11 @@ std::string Dashboard::DataString(double number, int delimiter) {
 	}
 }
 
-std::string Dashboard::GetCommandPrefix() {
+std::string Dashboard::GetCommandPrefix() {                         // Return Command Prefix
 	return m_commandPrefix;
 }
 
-bool Dashboard::GetDashButton(DashButton buttonIndex) {						// Get current state of dashboard button
+bool Dashboard::GetDashButton(DashButton buttonIndex) {						  // Return TRUE if Dashboard Button = 1
 	int group = buttonIndex / 16;
 	int index = buttonIndex % 16;
 
@@ -101,8 +100,8 @@ bool Dashboard::GetDashButton(DashButton buttonIndex) {						// Get current stat
 	}
 }
 
-bool Dashboard::GetDashButtonPress(DashButton buttonIndex) {			// Determine whether dashboard button was pressed
-	int  group = buttonIndex / 16;																	// since previous call
+bool Dashboard::GetDashButtonPress(DashButton buttonIndex) {			  // Return TRUE if Dashboard Button was pressed
+	int  group = buttonIndex / 16;																	  // since previous call
 	int  index = buttonIndex % 16;
 	bool vReturn = false;
 
@@ -121,12 +120,12 @@ bool Dashboard::GetDashButtonPress(DashButton buttonIndex) {			// Determine whet
 	return vReturn;
 }
 
-double Dashboard::GetDashValue(DashValue valueIndex) {						// Get current value from dashboard data array
+double Dashboard::GetDashValue(DashValue valueIndex) {						  // Return current Dashboard Value
 	if (valueIndex < m_dashboardValueCount) return m_dashboardValue[valueIndex];
 	return 0;
 }
 
-std::string Dashboard::GetReply() {																// Format reply to GET robot data request
+std::string Dashboard::GetReply() {																  // Return reply to GET robot data request
 	std::string data = "GET:" + DataString(m_robotMode, 2);
 
 	if (m_robotStatusCount > 0) {
@@ -144,7 +143,7 @@ std::string Dashboard::GetReply() {																// Format reply to GET robot 
 	return data += "\r\n";
 }
 
-bool Dashboard::GetRobotStatus(RobotStatus statusIndex) {
+bool Dashboard::GetRobotStatus(RobotStatus statusIndex) {           // Return TRUE if Robot Status = 1
 	int group = statusIndex / 16;
 	int index = statusIndex % 16;
 
@@ -155,7 +154,7 @@ bool Dashboard::GetRobotStatus(RobotStatus statusIndex) {
 	}
 }
 
-std::string Dashboard::PullReply() {
+std::string Dashboard::PullReply() {                                // Return reply to PULL request
 	std::string data = "PULL:" + DataString((double)m_dashboardValueCount, 2);
 
 	if (m_dashboardValueCount > 0) {
@@ -166,7 +165,7 @@ std::string Dashboard::PullReply() {
 	return data += "\r\n";
 }
 
-void Dashboard::SaveDashValues() {																// Save dashboard values to settings file on RoboRio
+void Dashboard::SaveDashValues() {																  // Save Dashboard Values to settings file on RoboRio
 	std::ofstream dashFile("/home/lvuser/Dashboard.set", std::ios::binary);
 		if (dashFile.good()) {
 			for (int i = 0; i < m_dashboardValueCount; i++) dashFile.write((char*)&m_dashboardValue[i], sizeof(m_dashboardValue[i]));
@@ -175,26 +174,26 @@ void Dashboard::SaveDashValues() {																// Save dashboard values to se
 	dashFile.close();
 }
 
-bool Dashboard::SetDashButton(int group, int32_t value) {					// Set a dashboard button state
-	if (group < 0 || group >= m_dashboardButtonCount) {							// (Used by SET B command from dashboard)
-		return false;
+bool Dashboard::SetDashButton(int group, int32_t value) {					  // Set Dashboard Button state
+	if (group < 0 || group >= m_dashboardButtonCount) {							  // (Used by SET B command from dashboard)
+		return false;                                                   // Return TRUE if successful
 	} else {
 		m_dashboardButton[group].state = value;
 		return true;
 	}
 }
 
-bool Dashboard::SetDashValue(int index, double value) {						// Set a dashboard value
-	if (index < 0 || index >= m_dashboardValueCount) {							// (Used by SET V command from dashboard)
-		return false;
+bool Dashboard::SetDashValue(int index, double value) {						  // Set Dashboard Value
+	if (index < 0 || index >= m_dashboardValueCount) {							  // (Used by SET V command from dashboard)
+		return false;                                                   // Return TRUE if successful
 	} else {
 		m_dashboardValue[index] = value;
 		return true;
 	}
 }
 
-bool Dashboard::SetRobotStatus(RobotStatus statusIndex, bool value) {	// Set a status in Robot status array
-	int group = statusIndex / 16;
+bool Dashboard::SetRobotStatus(RobotStatus statusIndex, bool value) {	// Set Robot Status
+	int group = statusIndex / 16;                                       // Return TRUE if successful
 	int index = statusIndex % 16;
 
 	if (group >= m_robotStatusCount) {
@@ -212,8 +211,8 @@ bool Dashboard::SetRobotStatus(RobotStatus statusIndex, bool value) {	// Set a s
 	}
 }
 
-bool Dashboard::SetRobotValue(RobotValue valueIndex, double value) {	// Set a value in Robot value array
-	if (valueIndex < 0 || valueIndex >= m_robotValueCount) {
+bool Dashboard::SetRobotValue(RobotValue valueIndex, double value) {	// Set Robot Value 
+	if (valueIndex < 0 || valueIndex >= m_robotValueCount) {            // Return TRUE if successful
 		return false;
 	} else {
 		m_robotValue[valueIndex] = value;
@@ -221,18 +220,18 @@ bool Dashboard::SetRobotValue(RobotValue valueIndex, double value) {	// Set a va
 	}
 }
 
-void Dashboard::SetRobotMode(RobotMode mode) {										// Set the current robot mode
-	m_robotMode = (int) mode;																				// (Sent in GET reply)
+void Dashboard::SetRobotMode(RobotMode mode) {										  // Set urrent Robot Mode
+	m_robotMode = (int) mode;																				  // (Sent in GET reply)
 }
 
 void Dashboard::StartHost() {
 	WriteToLog("Start Host Thread");
-	std::thread hostTask(Dashboard::TcpLoop, this);									// Start host thread
+	std::thread hostTask(Dashboard::TcpLoop, this);									  // Start host thread
 	hostTask.detach();
 }
 
-void Dashboard::TcpLoop(Dashboard *host) {
-	struct sockaddr_in	addrHost, addrClient;
+void Dashboard::TcpLoop(Dashboard *host) {                          // Function executed in a seperate thread
+	struct sockaddr_in	addrHost, addrClient;                         // to service Dashboard client
 	size_t							position;
 
 	std::string			commandEnd		= "\r\n";
@@ -366,7 +365,7 @@ void Dashboard::TcpLoop(Dashboard *host) {
 	}
 }
 
-void Dashboard::WriteToLog(std::string entry) {
+void Dashboard::WriteToLog(std::string entry) {                     // Write entry to Robot Log       
 	entry = "Dash:     " + entry;
 	Robot::m_robotLog.Write(entry, false, true);
 }

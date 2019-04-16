@@ -55,7 +55,7 @@ double PIDControl::Calculate(double input) {									// Calculate output based o
 
 	if (m_P.threshold > 0) {																		// Threshold > 0 indicates use of 2 coefficients
 		(fabs(error) < m_P.threshold) ?	m_P.kNow = m_P.kBelow :		// 'P' coefficient below threshold
-									 m_P.kNow = m_P.kAbove;										//				   above threshold
+									 m_P.kNow = m_P.kAbove;										  //				   above threshold
 	}
 
 	if (m_I.threshold > 0) {																		// Same for 'I' coefficient

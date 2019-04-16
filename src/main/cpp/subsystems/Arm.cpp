@@ -2,7 +2,7 @@
 #include "Robot.h"
 
 Arm::Arm() : Subsystem("Arm") {
-  Robot::m_robotLog.Write("Arm:      INIT", false);
+  Robot::m_robotLog.Write("Arm:      INIT", false);                       // Initialize Arm subsystem
 
   m_shoulderPot.SetAverageBits(2);
   m_shoulderPot.SetOversampleBits(0);
@@ -56,7 +56,7 @@ Arm::Arm() : Subsystem("Arm") {
 void Arm::InitDefaultCommand() {
 }
 
-void Arm::Periodic() {
+void Arm::Periodic() {                                                    // Periodic is called every 20ms
   static bool inManualDrive   = false;
   static int  timer           = 0;
 
@@ -67,43 +67,43 @@ void Arm::Periodic() {
   double      topPower        = 0;
   double      bottomPower     = 0;
 
-  if (m_wristPID.AtSetpoint()) m_ignoreCargo = false;
+  if (m_wristPID.AtSetpoint()) m_ignoreCargo = false;                     // Ignore Cargo sensor unless Wrist at setpoint
 
-  switch(m_intakeMode) {
-    case imOff:
+  switch(m_intakeMode) {                                                  // Cargo Intake action based on current mode
+    case imOff:                                                           // Intake Mode = OFF
       timer = 0;
       break;
 
-    case imIn:
-      if(m_ignoreCargo || m_cargoSensor.Get()) {                // Wrist position not at setpoint or No Cargo
+    case imIn:                                                            // Intake Mode = IN 
+      if(m_ignoreCargo || m_cargoSensor.Get()) {                          // Wrist position not at setpoint or No Cargo
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedIn);
         bottomPower = topPower;
-      } else {
-        SetIntakeMode(imOff);
+      } else {                                                            // Cargo detected
+        SetIntakeMode(imOff);                                             // Set mode to OFF
         Robot::m_dashboard.SetRobotStatus(rsCargoLoaded, true);
       }
       break; 
 
-    case imOut:
-      if(timer < Robot::m_dashboard.GetDashValue(dvCargoEjectTime)) {
+    case imOut:                                                           // Intake Mode = OUT
+      if(timer < Robot::m_dashboard.GetDashValue(dvCargoEjectTime)) {     // Eject until timer has expired
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedOut);
         bottomPower = topPower;
         
-        if (m_cargoSensor.Get()) timer++;
+        if (m_cargoSensor.Get()) timer++;                                 // Increment timer count if no Cargo
         else timer = 0;
 
-      } else {
+      } else {                                                            // Set mode to OFF
         SetIntakeMode(imOff);        
       }
       break;
 
-    case imRotate:
-      if(timer < Robot::m_dashboard.GetDashValue(dvCargoRotateTime)) {
+    case imRotate:                                                        // Intake Mode = ROTATE
+      if(timer < Robot::m_dashboard.GetDashValue(dvCargoRotateTime)) {    // Rotate until timer has expired
         timer++;
 
         topPower = Robot::m_dashboard.GetDashValue(dvCargoSpeedRotate);
         bottomPower = -PowerLimit(topPower * Robot::m_dashboard.GetDashValue(dvCargoRotateRatio));
-      } else {
+      } else {                                                            // Set mode to OFF      
         SetIntakeMode(imOff);
       }
       break;
@@ -111,9 +111,9 @@ void Arm::Periodic() {
     default:;
   }
 
-  if (m_manualDrive) {
-    if (!inManualDrive) {
-      inManualDrive = true;
+  if (m_manualDrive) {                                                    // Arm Manual Drive Mode 
+    if (!inManualDrive) {                                                 //   (Set when Arm Joystick Trigger is pulled)
+      inManualDrive = true;                                              
       m_armPosition = apUnknown;
       m_shoulderNext = -1;
       m_wristNext = -1;
@@ -124,12 +124,12 @@ void Arm::Periodic() {
       Robot::m_robotLog.Write(Robot::message);
     }
 
-    double joyShoulder  = Robot::m_oi.GetArmJoystickY() * 0.5;
+    double joyShoulder  = Robot::m_oi.GetArmJoystickY() * 0.5;            // Shoulder and Wrist controlled by joystick
     double joyWrist     = Robot::m_oi.GetArmJoystickX() * 0.5;
 
 //    printf("Shoulder=%f  Wrist=%f\n", joyShoulder, joyWrist);
 
-    if (joyShoulder < 0) {
+    if (joyShoulder < 0) {                                                // Override Joystick if Shoulder near Minimum
       if (shoulderNow < Robot::m_dashboard.GetDashValue(dvShoulderMin) + 4) {
         shoulderPower = 0;
       } else {
@@ -138,7 +138,7 @@ void Arm::Periodic() {
 
       SetShoulderPosition(shoulderNow);
       
-    } else if (joyShoulder > 0) {
+    } else if (joyShoulder > 0) {                                         // Override Joystick if Shoulder near Maximum
       if ((shoulderNow < Robot::m_dashboard.GetDashValue(dvShoulderMax) - 4)
            && shoulderPower < joyShoulder) {
         shoulderPower = joyShoulder;
@@ -146,7 +146,7 @@ void Arm::Periodic() {
       }
     } 
 
-    if (joyWrist < 0) {
+    if (joyWrist < 0) {                                                   // Override Joystick if Wrist near Minimum
       if (wristNow < Robot::m_dashboard.GetDashValue(dvWristMin) + 4) {
         wristPower = 0;
       } else {
@@ -155,7 +155,7 @@ void Arm::Periodic() {
 
       SetWristPosition(wristNow);
       
-    } else if (joyWrist > 0) {
+    } else if (joyWrist > 0) {                                            // Override Joystick if Wrist near Maximum
       if ((wristNow < Robot::m_dashboard.GetDashValue(dvWristMax) - 4)
            && wristPower < joyWrist) {
         wristPower = joyWrist;
@@ -163,26 +163,28 @@ void Arm::Periodic() {
       }
     } 
     
-  } else {
+  } else {                                                                // Shoulder and Wrist controlled by PIDs
     if (inManualDrive) {
       inManualDrive = false;
       sprintf(Robot::message,"Arm:      Manual END    Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
       Robot::m_robotLog.Write(Robot::message);
     }
-
+                                                                          // Set Power output(s) to 0 if near minimum
     if(m_shoulderSetpoint < 3 && GetShoulderDegrees() < 3) shoulderPower = 0;
     if (m_wristSetpoint < 3 && GetWristDegrees() < 3) wristPower = 0;
 
-    if (m_shoulderNext >= 0) {                                                  // Shoulder waiting for Wrist
+    if (m_shoulderNext >= 0) {                                            // Shoulder waiting for Wrist
       if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped
-        SetShoulderPosition(m_shoulderNext, m_armPosition);
+        SetShoulderPosition(m_shoulderNext, m_armPosition);               // Set Shoulder to final position
         m_shoulderNext = -1;
       }
-    } else if (m_wristNext >= 0) {                                              // Wrist waiting for Shoulder
+
+    } else if (m_wristNext >= 0) {                                        // Wrist waiting for Shoulder
       if (shoulderNow > Robot::m_dashboard.GetDashValue(dvShoulderClear) || ShoulderAtSetpoint()) {   // Shoulder Clear or Stopped
-        SetWristPosition(m_wristNext, m_armPosition);
+        SetWristPosition(m_wristNext, m_armPosition);                     // Set Wrist to final position
         m_wristNext = -1;
-      } else {
+
+      } else {                                                            // Increment Wrist Setpoint as Shoulder moves
         double newSetpoint = m_wristSetpoint + 5.0;
         
         if (newSetpoint >= m_wristNext) {
@@ -195,7 +197,7 @@ void Arm::Periodic() {
       }
     }
 
-    if (m_armPosition == apPickup && m_handModeRobot == hmCargo) {
+    if (m_armPosition == apPickup && m_handModeRobot == hmCargo) {        // Arm moving to Cargo Pickup position
       if (m_wristSetpoint == Robot::m_dashboard.GetDashValue(dvWCPickup) && WristAtSetpoint()) {
         if (m_shoulderSetpoint != Robot::m_dashboard.GetDashValue(dvSCPickup)) {
           SetShoulderPosition(Robot::m_dashboard.GetDashValue(dvSCPickup), m_armPosition);
@@ -204,7 +206,7 @@ void Arm::Periodic() {
     }
   }
 
-  m_shoulderMotor.Set(shoulderPower);
+  m_shoulderMotor.Set(shoulderPower);                                     // Set motor outputs
   m_wristMotor.Set(wristPower);
   m_handTop.Set(topPower);
   m_handBottom.Set(bottomPower);

@@ -8,14 +8,16 @@ CmdDriveToTarget::CmdDriveToTarget(double maxSpeed, double timeout, bool hitTarg
                                   double distanceOffset, int postDriveWait) {
   Requires(&Robot::m_drive);
 
-  m_maxSpeed        = maxSpeed;
+  m_coastCount      = 0;
   m_distance        = 0;
   m_distanceLast    = 0;
   m_distanceOffset  = distanceOffset;
   m_driveFinished   = false;
   m_heading         = 0;
   m_hitTarget       = hitTarget;
+  m_maxSpeed        = maxSpeed;
   m_postDriveWait   = postDriveWait;
+  m_powerCount      = 0;
   m_timeout         = timeout;
   m_status          = csRun;
   m_waitCount       = 0;
@@ -77,13 +79,15 @@ void CmdDriveToTarget::Execute() {
 
     } else {                                                                    
       if (Robot::m_drive.DriveIsFinished()) {                                     // Drive has reached target Distance
-        m_driveFinished = true;                                                   // Set Done Flag
-                                                                                
         if (!m_hitTarget || Robot::m_arm.GetShoulderPosition() == Arm::apLoad) {  // Done if not hitting Target or loading Cargo
           m_status = csDone;
           Robot::m_drive.ArcadeDrive(0, 0);
           return;
         } 
+
+        m_driveFinished = true;                                                   // Set Drive Finished flag
+        m_coastCount    = 0;                                                      // Reset counters
+        m_powerCount    = 0;
       }
 
       if (m_waitCount > 0) {                                                      // After Stall Wait
@@ -92,14 +96,19 @@ void CmdDriveToTarget::Execute() {
           
       } else {
         double distanceNow  = Robot::m_drive.GetDistance(Drive::ueCurrentEncoder);
-        double driveRate    = distanceNow - m_distanceLast;
+        double driveRate    = distanceNow - m_distanceLast;                       // Distance Rate-of-Change
 
         if (distanceNow > (m_distance / 2) && driveRate < 0.05) {                 // Done if hit something
           m_waitCount = m_postDriveWait;                                          // Set Wait Counter
           if (m_waitCount == 0) m_status = csStalled;                             // Completed if no Wait
 
-        } else if (m_driveFinished) {                                             // Drive finished but waiting for hit
-          if (driveRate < 0.5) drive = 0.15;                                      // Apply output if Drive Rate is too low
+        } else if (m_driveFinished) {                                             // Drive finished - Waiting for hit
+          if (driveRate < 0.5) {                                                  // Distance Rate-of-Change is low
+            drive = 0.15;                                                         // Apply power
+            m_powerCount++;
+          } else {
+            m_coastCount++;
+          }
 
         } else {                                                                  // Determine drive speed from PID
           drive  = Robot::m_drive.DriveExec();
@@ -127,8 +136,12 @@ void CmdDriveToTarget::End() {
     case csDone:      action = "DONE";        break;
     case csCancel:    action = "CANCELED";    break;
     case csTimedOut:  action = "TIMED OUT";   break;
-    case csStalled:   if (m_driveFinished) action = "STALLED (After DONE)";
-                      else                 action = "STALLED (Before DONE)";
+    case csStalled:   if (m_driveFinished) {
+                        sprintf(Robot::message, "STALLED (C=%d P=%d)", m_coastCount, m_powerCount);
+                        action = std::string(Robot::message);
+                      } else {
+                        action = "STALLED (During)";                        
+                      }  
                       break;
     default:;
   }
