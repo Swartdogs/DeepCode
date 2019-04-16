@@ -5,8 +5,7 @@ CmdSandStormAuto::CmdSandStormAuto() {
 }
 
 void CmdSandStormAuto::Initialize() {
-  frc::DriverStation* ds;
-  if (ds->IsAutonomous() && !Robot::m_oi.SandStormAutoRunning()) Robot::m_oi.SandStormAutoInit();
+  if (!Robot::m_oi.SandStormAutoRunning()) Robot::m_oi.SandStormAutoInit();
 }
 
 void CmdSandStormAuto::Execute() {}

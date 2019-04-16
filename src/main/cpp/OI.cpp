@@ -34,7 +34,6 @@ OI::OI() {
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
   m_buttonDrive7.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
-  m_buttonDrive8.WhenPressed        (new CmdSandStormAuto());
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
@@ -61,10 +60,11 @@ OI::OI() {
   m_buttonBox8.WhenReleased         (new CmdArmSetSpeed(false));
   m_buttonBox12.WhenPressed         (new CmdArmSetIntakeMode(Arm::imIn));
 
-  m_InternalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
-  m_InternalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
-  m_InternalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
-  m_InternalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));
+  m_internalAuto.WhenPressed        (new CmdSandStormAuto());
+  m_internalHandMode.WhenPressed    (new CmdArmSetHandMode(Arm::hmHatch));
+  m_internalHandMode.WhenReleased   (new CmdArmSetHandMode(Arm::hmCargo));
+  m_internalLevel2.WhenPressed      (new GrpClimb(Elevator::epLevel2));
+  m_internalLevel3.WhenPressed      (new GrpClimb(Elevator::epLevel3));
 
   m_autoGroup = nullptr;
 }
@@ -106,9 +106,12 @@ bool OI::InHatchMode() {                                              // Return 
 }
 
 void OI::Periodic() {                                                 // Determine state of Internal Buttons (Called every 20ms)
-  m_InternalLevel2.SetPressed(m_buttonDrive8.Get() && m_buttonArm7.Get());
-  m_InternalLevel3.SetPressed(m_buttonDrive8.Get() && m_buttonArm6.Get());
-  m_InternalHandMode.SetPressed(m_buttonBox.GetX() < -0.5);
+  frc::DriverStation* ds;
+
+  m_internalAuto.SetPressed     (ds->IsAutonomous() && m_buttonDrive8.Get());
+  m_internalHandMode.SetPressed (m_buttonBox.GetX() < -0.5);
+  m_internalLevel2.SetPressed   (ds->IsOperatorControl() && m_buttonDrive8.Get() && m_buttonArm7.Get());
+  m_internalLevel3.SetPressed   (ds->IsOperatorControl() && m_buttonDrive8.Get() && m_buttonArm6.Get());
 }
 
 void OI::SandStormAutoCancel() {                                      // Cancel the Auto Command Group
