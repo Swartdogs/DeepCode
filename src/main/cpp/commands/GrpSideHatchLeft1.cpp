@@ -22,7 +22,7 @@ GrpSideHatchLeft1::GrpSideHatchLeft1() {
   AddSequential (new CmdDriveDistance(140, 102, 0.8, 0, true, false, 4.5));
   AddSequential (new CmdDriveRotate(90, 0.8, false, 1.5));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));
-  AddSequential (new CmdDriveToTarget(0.6, 4.5, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad), 5));
+  AddSequential (new CmdDriveToTarget(0.6, 4.5, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad), 0));
   AddSequential (new CmdAutoStop(asDriveToLoad));
   AddSequential (new CmdArmSetHatchState(Arm::hsGrab));
   AddSequential (new CmdDriveDistance(-90, 8, 0.7, 0, true, true, 3.5));

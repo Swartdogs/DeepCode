@@ -42,6 +42,8 @@ void CmdDriveToTarget::Initialize() {
     } else {
       m_distanceLast  = 0;                                                       // Initialize drive and rotate PIDs
       m_driveFinished = false;
+      m_coastCount    = 0;                                                      // Reset counters
+      m_powerCount    = 0;
       
       Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); 
       sprintf(Robot::message, "Vision:   Distance INIT  Distance=%5.1f Heading=%5.1f", m_distance, m_heading);
@@ -86,8 +88,6 @@ void CmdDriveToTarget::Execute() {
         } 
 
         m_driveFinished = true;                                                   // Set Drive Finished flag
-        m_coastCount    = 0;                                                      // Reset counters
-        m_powerCount    = 0;
       }
 
       if (m_waitCount > 0) {                                                      // After Stall Wait

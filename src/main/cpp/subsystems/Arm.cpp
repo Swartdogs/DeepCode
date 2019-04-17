@@ -61,7 +61,7 @@ void Arm::Periodic() {                                                    // Per
   static int  timer           = 0;
 
   double      shoulderNow     = GetShoulderDegrees();
-  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);;
+  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);
   double      wristNow        = GetWristDegrees();
   double      wristPower      = m_wristPID.Calculate(wristNow);
   double      topPower        = 0;
@@ -171,7 +171,10 @@ void Arm::Periodic() {                                                    // Per
     }
                                                                           // Set Power output(s) to 0 if near minimum
     if(m_shoulderSetpoint < 3 && GetShoulderDegrees() < 3) shoulderPower = 0;
-    if (m_wristSetpoint < 3 && GetWristDegrees() < 3) wristPower = 0;
+    if (m_wristSetpoint < 3 && GetWristDegrees() < 3) {
+      wristPower = -0.1;
+      m_wristPID.Reset();
+    }
 
     if (m_shoulderNext >= 0) {                                            // Shoulder waiting for Wrist
       if (wristNow < Robot::m_dashboard.GetDashValue(dvWristClear) || WristAtSetpoint()) {    // Wrist Clear or Stopped

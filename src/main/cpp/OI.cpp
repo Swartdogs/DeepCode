@@ -25,6 +25,8 @@
 #include "commands/GrpEndHatchLeft.h"
 #include "commands/GrpSideHatchLeft1.h"
 #include "commands/GrpGoToTarget.h"
+#include "commands/GrpSideHatchRight1.h"
+#include "commands/GrpRocketLeft.h"
 
 OI::OI() {
   Robot::m_robotLog.Write("OI:       INIT", false);
@@ -131,8 +133,11 @@ void OI::SandStormAutoInit() {                                        // Start a
     case 3:   m_autoGroup = new GrpSideHatchLeft1();
               name = "Cargo Ship Side Hatch Left 1";
               break;
-    case 4:   //m_autoGroup = new GrpSideLeftHatch1();
+    case 4:   m_autoGroup = new GrpSideHatchRight1();
               name = "Cargo Ship Side Hatch Right 1";
+              break;
+    case 5:   m_autoGroup = new GrpRocketLeft();
+              name = "Rocket Left";
               break;
     default:  m_autoGroup = nullptr;
   }
