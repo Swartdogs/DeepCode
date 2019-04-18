@@ -7,5 +7,6 @@ class GrpGoToTarget : public frc::CommandGroup {
  public:
   GrpGoToTarget();
   void End() override;
+  void Initialize() override;
   void Interrupted() override;
 };

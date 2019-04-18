@@ -34,10 +34,11 @@ void CmdDriveToTarget::Initialize() {
     Robot::m_drive.SetBrakeMode(true);                                          // Set motor controllers to Brake mode
 
     m_distance  = Robot::m_vision.GetTargetDistance() + m_distanceOffset; 
-    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionTargetAngle);  
+    m_heading   = Robot::m_vision.GetTargetAngle() + Robot::m_dashboard.GetDashValue(dvVisionTargetAngle) + 
+                    Robot::m_drive.GetHeading();  
     
     if (m_distance <= 0) {
-      Robot::m_drive.RotateInit(m_heading, 0.6, true);
+      Robot::m_drive.RotateInit(m_heading, 0.6, false);
       sprintf(Robot::message, "Vision:   Rotate INIT  Heading=%5.1f", m_heading);
     } else {
       m_distanceLast  = 0;                                                      // Initialize drive and rotate PIDs
@@ -47,7 +48,7 @@ void CmdDriveToTarget::Initialize() {
       m_coastCount    = 0;                                                      // Reset counters
       m_powerCount    = 0;
       
-      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, true); 
+      Robot::m_drive.DriveInit(m_distance, m_heading, m_maxSpeed, 0, true, false); 
 
       if (m_loadHatch) {
         sprintf(Robot::message, "Vision:   Distance INIT  Distance=%5.1f Heading=%5.1f (Load Hatch)", m_distance, m_heading);

@@ -10,6 +10,10 @@ GrpGoToTarget::GrpGoToTarget() {
   AddSequential (new CmdDriveToTarget(0.4, 3.5));
 }
 
+void GrpGoToTarget::Initialize() {
+  Robot::m_drive.ResetGyro();
+}
+
 void GrpGoToTarget::End() {
   Robot::m_dashboard.SetRobotStatus(rsTargetFound, false);
 }
