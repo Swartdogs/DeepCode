@@ -36,6 +36,8 @@ class Drive : public frc::Subsystem {
   double            GetHeading(); 
   ShifterPosition   GetShifterPosition(); 
   std::string       GetShifterPositionName(ShifterPosition position);
+  bool              GetUseGyro();
+  void              ResetEncoders();
   void              ResetGyro();
   double            RotateExec();
   void              RotateInit(double heading, double maxSpeed, bool resetGyro);
@@ -45,6 +47,7 @@ class Drive : public frc::Subsystem {
   void              SetDriveEnable(bool enable); 
   void              SetDriveInUse(bool inUse);
   void              SetShifter(ShifterPosition position);
+  void              SetUseGyro(bool useGyro);
 
   // Function executed in seperate Thread
 
@@ -59,6 +62,7 @@ private:
   std::thread*        m_brakeThread;
   bool                m_driveEnable;
   bool                m_driveInUse; 
+  bool                m_useGyro;
 
   frc::ADXRS450_Gyro  m_gyro{};
 

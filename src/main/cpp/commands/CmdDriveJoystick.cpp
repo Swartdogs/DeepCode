@@ -19,6 +19,8 @@ void CmdDriveJoystick::Execute() {                                              
   double drive  = Robot::m_oi.GetDriveJoystickY();
   double rotate = Robot::m_oi.GetDriveJoystickX();
 
+  if (Robot::m_drive.GetUseGyro()) rotate = Robot::m_drive.RotateExec();
+
   if (m_brakesOn) {
     if ((fabs(drive) > 0.1) || fabs(rotate) > 0.1) {
       m_brakesOn = false;

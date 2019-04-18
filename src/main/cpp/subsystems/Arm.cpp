@@ -579,6 +579,10 @@ void Arm::SetPresetMode(bool usePreset) {
   m_usePreset = usePreset;
 }
 
+void Arm::SetPresetPosition(ArmPosition position) {
+  m_presetPosition = position;
+}
+
 void Arm::SetShoulderMotor(double speed) {
   m_shoulderMotor.Set(speed);
 }

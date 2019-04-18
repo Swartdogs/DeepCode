@@ -16,6 +16,7 @@
 #include "commands/CmdArmSetPresetMode.h"
 #include "commands/CmdCancelClimb.h"
 #include "commands/CmdDriveSetGear.h"
+#include "commands/CmdDriveSetUseGyro.h"
 #include "commands/CmdSandStormAuto.h"
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdVisionToggleMode.h"
@@ -34,8 +35,10 @@ OI::OI() {
   m_buttonDrive1.WhenPressed        (new GrpGoToTarget());
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
-  m_buttonDrive6.WhenPressed        (new CmdVisionToggleMode());
-  m_buttonDrive7.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
+  m_buttonDrive6.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
+//  m_buttonDrive7.WhenPressed        (new CmdVisionToggleMode());
+  m_buttonDrive7.WhenPressed        (new CmdDriveSetUseGyro(true));
+  m_buttonDrive7.WhenReleased       (new CmdDriveSetUseGyro(false));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
@@ -126,19 +129,34 @@ void OI::SandStormAutoInit() {                                        // Start a
 
   switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
     case 1:   m_autoGroup = new GrpEndHatchLeft();
-              name = "Cargo Ship End Hatch Left";
+              name = "Cargo Ship: End Hatch Left";
               break; 
     case 2:   m_autoGroup = new GrpEndHatchRight();
-              name = "Cargo Ship End Hatch Right";
+              name = "Cargo Ship: End Hatch Right";
               break;
-    case 3:   m_autoGroup = new GrpSideHatchLeft1();
-              name = "Cargo Ship Side Hatch Left 1";
+    case 3:   m_autoGroup = new GrpSideHatchLeft1(48, 0.5);
+              name = "Cargo Ship: Side Hatch Left 1 (L1)";
               break;
-    case 4:   m_autoGroup = new GrpSideHatchRight1();
-              name = "Cargo Ship Side Hatch Right 1";
+    case 4:   m_autoGroup = new GrpSideHatchLeft1(92, 0.3);
+              name = "Cargo Ship: Side Hatch Left 1 (L2)";
               break;
-    case 5:   m_autoGroup = new GrpRocketLeft();
-              name = "Rocket Left";
+    case 5:   m_autoGroup = new GrpSideHatchRight1(48, 0.5);
+              name = "Cargo Ship: Side Hatch Right 1 (L1)";
+              break;
+    case 6:   m_autoGroup = new GrpSideHatchRight1(92, 0.3);
+              name = "Cargo Ship: Side Hatch Right 1 (L2)";
+              break;
+    case 7:   m_autoGroup = new GrpRocketLeft();
+              name = "Rocket: Left (L1)";
+              break;
+    case 8:   m_autoGroup = new GrpRocketLeft();
+              name = "Rocket: Left (L2)";
+              break;
+    case 9:   //m_autoGroup = new GrpRocketLeft();
+              name = "Rocket: Right (L1)";
+              break;
+    case 10:  //m_autoGroup = new GrpRocketLeft();
+              name = "Rocket: Right (L2)";
               break;
     default:  m_autoGroup = nullptr;
   }

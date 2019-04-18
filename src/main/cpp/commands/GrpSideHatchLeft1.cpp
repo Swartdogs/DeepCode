@@ -9,9 +9,10 @@
 #include "commands/CmdDriveToTarget.h"
 #include "commands/CmdVisionFindTarget.h"
 
-GrpSideHatchLeft1::GrpSideHatchLeft1() {
+GrpSideHatchLeft1::GrpSideHatchLeft1(double distance1, double maxSpeed1) {
   AddParallel   (new CmdArmSetArmPosition(Arm::apTravel));
-  AddSequential (new CmdDriveDistance(150, -17, 0.6, 0, true, false, 5.0)); 
+  AddSequential (new CmdDriveDistance(distance1, 0, maxSpeed1, 0, true, false, 4.0));
+  AddSequential (new CmdDriveDistance(150, -18, 0.6, 0, true, false, 5.0));   
   AddSequential (new CmdDriveRotate(90, 0.8, false, 2.5));
   AddSequential (new CmdVisionFindTarget(Vision::tsRight));
   AddSequential (new CmdDriveToTarget(0.5, 3.0, true, -34));
@@ -19,7 +20,7 @@ GrpSideHatchLeft1::GrpSideHatchLeft1() {
   AddSequential (new CmdDriveDistance(-30, 90, 0.7, 0, true, false, 2.0));
   AddSequential (new CmdAutoStop(asHatchPlace));
   AddSequential (new CmdDriveRotate(192, 0.8, false, 2.0));
-  AddSequential (new CmdDriveDistance(156, 192, 0.8, 0, true, false, 4.5)); 
+  AddSequential (new CmdDriveDistance(162, 192, 0.8, 0, true, false, 4.5)); 
   AddSequential (new CmdDriveRotate(182, 0.8, false, 1.5));
   AddSequential (new CmdAutoStop(asDriveToLoad));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));

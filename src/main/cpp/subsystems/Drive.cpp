@@ -8,6 +8,7 @@ Drive::Drive() : Subsystem("Drive") {
   m_brakeThread = nullptr;
   m_driveEnable = true;
   m_driveInUse  = false;
+  m_useGyro     = false;
 
   m_driveLeft1.SetInverted(true);
   m_driveLeft2.SetInverted(true);
@@ -94,6 +95,7 @@ void Drive::DriveInit(double distance, double heading, double maxSpeed, double m
     m_encoderLeft.Reset();
     m_encoderRight.Reset();
   }
+
   m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
   m_drivePID.SetOutputRange(-maxSpeed, maxSpeed, minSpeed); 
 
@@ -161,6 +163,15 @@ std::string Drive::GetShifterPositionName(ShifterPosition position) {
   return name;
 }
 
+bool Drive::GetUseGyro() {
+  return m_useGyro;
+}
+
+void Drive::ResetEncoders() {
+  m_encoderLeft.Reset();
+  m_encoderRight.Reset();
+}
+
 void Drive::ResetGyro() {
   m_gyro.Reset();
 }
@@ -204,6 +215,11 @@ void Drive::SetShifter(ShifterPosition position) {
     m_shifterPosition = position;
     Robot::m_dashboard.SetRobotStatus(rsShifterLow, position == spLow);
   }
+}
+
+void Drive::SetUseGyro(bool useGyro) {
+  m_useGyro = useGyro;
+  if (m_useGyro) RotateInit(GetHeading(), 0.6, false);
 }
 
 // Function executed in seperate Thread

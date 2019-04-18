@@ -4,5 +4,5 @@
 
 class GrpSideHatchLeft1 : public frc::CommandGroup {
  public:
-  GrpSideHatchLeft1();
+  GrpSideHatchLeft1(double distance1, double maxSpeed1);
 };
