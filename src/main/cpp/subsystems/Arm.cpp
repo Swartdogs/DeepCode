@@ -61,9 +61,9 @@ void Arm::Periodic() {                                                    // Per
   static int  timer           = 0;
 
   double      shoulderNow     = GetShoulderDegrees();
-  double      shoulderPower   = m_shoulderPID.Calculate(shoulderNow);
+  double      shoulderPower   = 0;
   double      wristNow        = GetWristDegrees();
-  double      wristPower      = m_wristPID.Calculate(wristNow);
+  double      wristPower      = 0;
   double      topPower        = 0;
   double      bottomPower     = 0;
 
@@ -126,8 +126,8 @@ void Arm::Periodic() {                                                    // Per
 
     double joyShoulder  = Robot::m_oi.GetArmJoystickY() * 0.5;            // Shoulder and Wrist controlled by joystick
     double joyWrist     = Robot::m_oi.GetArmJoystickX() * 0.5;
-
-//    printf("Shoulder=%f  Wrist=%f\n", joyShoulder, joyWrist);
+    shoulderPower       = m_shoulderPID.Calculate(shoulderNow);
+    wristPower          = m_wristPID.Calculate(wristNow);
 
     if (joyShoulder < 0) {                                                // Override Joystick if Shoulder near Minimum
       if (shoulderNow < Robot::m_dashboard.GetDashValue(dvShoulderMin) + 4) {
@@ -169,11 +169,17 @@ void Arm::Periodic() {                                                    // Per
       sprintf(Robot::message,"Arm:      Manual END    Shoulder=%4.1f  Wrist=%4.1f", shoulderNow, wristNow);
       Robot::m_robotLog.Write(Robot::message);
     }
-                                                                          // Set Power output(s) to 0 if near minimum
-    if(m_shoulderSetpoint < 3 && GetShoulderDegrees() < 3) shoulderPower = 0;
-    if (m_wristSetpoint < 3 && GetWristDegrees() < 3) {
-      wristPower = -0.1;
-      m_wristPID.Reset();
+                                                                          // Hold against stop(s) if near 0
+    if (m_shoulderSetpoint < 3 && shoulderNow < 3) {
+      if (m_shoulderPosition == apDefense) shoulderPower = -0.1;
+    } else {
+      shoulderPower = m_shoulderPID.Calculate(shoulderNow);
+    }
+    
+    if (m_wristSetpoint < 3 && wristNow < 3) {
+      if (m_wristPosition == apDefense) wristPower = -0.1;
+    } else {
+      wristPower = m_wristPID.Calculate(wristNow);
     }
 
     if (m_shoulderNext >= 0) {                                            // Shoulder waiting for Wrist
@@ -220,6 +226,7 @@ std::string Arm::GetArmPositionName(ArmPosition position) {
 
   switch (position) {
       case apUnknown:     name = "Unknown";         break;
+      case apDefense:     name = "Defense";         break;
       case apTravel:      name = "Travel";          break;
       case apPickup:      name = "Pickup";          break;
       case apLoad:        name = "Load";            break;
@@ -346,19 +353,26 @@ void Arm::SetArmPosition(ArmPosition position) {
   }
 
   m_presetPosition    = apUnknown;
-  double shoulderNew  = 0;
+  double shoulderNew  = -1;
   double shoulderNow  = GetShoulderDegrees();
-  double wristNew     = 0;
+  double wristNew     = -1;
   double wristNow     = GetWristDegrees();
 
   switch (position) {
+    case apDefense:
+
+      shoulderNew = 0;
+      wristNew    = 0;
+      SetHandModeRobot(hmHatch);
+      SetIntakeMode(imOff);
+      break;
+  
     case apTravel:    
       
       shoulderNew   = Robot::m_dashboard.GetDashValue(dvShoulderTravel);
       wristNew      = Robot::m_dashboard.GetDashValue(dvWristTravel);
       SetHandModeRobot(hmCargo);
       SetIntakeMode(imOff);
-
       break;
 
     case apPickup:  
@@ -369,7 +383,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
-      
       break;
 
     case apLoad:
@@ -380,7 +393,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
-
       break;
 
     case apLow:    
@@ -394,7 +406,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketLow);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketLow);
       }
-
       break;
 
     case apMid:   
@@ -408,7 +419,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketMid);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketMid);
       }
-
       break;
 
     case apHigh:    
@@ -422,7 +432,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         shoulderNew = Robot::m_dashboard.GetDashValue(dvSHRocketHigh);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWHRocketHigh);
       }
-
       break;
 
     case apCargoShip: 
@@ -432,7 +441,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         wristNew = Robot::m_dashboard.GetDashValue(dvWCCargoShip);
         SetHandModeRobot(hmCargo);
       }
-      
       break;
 
     case apCargoCatch:
@@ -443,7 +451,6 @@ void Arm::SetArmPosition(ArmPosition position) {
         SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
       }
-      
       break;
 
     default:
@@ -452,7 +459,7 @@ void Arm::SetArmPosition(ArmPosition position) {
 
   m_ignoreCargo = true;
 
-  if (shoulderNew == 0 || wristNew == 0) return;                                // No New setpoints
+  if (shoulderNew < 0 || wristNew < 0) return;                                // No New setpoints
 
   double shoulderClear = Robot::m_dashboard.GetDashValue(dvShoulderClear);
   double wristClear    = Robot::m_dashboard.GetDashValue(dvWristClear);

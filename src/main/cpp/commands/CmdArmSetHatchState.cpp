@@ -15,7 +15,7 @@ void CmdArmSetHatchState::Initialize() {
 
 void CmdArmSetHatchState::Execute() {}
 
-bool CmdArmSetHatchState::IsFinished() { return true; }
+bool CmdArmSetHatchState::IsFinished() {return true;}
 
 void CmdArmSetHatchState::End() {}
 

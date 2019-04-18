@@ -41,6 +41,7 @@ OI::OI() {
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
   m_buttonArm1.WhenReleased         (new CmdArmSetManual(false));
   m_buttonArm2.WhenPressed          (new CmdArmSetArmPosition(Arm::apCargoCatch));
+  m_buttonArm8.WhenPressed          (new CmdArmSetArmPosition(Arm::apDefense));
   m_buttonArm10.WhenPressed         (new CmdArmIncrementShoulder(-1.0));
   m_buttonArm11.WhenPressed         (new CmdArmIncrementShoulder(1.0));
 

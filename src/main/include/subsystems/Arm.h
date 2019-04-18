@@ -8,6 +8,7 @@ class Arm : public frc::Subsystem {
   public:
     typedef enum {
       apUnknown,
+      apDefense,
       apTravel,
       apPickup,
       apLoad,
