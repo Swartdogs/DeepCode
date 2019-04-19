@@ -21,13 +21,13 @@
 #include "commands/CmdVisionFindTarget.h"
 #include "commands/CmdVisionToggleMode.h"
 #include "commands/GrpClimb.h"
-#include "commands/GrpEndHatch.h"
 #include "commands/GrpEndHatchRight.h"
 #include "commands/GrpEndHatchLeft.h"
 #include "commands/GrpSideHatchLeft1.h"
 #include "commands/GrpGoToTarget.h"
 #include "commands/GrpSideHatchRight1.h"
-#include "commands/GrpRocketLeft.h"
+#include "commands/GrpRocketLeftL1.h"
+#include "commands/GrpRocketLeftL2.h"
 
 OI::OI() {
   Robot::m_robotLog.Write("OI:       INIT", false);
@@ -137,19 +137,19 @@ void OI::SandStormAutoInit() {                                        // Start a
     case 3:   m_autoGroup = new GrpSideHatchLeft1(48, 0.5);
               name = "Cargo Ship: Side Hatch Left 1 (L1)";
               break;
-    case 4:   m_autoGroup = new GrpSideHatchLeft1(92, 0.3);
+    case 4:   m_autoGroup = new GrpSideHatchLeft1(92, 0.25);
               name = "Cargo Ship: Side Hatch Left 1 (L2)";
               break;
     case 5:   m_autoGroup = new GrpSideHatchRight1(48, 0.5);
               name = "Cargo Ship: Side Hatch Right 1 (L1)";
               break;
-    case 6:   m_autoGroup = new GrpSideHatchRight1(92, 0.3);
+    case 6:   m_autoGroup = new GrpSideHatchRight1(92, 0.25);
               name = "Cargo Ship: Side Hatch Right 1 (L2)";
               break;
-    case 7:   m_autoGroup = new GrpRocketLeft();
+    case 7:   m_autoGroup = new GrpRocketLeftL1();
               name = "Rocket: Left (L1)";
               break;
-    case 8:   m_autoGroup = new GrpRocketLeft();
+    case 8:   m_autoGroup = new GrpRocketLeftL2();
               name = "Rocket: Left (L2)";
               break;
     case 9:   //m_autoGroup = new GrpRocketLeft();
@@ -162,6 +162,8 @@ void OI::SandStormAutoInit() {                                        // Start a
   }
 
   if (m_autoGroup != nullptr) {
+    Robot::m_drive.ResetGyro();
+
     sprintf(Robot::message, "SS Auto:  INIT  %s", name.c_str());
     Robot::m_robotLog.Write(Robot::message);
 

@@ -9,7 +9,7 @@
 
 #include <frc/commands/CommandGroup.h>
 
-class GrpRocketLeft : public frc::CommandGroup {
+class GrpRocketLeftL1 : public frc::CommandGroup {
  public:
-  GrpRocketLeft();
+  GrpRocketLeftL1();
 };

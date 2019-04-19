@@ -1,4 +1,4 @@
-#include "commands/GrpRocketLeft.h"
+#include "commands/GrpRocketLeftL1.h"
 #include "commands/CmdArmSetArmPosition.h"
 #include "commands/CmdArmSetHatchState.h"
 #include "commands/CmdArmSetPresetPosition.h"
@@ -10,8 +10,9 @@
 
 #include "Robot.h"
 
-GrpRocketLeft::GrpRocketLeft() {
-  AddSequential (new CmdDriveDistance(45, 0, 0.5, 0, true, false, 4.0));
+GrpRocketLeftL1::GrpRocketLeftL1() {
+  AddParallel   (new CmdArmSetArmPosition(Arm::apTravel));
+  AddSequential (new CmdDriveDistance(40, 0, 0.5, 0, true, false, 4.0));
   AddParallel   (new CmdArmSetPresetPosition(Arm::apMid));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));
   AddSequential (new CmdArmSetArmPosition(Arm::apPreset));
