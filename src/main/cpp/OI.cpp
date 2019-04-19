@@ -23,11 +23,13 @@
 #include "commands/GrpClimb.h"
 #include "commands/GrpEndHatchRight.h"
 #include "commands/GrpEndHatchLeft.h"
-#include "commands/GrpSideHatchLeft1.h"
 #include "commands/GrpGoToTarget.h"
-#include "commands/GrpSideHatchRight1.h"
+#include "commands/GrpSideHatchLeft.h"
+#include "commands/GrpSideHatchRight.h"
 #include "commands/GrpRocketLeftL1.h"
 #include "commands/GrpRocketLeftL2.h"
+#include "commands/GrpRocketRightL1.h"
+#include "commands/GrpRocketRightL2.h"
 
 OI::OI() {
   Robot::m_robotLog.Write("OI:       INIT", false);
@@ -36,9 +38,9 @@ OI::OI() {
   m_buttonDrive2.WhenPressed        (new CmdDriveSetGear(Drive::spLow));
   m_buttonDrive2.WhenReleased       (new CmdDriveSetGear(Drive::spHigh));
   m_buttonDrive6.WhenPressed        (new CmdVisionFindTarget(Vision::tsBest));
-//  m_buttonDrive7.WhenPressed        (new CmdVisionToggleMode());
-  m_buttonDrive7.WhenPressed        (new CmdDriveSetUseGyro(true));
-  m_buttonDrive7.WhenReleased       (new CmdDriveSetUseGyro(false));
+  m_buttonDrive7.WhenPressed        (new CmdVisionToggleMode());
+  // m_buttonDrive7.WhenPressed        (new CmdDriveSetUseGyro(true));
+  // m_buttonDrive7.WhenReleased       (new CmdDriveSetUseGyro(false));
   m_buttonDrive10.WhenPressed       (new CmdCancelClimb());
 
   m_buttonArm1.WhenPressed          (new CmdArmSetManual(true));
@@ -129,22 +131,22 @@ void OI::SandStormAutoInit() {                                        // Start a
 
   switch ((int)Robot::m_dashboard.GetDashValue(dvAutoHatchPlace)) {
     case 1:   m_autoGroup = new GrpEndHatchLeft();
-              name = "Cargo Ship: End Hatch Left";
+              name = "Cargo Ship: End Left (L1)";
               break; 
     case 2:   m_autoGroup = new GrpEndHatchRight();
-              name = "Cargo Ship: End Hatch Right";
+              name = "Cargo Ship: End Right (L1)";
               break;
-    case 3:   m_autoGroup = new GrpSideHatchLeft1(48, 0.5);
-              name = "Cargo Ship: Side Hatch Left 1 (L1)";
+    case 3:   m_autoGroup = new GrpSideHatchLeft(48, 0.5);
+              name = "Cargo Ship: Side Left (L1)";
               break;
-    case 4:   m_autoGroup = new GrpSideHatchLeft1(92, 0.25);
-              name = "Cargo Ship: Side Hatch Left 1 (L2)";
+    case 4:   m_autoGroup = new GrpSideHatchLeft(92, 0.25);
+              name = "Cargo Ship: Side Left (L2)";
               break;
-    case 5:   m_autoGroup = new GrpSideHatchRight1(48, 0.5);
-              name = "Cargo Ship: Side Hatch Right 1 (L1)";
+    case 5:   m_autoGroup = new GrpSideHatchRight(48, 0.5);
+              name = "Cargo Ship: Side Right (L1)";
               break;
-    case 6:   m_autoGroup = new GrpSideHatchRight1(92, 0.25);
-              name = "Cargo Ship: Side Hatch Right 1 (L2)";
+    case 6:   m_autoGroup = new GrpSideHatchRight(92, 0.25);
+              name = "Cargo Ship: Side Right (L2)";
               break;
     case 7:   m_autoGroup = new GrpRocketLeftL1();
               name = "Rocket: Left (L1)";
@@ -152,10 +154,10 @@ void OI::SandStormAutoInit() {                                        // Start a
     case 8:   m_autoGroup = new GrpRocketLeftL2();
               name = "Rocket: Left (L2)";
               break;
-    case 9:   //m_autoGroup = new GrpRocketLeft();
+    case 9:   m_autoGroup = new GrpRocketRightL1();
               name = "Rocket: Right (L1)";
               break;
-    case 10:  //m_autoGroup = new GrpRocketLeft();
+    case 10:  m_autoGroup = new GrpRocketRightL2();
               name = "Rocket: Right (L2)";
               break;
     default:  m_autoGroup = nullptr;

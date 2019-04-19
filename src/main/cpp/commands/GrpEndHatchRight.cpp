@@ -11,7 +11,7 @@
 
 GrpEndHatchRight::GrpEndHatchRight() {
   AddParallel   (new CmdArmSetArmPosition(Arm::apTravel));
-  AddSequential (new CmdDriveDistance(40, 0, 0.4, 0, true, false, 2.0));
+  AddSequential (new CmdDriveDistance(40, 0, 0.5, 0, true, false, 2.0));
   AddSequential (new CmdVisionFindTarget(Vision::tsRight));
   AddSequential (new CmdDriveToTarget(0.6, 4.5, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad)));
   AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
@@ -25,6 +25,5 @@ GrpEndHatchRight::GrpEndHatchRight() {
   AddSequential (new CmdDriveToTarget(0.5, 6.0, true, Robot::m_dashboard.GetDashValue(dvVisionHatchLoad), true));
   AddSequential (new CmdAutoStop(asHatchLoad));
   AddSequential (new CmdDriveDistance(-90, -8, 0.7, 0, true, true, 3.5));
-  AddSequential (new CmdAutoStop(asHatchLoad));
   AddSequential (new CmdDriveRotate(-150, 0.8, false, 3.5));
 }

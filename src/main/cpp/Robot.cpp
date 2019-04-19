@@ -51,6 +51,8 @@ void Robot::AutonomousInit() {
   m_drive.ResetGyro();
   m_elevator.SetElevatorPosition(Elevator::epRetracted);
   m_vision.SetCameraMode(Vision::cmDriver);
+  
+  if (Robot::m_dashboard.GetDashButton(dbSandStormAuto)) m_oi.SandStormAutoInit();
 }
 
 void Robot::AutonomousPeriodic() { 

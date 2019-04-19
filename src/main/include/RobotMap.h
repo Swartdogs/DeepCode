@@ -119,7 +119,8 @@ typedef enum {              // Dashboard: Robot Value indexes
 typedef enum {              // Dashborad: Dash Button indexes
     dbRunPid,
     dbDataCapture,
-    dbVisionAuto
+    dbVisionAuto,
+    dbSandStormAuto
 } DashButton;
 
 typedef enum{               // Dashboard: Dash Value indexes
