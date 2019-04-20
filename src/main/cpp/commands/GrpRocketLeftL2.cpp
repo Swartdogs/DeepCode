@@ -14,7 +14,7 @@ GrpRocketLeftL2::GrpRocketLeftL2() {
   AddSequential (new CmdDriveDistance(42, 0, 0.25, 0, true, false, 4.0));
   AddSequential (new CmdDriveRotate(-35, 0.7, false, 2.0));
   AddSequential (new CmdDriveDistance(40, -35, 0.5, 0, true, false, 4.0));
-  AddParallel   (new CmdArmSetPresetPosition(Arm::apMid));
+  AddParallel   (new CmdArmSetPresetPosition(Arm::apLow));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));
   AddSequential (new CmdArmSetArmPosition(Arm::apPreset));
   AddSequential (new CmdDriveToTarget(0.4, 4.0, true));

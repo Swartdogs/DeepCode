@@ -38,7 +38,7 @@ void CmdDriveToTarget::Initialize() {
                     Robot::m_drive.GetHeading();  
     
     if (m_distance <= 0) {
-      Robot::m_drive.RotateInit(m_heading, 0.6, false);
+      Robot::m_drive.RotateInit(m_heading, 0.6, false, true);
       sprintf(Robot::message, "Vision:   Rotate INIT  Heading=%5.1f", m_heading);
     } else {
       m_distanceLast  = 0;                                                      // Initialize drive and rotate PIDs

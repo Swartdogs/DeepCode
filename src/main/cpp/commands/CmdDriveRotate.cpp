@@ -24,7 +24,7 @@ void CmdDriveRotate::Initialize() {
     Robot::m_drive.SetDriveInUse(true);                                         // Set Drive-in-use flag
     Robot::m_drive.SetBrakeMode(false);                                         // Set motor controllers to Brake mode
 
-    Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro);              // Initialize rotate PID
+    Robot::m_drive.RotateInit(m_heading, m_maxSpeed, m_resetGyro, true);        // Initialize rotate PID
     
     if (m_timeout > 0) SetTimeout(m_timeout);                                   // Set timeout
 

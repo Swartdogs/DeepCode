@@ -30,7 +30,7 @@ Arm::Arm() : Subsystem("Arm") {
   m_shoulderPID.SetCoefficient('I', 15, 0, 0.001);
   m_shoulderPID.SetCoefficient('D', 5, 0.1, 0);
   m_shoulderPID.SetInputRange(0, 125);
-  m_shoulderPID.SetOutputRange(-0.4, 0.7);
+  m_shoulderPID.SetOutputRange(-0.4, 0.9);
   m_shoulderPID.SetOutputRamp(0.10, 0.05);
   m_shoulderPID.SetSetpointDeadband(1.0); 
   m_shoulderPID.SetSetpoint(m_shoulderSetpoint, m_shoulderSetpoint);

@@ -22,7 +22,7 @@ Drive::Drive() : Subsystem("Drive") {
   m_encoderRight.SetDistancePerPulse(0.02838);
 
   m_rotatePID.SetCoefficient('P', 0, 0.04, 0);
-  m_rotatePID.SetCoefficient('I', 10, 0, 0.003);   // 0.0025
+  m_rotatePID.SetCoefficient('I', 10, 0, 0.004);   // 0.0025
   m_rotatePID.SetCoefficient('D', 0, 0.25, 0);
   m_rotatePID.SetInputRange(-360, 360);
   m_rotatePID.SetOutputRamp(0.1, 0.1);
@@ -99,8 +99,8 @@ void Drive::DriveInit(double distance, double heading, double maxSpeed, double m
   m_drivePID.SetSetpoint(distance, GetDistance(m_useEncoder));
   m_drivePID.SetOutputRange(-maxSpeed, maxSpeed, minSpeed); 
 
-  driveArc ? RotateInit(headingNow, 0.7, resetGyro) :
-             RotateInit(heading, 0.7, resetGyro);
+  driveArc ? RotateInit(headingNow, 0.7, resetGyro, false) :
+             RotateInit(heading, 0.7, resetGyro, false);
 }
 
 bool Drive::DriveIsFinished(){
@@ -180,9 +180,12 @@ double Drive::RotateExec() {
   return m_rotatePID.Calculate(GetHeading());
 }
 
-void Drive::RotateInit(double heading, double maxSpeed, bool resetGyro) {
+void Drive::RotateInit(double heading, double maxSpeed, bool resetGyro, bool rotateOnly) {
   maxSpeed = fabs(maxSpeed); 
 
+  if (rotateOnly)   m_rotatePID.SetCoefficient('I', 10, 0, 0.006);   // 0.0025
+  else              m_rotatePID.SetCoefficient('I', 10, 0, 0.003);   // 0.0025
+  
   if ( resetGyro ) m_gyro.Reset();
   m_rotatePID.SetSetpoint(heading, GetHeading());
   m_rotatePID.SetOutputRange(-maxSpeed, maxSpeed);
@@ -219,7 +222,7 @@ void Drive::SetShifter(ShifterPosition position) {
 
 void Drive::SetUseGyro(bool useGyro) {
   m_useGyro = useGyro;
-  if (m_useGyro) RotateInit(GetHeading(), 0.6, false);
+  if (m_useGyro) RotateInit(GetHeading(), 0.6, false, false);
 }
 
 // Function executed in seperate Thread

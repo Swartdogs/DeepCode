@@ -38,10 +38,10 @@ void CmdArmSetArmPosition::Initialize() {
                             if (targetDistance < 80) m_doneDelay = 15;
                             break;
         case Arm::apMid:    distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchMid);   
-                            if (targetDistance < 100) m_doneDelay = 25;
+                            if (targetDistance < 110) m_doneDelay = 25;
                             break;
         case Arm::apHigh:   distanceOffset = Robot::m_dashboard.GetDashValue(dvVisionHatchHigh);  
-                            if (targetDistance < 120) m_doneDelay = 50;
+                            if (targetDistance < 130) m_doneDelay = 50;
                             break;
         default:
           if (Robot::m_arm.GetHandModeSwitch() == Arm::hmHatch) {

@@ -40,7 +40,7 @@ class Drive : public frc::Subsystem {
   void              ResetEncoders();
   void              ResetGyro();
   double            RotateExec();
-  void              RotateInit(double heading, double maxSpeed, bool resetGyro);
+  void              RotateInit(double heading, double maxSpeed, bool resetGyro, bool rotateOnly);
   bool              RotateIsFinished();
   void              RotatePidTune();
   void              SetBrakeMode(bool brakesOn);

@@ -104,7 +104,7 @@ void Robot::TestPeriodic() {
             case 1:                       // Drive PID
               m_robotLog.WritePid("Tune Drive PID");
               m_drive.DrivePidTune();
-              m_drive.RotateInit(0, 0.6, true);
+              m_drive.RotateInit(0, 0.6, true, true);
               break;
             case 2:                       // Elevator PID
               m_robotLog.WritePid("Tune Elevator PID");

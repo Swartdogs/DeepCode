@@ -18,7 +18,7 @@ GrpEndHatchLeft::GrpEndHatchLeft() {
   AddSequential (new CmdDriveDistance(-18, 0, 0.7, 0, true, false, 2.0));
   AddSequential (new CmdAutoStop(asHatchPlace));
   AddSequential (new CmdDriveRotate(60, 0.8, false, 2.5));
-  AddSequential (new CmdDriveDistance(-110, 60, 0.8, 0, true, false, 4.0)); 
+  AddSequential (new CmdDriveDistance(-120, 60, 0.8, 0, true, false, 4.0)); 
   AddSequential (new CmdDriveRotate(180, 0.8, false, 2.5));
   AddSequential (new CmdAutoStop(asDriveToLoad));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));

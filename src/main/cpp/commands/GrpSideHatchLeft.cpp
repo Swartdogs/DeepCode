@@ -19,8 +19,8 @@ GrpSideHatchLeft::GrpSideHatchLeft(double distance1, double maxSpeed1) {
   AddSequential (new CmdArmSetHatchState(Arm::hsRelease));
   AddSequential (new CmdDriveDistance(-30, 90, 0.7, 0, true, false, 2.0));
   AddSequential (new CmdAutoStop(asHatchPlace));
-  AddSequential (new CmdDriveRotate(192, 0.8, false, 2.0));
-  AddSequential (new CmdDriveDistance(162, 192, 0.8, 0, true, false, 4.5)); 
+  AddSequential (new CmdDriveRotate(194, 0.8, false, 2.0));
+  AddSequential (new CmdDriveDistance(162, 194, 0.8, 0, true, false, 4.5)); 
   AddSequential (new CmdDriveRotate(182, 0.8, false, 1.5));
   AddSequential (new CmdAutoStop(asDriveToLoad));
   AddSequential (new CmdVisionFindTarget(Vision::tsBest));
