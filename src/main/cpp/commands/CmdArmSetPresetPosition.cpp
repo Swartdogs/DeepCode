@@ -6,7 +6,7 @@ CmdArmSetPresetPosition::CmdArmSetPresetPosition(Arm::ArmPosition position) {
 }
 
 void CmdArmSetPresetPosition::Initialize() {
-  Robot::m_arm.SetPresetPosition(m_position);  
+  Robot::m_arm.SetPresetPosition(m_position); 
 }
 
 void CmdArmSetPresetPosition::Execute() {}
