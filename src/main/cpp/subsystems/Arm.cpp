@@ -378,10 +378,12 @@ void Arm::SetArmPosition(ArmPosition position) {
     case apPickup:  
 
       if (m_handModeSwitch == hmCargo) {
-        shoulderNew = Robot::m_dashboard.GetDashValue(dvShoulderClear);
+//        shoulderNew = Robot::m_dashboard.GetDashValue(dvShoulderClear);
+        shoulderNew = Robot::m_dashboard.GetDashValue(dvSCPickup);
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCPickup);
         SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
+        SetHatchState(hsGrab);
       }
       break;
 
@@ -472,7 +474,10 @@ void Arm::SetArmPosition(ArmPosition position) {
     if (shoulderNew > shoulderNow) {                                            // SHOULDER MOVING UP
       SetShoulderPosition(shoulderNew, position);                               // Move Shoulder to New
 
-      if (wristNew < wristClear) {                                              // New Wrist below Clear
+      if (position == apPickup) {
+        SetWristPosition(wristNew, position);                                   // Move Wrist to New
+      } else if (wristNew < wristClear) {                                              // New Wrist below Clear
+//      if (wristNew < wristClear) {                                              // New Wrist below Clear
         SetWristPosition(wristNew, position);                                   // Move Wrist to New
       } else if (shoulderNew < shoulderClear) {                                 // New Shoulder below Clear
         m_wristNext = wristNew;                                                 // Move Wrist to Clear and wait for Shoulder
