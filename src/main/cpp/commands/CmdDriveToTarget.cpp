@@ -129,7 +129,7 @@ void CmdDriveToTarget::Execute() {
 
         } else if (m_driveFinished) {                                           // Drive Finished - Waiting for Hit
           if (distanceChange < 0.6) {                                           // Low Rate-of-Change
-            drive = 0.15;                                                       // Apply power
+            drive = 0.2;                                                       // Apply power
             m_powerCount++;
           } else {                                                              // Coast
             m_coastCount++;

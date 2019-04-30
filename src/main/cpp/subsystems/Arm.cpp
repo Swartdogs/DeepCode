@@ -383,7 +383,7 @@ void Arm::SetArmPosition(ArmPosition position) {
         wristNew    = Robot::m_dashboard.GetDashValue(dvWCPickup);
         SetHandModeRobot(hmCargo);
         SetIntakeMode(imIn);
-        SetHatchState(hsGrab);
+        SetHatchState(hsRelease);
       }
       break;
 
